@@ -3,20 +3,19 @@ layout: post
 title:  "markdown语法详解"
 date:   2019-01-29 12:03:00 +0800
 categories: markdown
+toc: true
 ---
-
-# markdown语法详解
 
 ## 说明
 
-尽管基础的markdown语法很简单，但是由于各个markdown的解析器实现并不一致，尤其对于扩展的markdown语法的支持程度差异很大，导致我们在使用markdown的时候产生困扰。在这里我想以GFM和`Typora`为主，去介绍一下markdown的语法格式规范，以及各个解析器的支持程度。
+尽管基础的markdown语法很简单，但是由于各个markdown的解析器实现并不一致，尤其对于扩展的markdown语法的支持程度差异很大，导致我们在使用markdown的时候会有困扰。这里我以GFM和`Typora`为主，去介绍一下markdown的语法格式规范以及各个解析器的支持程度。
 
 本文中涉及到的所有的markdown语法我都会尽量注明下述各种情况是否支持（没有特别指出的时候，默认都支持），同时也会加一些[markdownlint](https://github.com/DavidAnson/markdownlint)的规则描述。
 
-- [GFM](https://github.github.com/gfm/)：GitHub Flavored Markdown，算是最通用的markdown规范了；
+- [GFM](https://github.github.com/gfm/)：GitHub Flavored Markdown，算是最通用的markdown扩展规范了；
 - [Typora](https://typora.io/)：个人认为最好的markdown可视化编辑器和查看器，支持`windows`和`mac`，在GFM基础上，它还支持很多额外的markdown扩展；
 - [kramdown](https://kramdown.gettalong.org/index.html)：作为`jekyll`的默认markdown解析器，现在应该是github pages默认的markdown解析器；
-- `visual studio code`的markdown扩展：可以方便启用`markdownlint`检查，也会关注下这里的展现；
+- `visual studio code`的markdown扩展：可以方便启用`markdownlint`检查，尽管该解析器还存在较多问题，也会关注下其解析效果；
 
 ## 基础语法
 
@@ -242,7 +241,7 @@ gfm不支持流程图，`Typora`支持。
 
 ### mermaid图
 
-[`mermaid`](https://mermaidjs.github.io/)相比时序图和流程图来说，功能会更强大，支持时序图、流程图、甘特图等，只是gfm也并不支持，`Typora`支持。官网有较多的例子，这里就不贴了。目前来看对于markdown画图来说，还没有一个标准能得到很广泛的支持。
+[`mermaid`](https://mermaidjs.github.io/)相比时序图和流程图来说，功能会更强大，支持时序图、流程图、甘特图等，只是gfm也并不支持，`Typora`支持。目前来看对于markdown画图来说，还没有一个标准能得到很广泛的支持。官网提供了较丰富的例子，[Mermaid Live Editor](https://mermaidjs.github.io/mermaid-live-editor/)提供了在线编辑以及导出svg，需要的可以了解和体验下。
 
 ### 脚标
 
