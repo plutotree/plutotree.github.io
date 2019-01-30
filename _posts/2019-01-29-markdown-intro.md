@@ -3,7 +3,6 @@ layout: post
 title:  "markdown语法详解"
 date:   2019-01-29 12:03:00 +0800
 categories: markdown
-toc: true
 ---
 
 ## 说明
