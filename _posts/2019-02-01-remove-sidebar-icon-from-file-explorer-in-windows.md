@@ -125,7 +125,7 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 
 1. 打开文件夹选项
 
-   ![1549018039071](/raw/2019-02-01-remove-sidebar-icon-from-file-explorer-in-windows/1549018039071.png)
+   ![1549018401493](/raw/2019-02-01-remove-sidebar-icon-from-file-explorer-in-windows/1549018401493.png)
 
 2. 在隐私下去除展现最近文件和文件夹的勾选；
 
@@ -134,4 +134,3 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 3. 如果不喜欢默认展现快速访问的话，还可以将默认打开配置为此电脑
 
    ![1549018130947](/raw/2019-02-01-remove-sidebar-icon-from-file-explorer-in-windows/1549018130947.png)
-
