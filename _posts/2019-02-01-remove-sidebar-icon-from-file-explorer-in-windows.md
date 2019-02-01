@@ -1,0 +1,120 @@
+---
+layout: post
+title:  "从windows资源管理器中移除左侧边栏图标"
+date:   2019-02-01 15:30:00 +0800
+categories: windows
+typora-root-url: ..
+---
+
+windows10资源管理器，如图所示，左侧会出现较多图标，很多并不会用到。对于有洁癖的来说更想把他们清理干净，但是移除并不是一件简单的事情。
+
+![1549007376153](/raw/2019-02-01-windows-10-explorer-remove-left-panel-icon/1549007376153.png)
+
+下面先介绍如何移除上面3个图标：`OneDrive`、`Dropbox`和`Creative Cloud Files`，然后再介绍移除“此电脑”里面的图标。
+
+## 移除`OneDrive`图标
+
+1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
+
+2. 进入下述地址（可以直接拷贝到地址栏中）
+
+   ```bash
+   HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
+   ```
+
+3. 将右侧的`System.IsPinnedToNameSpaceTree`值设置为0
+
+   ![1549008970481](/raw/2019-02-01-windows-10-explorer-remove-left-panel-icon/1549008970481.png)
+
+4. 上述操作会理解生效，回到资源管理器里面看看，OneDrive图标是不是消失了；
+
+如果使用的是64位版本的windows，在运行32位程序的时候，还是能在`保存`对话框里看到OneDrive。
+
+![1549009483968](/raw/2019-02-01-windows-10-explorer-remove-left-panel-icon/1549009483968.png)
+
+可以进入注册表编辑器里面的下述地址：
+
+```bash
+HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
+```
+
+修改右侧的`System.IsPinnedToNameSpaceTree`值为0。重新打开`保存`对话框，可以发现已经没有OneDrive图标了。
+
+如果需要还原的话，将前面操作中的值设置回1即可。
+
+## 移除`Dropbox`图标
+
+1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
+
+2. 进入下述地址
+
+   ```bash
+   HKEY_CURRENT_USER\Software\Classes\WOW6432Node\CLSID\{E31EA727-12ED-4702-820C-4B6445F28E1A}\ShellFolder
+   ```
+
+3. 将右侧的`Attributes`值从`f080004d`改为`f090004d`
+
+4. 进入下述地址
+
+   ```bash
+   HKEY_CURRENT_USER\Software\Classes\WOW6432Node\CLSID\{E31EA727-12ED-4702-820C-4B6445F28E1A}\ShellFolder
+   ```
+
+5. 将右侧的`Attributes`值从`f080004d`改为`f090004d`
+6. 该操作需要[重启`explorer`进程](https://www.winhelponline.com/blog/exit-explorer-restart-windows-10-8/)或者注销后重新登录才能生效，也可以选择重启系统。
+
+## 移除`Creative Cloud Files`图标
+
+1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
+
+2. 按`Ctrl+F`搜索，输入`Creative Cloud Files`，找到`\HKEY_CLASSES_ROOT\CLSID`下面的一项
+
+   ![1549012475286](/raw/2019-02-01-windows-10-explorer-remove-left-panel-icon/1549012475286.png)
+
+3. 将右侧的`System.IsPinnedToNameSpaceTree`值从`1`改为`0`；
+
+4. 该操作需要[重启`explorer`进程](https://www.winhelponline.com/blog/exit-explorer-restart-windows-10-8/)或者注销后重新登录才能生效，也可以选择重启系统。
+
+经过上述3个操作之后，左侧的边栏变得清晰了很多，如果有其他程序图标，也可以参考类似的方法移除
+
+![1549012686611](/raw/2019-02-01-windows-10-explorer-remove-left-panel-icon/1549012686611.png)
+
+## 移除此电脑里面的应用图标
+
+先试一下是否可以点击右键删除，这里以删除`微云同步助手`为例
+
+1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
+
+2. 进入下述地址
+
+   ```bash
+   HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace
+   ```
+
+3. 依次查看这里的项，可以通过右侧的信息来确定是否是`微云同步助手`；
+
+4. 找到后删除该项即可；
+
+5. 上述操作应该可以立即生效；
+
+## 移除此电脑里面的`3D对象`
+
+1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
+
+2. 进入下述地址
+
+   ```bash
+   HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}
+   ```
+
+3. 右键选择该项删除
+
+4. 进入下述地址（如果是32位的windows系统则不需要该操作）
+
+   ```bash
+   HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}
+   ```
+
+5. 右键选择该项删除；
+
+6. 上述操作应该可以立即生效；
