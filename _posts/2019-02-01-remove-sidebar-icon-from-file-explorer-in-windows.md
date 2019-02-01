@@ -6,13 +6,13 @@ categories: windows
 typora-root-url: ..
 ---
 
-windows10资源管理器，如图所示，左侧会出现较多图标，很多并不会用到。对于有洁癖的来说更想把他们清理干净，但是移除并不是一件简单的事情。
+windows10资源管理器，左侧有较多无用的图标，尤其对于洁癖者来说更想把这些图标都清理干净。
 
 ![1549007376153](/raw/2019-02-01-windows-10-explorer-remove-left-panel-icon/1549007376153.png)
 
 下面先介绍如何移除上面3个图标：`OneDrive`、`Dropbox`和`Creative Cloud Files`，然后再介绍移除“此电脑”里面的图标。
 
-## 移除`OneDrive`图标
+## 移除OneDrive图标
 
 1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
 
@@ -42,7 +42,7 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 
 如果需要还原的话，将前面操作中的值设置回1即可。
 
-## 移除`Dropbox`图标
+## 移除Dropbox图标
 
 1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
 
@@ -63,7 +63,7 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 5. 将右侧的`Attributes`值从`f080004d`改为`f090004d`
 6. 该操作需要[重启`explorer`进程](https://www.winhelponline.com/blog/exit-explorer-restart-windows-10-8/)或者注销后重新登录才能生效，也可以选择重启系统。
 
-## 移除`Creative Cloud Files`图标
+## 移除Creative Cloud Files图标
 
 1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
 
@@ -97,7 +97,7 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 
 5. 上述操作应该可以立即生效；
 
-## 移除此电脑里面的`3D对象`
+## 移除此电脑里面的3D对象
 
 1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
 
@@ -118,3 +118,20 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 5. 右键选择该项删除；
 
 6. 上述操作应该可以立即生效；
+
+## 快速访问
+
+如果并不需要快速访问展现最近目录和文件的话，可以从配置里面直接关闭
+
+1. 打开文件夹选项
+
+   ![1549018039071](/raw/2019-02-01-remove-sidebar-icon-from-file-explorer-in-windows/1549018039071.png)
+
+2. 在隐私下去除展现最近文件和文件夹的勾选；
+
+   ![1549018096295](/raw/2019-02-01-remove-sidebar-icon-from-file-explorer-in-windows/1549018096295.png)
+
+3. 如果不喜欢默认展现快速访问的话，还可以将默认打开配置为此电脑
+
+   ![1549018130947](/raw/2019-02-01-remove-sidebar-icon-from-file-explorer-in-windows/1549018130947.png)
+
