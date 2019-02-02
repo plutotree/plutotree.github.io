@@ -2,7 +2,7 @@
 layout: post
 title:  "在jekyll中使用腾讯统计或百度统计"
 date:   2019-02-01 15:30:00 +0800
-categories: windows
+categories: jekyll
 typora-root-url: ..
 ---
 
