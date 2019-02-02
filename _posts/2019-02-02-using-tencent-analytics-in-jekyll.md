@@ -6,6 +6,8 @@ categories: windows
 typora-root-url: ..
 ---
 
+加入腾讯统计的方法非常简单，只需要2步就可以了：
+
 1. 在[腾讯分析](https://ta.qq.com/)申请创建一个项目，得到一段类似代码：
 
    ```javascript
@@ -14,14 +16,14 @@ typora-root-url: ..
 
 2. 在`_includes/footer.html`（如果该文件不存在的话，可以从模板里面拷贝出来）最后增加一行，将上面的代码拷贝进去，这时候正常运行就可以得到统计结果了；
 
-[百度统计](https://tongji.baidu.com)的方式也类似，另外如果想要在header引入的话也可以考虑放在`_includes/head.html`。
+[百度统计](https://tongji.baidu.com)的方式也类似，如果想要在header引入的话可以考虑放在`_includes/head.html`。
 
-这时候还存在一点困扰，本地调试的时候也会作为统计上报，为了避免这种情况，我们可以在该段代码前后加上判断条件，这样子在本地调试的时候查看源代码可以发现不会引入该script。
+这时候本地调试也会上报统计，这种情况如果不想上报的话，需要加上判断条件。这里用了`jekyll.enviroment`变量，该变量在github pages发布的时候会设置成`production`，而本地没有设置该变量就不会引入该script。注意下代码的`%`需要加上对应的`{`和`}`（没有直接加是因为会被jekyll自动处理）
 
 ```javascript
-{%- if jekyll.environment == 'production' -%}
+%- if jekyll.environment == 'production' -%
   <script type="text/javascript" src="http://tajs.qq.com/stats?sId=66171907" charset="UTF-8"></script>
-{%- endif -%}
+%- endif -%
 ```
 
 如果你调试的时候想临时验证下的话，可以指定环境变量，类似这样子执行：
@@ -30,10 +32,8 @@ typora-root-url: ..
 JEKYLL_ENV=production bundle exec jekyll serve
 ```
 
-再进一步，也可以在配置文件里面增加配置项用来配置是否启用腾讯统计或者百度统计。在`_config.yml`增加一行`tencent_analytics: 1`，然后在`_includes/footer.html`里面加个条件：
+再进一步，也可以在配置文件里面增加配置项用来配置是否启用腾讯统计或者百度统计。在`_config.yml`增加一行`tencent_analytics: 1`，然后在`_includes/footer.html`里面的条件换成
 
 ```javascript
-{%- if jekyll.environment == 'production' and site.tencent_analytics == 1 -%}
-  <script type="text/javascript" src="http://tajs.qq.com/stats?sId=66171907" charset="UTF-8"></script>
-{%- endif -%}
+%- if jekyll.environment == 'production' and site.tencent_analytics == 1 -%
 ```
