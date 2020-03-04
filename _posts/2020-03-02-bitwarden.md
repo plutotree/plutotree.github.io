@@ -3,17 +3,21 @@ layout: post
 title:  "使用bitwarden搭建自己的密码管理服务器"
 date:   2020-03-02 00:10:00 +0800
 categories: 
+typora-copy-images-to: ../raw
+
 ---
 
 ## 背景
 
-大概是15年开始使用[1password](https://1password.com/)作为自己的密码管理软件，看中的是多平台同步的功能、方便快捷的密码填充和不错的交互操作，最重要的一点是自己可控的密码库（而不是使用官方的云同步）。当然最大的问题是同步方式只支持dropbox，每次同步都得搭梯子才能进行。
+大概是15年开始使用[1password](https://1password.com/)作为自己的密码管理软件，看中的是多平台同步的功能、方便快捷的密码填充和不错的交互操作，最重要的一点是自己可控的密码库（而不是使用官方的云同步）。最大的一个问题是同步方式只支持dropbox，每次同步都得搭梯子才能进行。
 
-`1password`在2016-2017年开始推出订阅版之后，逐步就开始抛弃独立版本了。一开始还保留了一次性购买授权的方案，但是很快就被彻底放弃了。我对密码管理没特别的诉求，已有的版本功能正常就继续用着。直到有一天发现chrome的`1password`插件无法使用了。作为拖延症晚期患者当然没在第一时间就去寻找替换方案（其实是找了而没有实施），只能在需要的时候手动打开软件去搜索密码了。
+但是`1password`在2016-2017年开始推出订阅版之后，一开始仍然保留了一次性购买永久授权的方案，并且保持着双版本同步更新。接着独立版更新力度就逐步减弱，重点都放在了订阅版本，毕竟对公司来说订阅版本更加赚钱。windows的最后一个[独立版本](https://app-updates.agilebits.com/product_history/OPW4)的发布时间在2017年9月份，mac的最后一个[独立版本](https://app-updates.agilebits.com/product_history/OPM4)的发布时间在2018年5月份。尽管不再更新了，不过对密码管理没特别的诉求，已有的版本功能足够满足需求了，就继续正常使用着。直到有一天突然发现chrome的`1password`插件无法使用了，而这个是重度的使用场景。这个时候只能打开软件手动搜索了，作为拖延症晚期患者没在第一时间去寻找替代方案（其实是找了而没有实施），直到最近换了一个新的手机之后才决定要切换新的密码管理软件。
+
+并没有花太多时间去寻找新选择，很快确定了bitwarden，开源、多平台、功能齐全，甚至可以自己部署独立服务器，还有什么理由不用它呢。尽管用官方存储不会有什么大问题，一开始也尝试了下，不过选择自己部署会更可控些。
 
 ## 搭建web服务器
 
-- 拥有一台自己的服务器，拥有一个自己的域名，这个流程就不再赘述了；
+- 拥有一台自己的服务器，拥有一个自己的域名，建议使用一个二级域名作为bitwarden服务，下文以`bw.yourdomail.com`为例。国内域名要走备案流程复杂，国外的话就很方便了。这个流程就不细述了。
 
 - 申请https证书，不得不说[acme.sh](https://github.com/acmesh-official/acme.sh)一键申请&部署证书，真的是太方便了
 
@@ -40,7 +44,7 @@ acme.sh  --issue -d xx.yourdomain.com --standalone
     --reloadcmd "systemctl restart nginx"
     ```
   
-- nginx的完整配置文件`/etc/nginx/conf.d/xx.yourdomail.com.conf`如下:
+- 用nginx实现域名的转发，对于https://xx.yourdomail.com的请求转发至本地的12345端口，即后续部署的bitwarden服务的端口，nginx的完整配置文件`/etc/nginx/conf.d/xx.yourdomail.com.conf`如下:
 
   ```bash
   server {
@@ -76,8 +80,16 @@ docker run -d --name bitwarden -v /bw-data/:/data/ -p 12345:80 bitwardenrs/serve
 
 ## 迁移1password的数据
 
-官方的[教程](https://help.bitwarden.com/article/import-from-1password/)说的比较清楚了，登录的数据包括历史密码信息都能比较完整导入到bitwarden，但是类别信息并不能完整保留，因为2者的类别定义也不一致。安全备注信息也比价好的导入到了bitwarden，但是有些分类信息也作为备注导入到了bitwarden。
+官方的[教程](https://help.bitwarden.com/article/import-from-1password/)说的比较清楚，导入操作很快，有几点提一下：
+
+- 登录信息比较成功迁移，包括登录密码的历史信息、收藏信息都能比较完整导入到bitwarden；
+
+- 安全备注以及密码、会员信息、护照、软件许可、银行账户等类别能成功导入到bitwarden，不过都是作为安全笔记的类型而存在，除了部分字段外，原始信息基本上都作为了自定义字段进行保存；
+
+  这里的自定义字段会存在问题，比如护照的有效期在1password里面保存的是时间戳而不是可见的日期格式（这点很合理，因为展现格式是可以更换的），这样导入到bitwarden之后就变成了一串数字；比如性别保存的是male/female，导入后也是这些字符串。bitwarden自定义类型是只有text和bool的，没有其他类型！
 
 ## 使用感受
 
-待补充
+1. 1password有非常完善的类型，包含信用卡、护照、银行账户、邮箱、软件license、服务器、数据库等等，并且每个类型的字段都非常完整。对比而言，bitwarden只有卡片和身份两个类型，卡片只有信用卡的最基础的几个字段，身份是相对完整的个人信息。所以除了登录密码，bitwarden维护其他数据还是不太方便。
+2. 1password的同步功能是自动进行的，而bitwarden是需要手动点击同步的，至少我没有发现有自动同步的相关选项；
+3. 其他待补充
