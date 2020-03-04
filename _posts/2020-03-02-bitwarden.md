@@ -91,5 +91,13 @@ docker run -d --name bitwarden -v /bw-data/:/data/ -p 12345:80 bitwardenrs/serve
 ## 使用感受
 
 1. 1password有非常完善的类型，包含信用卡、护照、银行账户、邮箱、软件license、服务器、数据库等等，并且每个类型的字段都非常完整。对比而言，bitwarden只有卡片和身份两个类型，卡片只有信用卡的最基础的几个字段，身份是相对完整的个人信息。所以除了登录密码，bitwarden维护其他数据还是不太方便。
-2. 1password的同步功能是自动进行的，而bitwarden是需要手动点击同步的，至少我没有发现有自动同步的相关选项；
+2. 1password是或做比较实时地自动同步，而bitwarden的自动同步间隔是非常长的，几个小时才同步一次，而且没有发现有自动同步的时间设置选项，官方回复[在此](https://www.reddit.com/r/Bitwarden/comments/75i6xm/is_there_a_way_to_change_the_sync_frequency/)，的确没有相关同步时间选项，只能手动同步；
 3. 其他待补充
+
+## 二步验证（TOTP）
+
+TOTP (Time-based One-Time Password) 直接翻译就是有有效期的一次性密码，只是他的场景用在了登录时的二次验证，所以就姑且叫他二次验证吧。对TOTP想要了解更多的，[这篇文章](https://www.iplaysoft.com/two-factor-authentication.html)做了不错的介绍，当然也可以直接看[wiki](https://en.wikipedia.org/wiki/Time-based_One-time_Password_algorithm)。
+
+官方版本需要付费的TOTP功能在自己搭建bitwarden_rs服务直接支持了，不过涉及到扫描二维码，相关操作需要用手机上的bitwarden app进行。操作很简单，编辑相应的登录项，选择totp字段，扫描屏幕二维码，搞定！在实际使用时不会自动切换到totp验证码，需要手动拷贝（也可能是我的操作姿势不对？后面再确认）
+
+另外提一句，bitwarden主账户也是可以打开totp的，问题来了，可以使用bitwarden来作为自己的totp服务么？想象下，你登录bitwarden需要验证码，而这个验证码需要进入bitwarden才能拿到，是不是死循环了，无法进入了，所以不要这样做，还是选择authy或者google authenticator吧。
