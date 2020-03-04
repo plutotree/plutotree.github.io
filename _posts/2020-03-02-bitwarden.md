@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "使用bitwarden搭建自己的密码管理服务器"
+title:  "搭建自己的bitwarden密码管理服务器"
 date:   2020-03-02 00:10:00 +0800
-categories: 
+categories: bitwarden
 typora-copy-images-to: ../raw
 
 ---
