@@ -6,7 +6,7 @@ categories: alfred
 typora-root-url: ..
 ---
 
-## 
+## 操作步骤
 
 1. 安装蓝牙客户端[BluetoothConnector](https://github.com/lapfelix/BluetoothConnector)：
    ```bash

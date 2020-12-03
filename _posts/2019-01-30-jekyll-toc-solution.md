@@ -3,6 +3,7 @@ layout: post
 title:  "jekyll自动生成目录的几种方案"
 date:   2019-01-30 13:00:00 +0800
 categories: jekyll
+typora-root-url: ..
 ---
 
 jekyll的`kramdown`不支持`[TOC]`自动生成目录的方式，目前了解来看有几种方案：
