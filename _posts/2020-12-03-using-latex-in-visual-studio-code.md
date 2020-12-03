@@ -3,7 +3,6 @@ layout: post
 title:  "在Visual Studio Code中使用LaTeX"
 date:   2020-12-03 18:30:00 +0800
 categories: [vscode, latex, tex]
-
 typora-root-url: ..
 typora-copy-images-to: ..\raw\2020-12-03-using-latex-in-visual-studio-code
 ---

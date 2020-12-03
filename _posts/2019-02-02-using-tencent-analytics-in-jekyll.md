@@ -4,7 +4,10 @@ title:  "在jekyll中使用腾讯统计或百度统计"
 date:   2019-02-01 15:30:00 +0800
 categories: jekyll
 typora-root-url: ..
+typora-copy-images-to: ..\raw\2019-02-02-using-tencent-analytics-in-jekyll
 ---
+
+## 操作步骤
 
 加入腾讯统计的方法非常简单，只需要2步就可以了：
 
@@ -37,3 +40,27 @@ JEKYLL_ENV=production bundle exec jekyll serve
 ```javascript
 %- if jekyll.environment == 'production' and site.tencent_analytics == 1 -%
 ```
+
+
+
+## 更新
+
+腾讯分析将于2020年12月31日下线，这里引导的腾讯移动分析也将在2021年3月份下线，所以只能放弃腾讯分析了。
+
+![image-20201203214147198](/raw/2019-02-02-using-tencent-analytics-in-jekyll/image-20201203214147198.png)
+
+只能切到[百度统计](https://tongji.baidu.com/sc-web)了，百度统计的js看着有点复杂，先直接拷贝吧。
+
+```javascript
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?xxxxxx";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+```
+
