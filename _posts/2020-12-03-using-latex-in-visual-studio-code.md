@@ -54,17 +54,30 @@ typora-copy-images-to: ..\raw\2020-12-03-using-latex-in-visual-studio-code
 
 ## 安装TexLive
 
-可以直接在[官网](https://www.tug.org/texlive/)下载在线安装包，但是国外网络访问可能比较慢，建议直接从国内的镜像下载iso镜像，推荐从[清华大学](https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/Images/)下载，目前最新的是`TexLive 2020`。下载完之后可以使用压缩工具打开后直接解压缩到任意目录，该目录最好能一直保留方便以后安装宏包。
+目前最新的是`TexLive 2020`，可以在[官网](https://www.tug.org/texlive/)下载在线安装包，不过更建议直接下载完整的ios安装包。可以直接点击[链接](http://mirror.ctan.org/systems/texlive/Images/texlive2020.iso)下载，这个地址会自动选择合适的镜像地址。如果发现下载速度很慢，也可以在下述地址中手动选择，或者使用迅雷之类的工具进行下载：
 
-双击运行`install-tl-advanced.bat`
+- 清华大学（北京）：https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso
+- 北京交通大学（北京）：https://mirror.bjtu.edu.cn/ctan/systems/texlive/Images/texlive2020.iso
+- 上海交通大学（上海）：https://mirrors.sjtug.sjtu.edu.cn/ctan/systems/texlive/Images/texlive2020.iso
+- 中国科技大学（合肥）：https://mirrors.ustc.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso
+- 重庆大学（重庆）：https://mirrors.cqu.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso
+- 腾讯云：https://mirrors.cloud.tencent.com/CTAN/systems/texlive/Images/texlive2020.iso
 
-![image-20201203200545911](/raw/2020-12-03-using-latex-in-visual-studio-code/image-20201203200545911.png)
+下载完之后可以直接用资源管理器打开可以直接加载（Windows10支持，使用虚拟光驱），或者也可以使用压缩工具打开后直接解压缩。不管使用哪种方式，iso文件或者解压后的文件需要保留，以方便后续安装宏包。
 
-可以修改下默认的安装路径，然后下一步，下一步
+双击运行`install-tl-windows.bat`
 
-![image-20201203200652966](/raw/2020-12-03-using-latex-in-visual-studio-code/image-20201203200652966.png)
+![image-20201203205630699](/raw/2020-12-03-using-latex-in-visual-studio-code/image-20201203205630699.png)
 
-安装完成之后可以打开`TeXworks editor`直接编辑`tex`文件，以及编译生成`pdf`。如果能接受`TeXworks`的丑陋界面，其实可以不用往后看了哈。除了`Visual Studio Code`之外，也可以选择自己喜欢的任意文本编辑器来使用，包括`vim`、`emacs`、`notepad++`，配置好相关的语法提示，以及快捷命令之后也都可以正常使用。
+点击`Advanced`，修改默认的安装路径，然后点击安装
+
+![image-20201203205818216](/raw/2020-12-03-using-latex-in-visual-studio-code/image-20201203205818216.png)
+
+安装包较大，耐心等待
+
+![image-20201203205928065](/raw/2020-12-03-using-latex-in-visual-studio-code/image-20201203205928065.png)
+
+安装完成之后可以直接打开`TeXworks editor`进行编辑`tex`文件，以及编译生成`pdf`。如果能接受`TeXworks`的丑陋界面，其实可以不用往后看了哈。除了`Visual Studio Code`之外，也可以选择自己喜欢的任意文本编辑器来使用，包括`vim`、`emacs`、`notepad++`，配置好相关的语法提示，以及快捷命令之后也都可以正常使用。
 
 ![image-20201203200900391](/raw/2020-12-03-using-latex-in-visual-studio-code/image-20201203200900391.png)
 
@@ -126,5 +139,6 @@ typora-copy-images-to: ..\raw\2020-12-03-using-latex-in-visual-studio-code
 
 ## 参考资料
 
-1. [使用VSCode编写LaTeX](https://zhuanlan.zhihu.com/p/38178015)
-2. [2020搭建Latex环境](https://zhuanlan.zhihu.com/p/58811994)
+1. [TeX Live 下载及安装说明](https://liam.page/texlive/)
+2. [使用VSCode编写LaTeX](https://zhuanlan.zhihu.com/p/38178015)
+3. [2020搭建Latex环境](https://zhuanlan.zhihu.com/p/58811994)
