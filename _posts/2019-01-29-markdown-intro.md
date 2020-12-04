@@ -9,7 +9,7 @@ typora-copy-images-to: ..\raw\2019-01-29-markdown-intro
 
 ## 说明
 
-尽管基础的markdown语法很简单，但是由于解析器实现的不一致性，尤其是对于扩展的markdown语法的支持程度差异很大，导致我们在使用markdown的时候会出现不同场景的差异性。这篇文章打算以GFM和`Typora`为主，去介绍一下markdown的语法格式规范以及各个解析器的支持程度。
+尽管基础的markdown语法很简单，但是由于解析器实现的不一致性，尤其是对于扩展的markdown语法的支持程度差异很大，导致我们在使用markdown的时候会出现不同场景的差异性。这篇文章打算以GFM和Typora为主，去介绍一下markdown的语法格式规范以及各个解析器的支持程度。
 
 本文中涉及到的所有的markdown语法我都会尽量注明各种情况是否支持（没有特别指出的时候，默认都支持），同时也会加一些[markdownlint](https://github.com/DavidAnson/markdownlint)的规则描述。
 
@@ -226,7 +226,7 @@ $$
 
 ### 内容目录
 
-使用`[TOC]`生成自动目录。`Typora`支持该语法，GFM不支持该语法。
+使用`[TOC]`生成自动目录。Typora支持该语法，GFM不支持该语法。
 
 ### 时序图
 
@@ -240,7 +240,7 @@ $$
 
 ![image-20201204112218341](raw/2019-01-29-markdown-intro/image-20201204112218341.png)
 
-gfm不支持时序图，`Typora`支持。
+gfm不支持时序图，Typora支持。
 
 ### 流程图
 
@@ -260,11 +260,11 @@ cond(no)->e
 
 ![image-20201204112431026](/raw/2019-01-29-markdown-intro/image-20201204112431026.png)
 
-gfm不支持流程图，`Typora`支持。
+gfm不支持流程图，Typora支持。
 
 ### mermaid图
 
-[`mermaid`](https://mermaidjs.github.io/)相比时序图和流程图来说，功能会更强大，支持时序图、流程图、UML图、状态图、甘特图等，`Typora`支持但是GFM不支持。目前来看，使用算是比较广泛了。官网提供了较丰富的例子，[Mermaid Live Editor](https://mermaidjs.github.io/mermaid-live-editor/)提供了在线编辑以及导出SVG。
+[`mermaid`](https://mermaidjs.github.io/)相比时序图和流程图来说，功能会更强大，支持时序图、流程图、UML图、状态图、甘特图等，Typora支持但是GFM不支持。目前来看，使用算是比较广泛了。官网提供了较丰富的例子，[Mermaid Live Editor](https://mermaidjs.github.io/mermaid-live-editor/)提供了在线编辑以及导出SVG。
 
 看下用`mermaid`来画时序图的例子：
 
@@ -279,7 +279,7 @@ sequenceDiagram
 
 ### 脚标和上下标
 
-可以使用语法​`[^脚标A]: 这是脚标A`来创建角标（需要使用代码块模式），在需要引用的地方使用`[^脚标A]`进行引用[^脚标A]。`Typora`支持该语法，GFM不支持该语法。
+可以使用语法​`[^脚标A]: 这是脚标A`来创建角标（需要使用代码块模式），在需要引用的地方使用`[^脚标A]`进行引用[^脚标A]。Typora支持该语法，GFM不支持该语法。
 
 [^脚标A]: 这是脚标A
 
@@ -287,7 +287,7 @@ sequenceDiagram
 
 ### YAML头信息
 
-在文件的头部使用使用独立行的`---`作为开始和终止，其中间部分会作为metadata，并不会生成可视内容，这本来是[jekyll](https://jekyllrb.com/docs/front-matter/)的特殊格式，现在`Typora`也支持该语法（尽管不一定会生成html里面的metadata）。
+在文件的头部使用使用独立行的`---`作为开始和终止，其中间部分会作为metadata，并不会生成可视内容，这本来是[jekyll](https://jekyllrb.com/docs/front-matter/)的特殊格式，现在Typora也支持该语法（尽管不一定会生成html里面的metadata）。
 
 ### Github emoji
 
