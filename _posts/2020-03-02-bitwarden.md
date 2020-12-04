@@ -23,18 +23,18 @@ typora-copy-images-to: ../raw
 
   - 安装acme.sh
 
-  	```bash
-  	curl  https://get.acme.sh | sh
-  	```
+    ```bash
+    curl  https://get.acme.sh | sh
+    ```
 
   - 生成证书
 
     这里选择使用standalone的方式，需要确保这个域名是未在使用的，如果默认的80端口已经被使用，还可以指定其他端口
-    
-    ```bash
-acme.sh  --issue -d xx.yourdomain.com --standalone
+
+  ```bash
+  acme.sh  --issue -d xx.yourdomain.com --standalone
     ```
-    
+
   - 拷贝证书：nginx的配置文件和证书文件放在`/etc/nginx.conf/conf.d/`目录下
   
     ```bash
@@ -44,30 +44,30 @@ acme.sh  --issue -d xx.yourdomain.com --standalone
     --reloadcmd "systemctl restart nginx"
     ```
   
-- 用nginx实现域名的转发，对于https://xx.yourdomail.com的请求转发至本地的12345端口，即后续部署的bitwarden服务的端口，nginx的完整配置文件`/etc/nginx/conf.d/xx.yourdomail.com.conf`如下:
+- 用nginx实现域名的转发，对于`https://xx.yourdomail.com`的请求转发至本地的12345端口，即后续部署的bitwarden服务的端口，nginx的完整配置文件`/etc/nginx/conf.d/xx.yourdomail.com.conf`如下:
 
   ```bash
   server {
-       listen 443 ssl;
-       server_name xx.yourdomail.com;
-       ssl_certificate conf.d/xx.yourdomail.com.crt;
-       ssl_certificate_key conf.d/xx.yourdomail.com.key;
-       ssl_session_timeout 5m;
-       ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-       ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
-       ssl_prefer_server_ciphers on;
+      listen 443 ssl;
+      server_name xx.yourdomail.com;
+      ssl_certificate conf.d/xx.yourdomail.com.crt;
+      ssl_certificate_key conf.d/xx.yourdomail.com.key;
+      ssl_session_timeout 5m;
+      ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+      ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+      ssl_prefer_server_ciphers on;
   
-       location / {
-      	proxy_pass http://127.0.0.1:12345;
-      	proxy_set_header Upgrade $http_upgrade;
-      	proxy_set_header Connection "upgrade";
-       }
-   }
+      location / {
+          proxy_pass http://127.0.0.1:12345;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection "upgrade";
+      }
+  }
   ```
 
   这里将请求转发至了本地的12345端口（就是我们后面要部署的bitwarden服务的地址）
 
-##  部署bitwarden服务
+## 部署bitwarden服务
 
 由于官方的服务需要用到sqlserver，资源占用较大，推荐使用[bitwarden_rs](https://github.com/dani-garcia/bitwarden_rs)，用ruby实现的bitwarden服务端兼容版本，这就是开源的好处。
 

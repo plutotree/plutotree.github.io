@@ -41,8 +41,6 @@ JEKYLL_ENV=production bundle exec jekyll serve
 %- if jekyll.environment == 'production' and site.tencent_analytics == 1 -%
 ```
 
-
-
 ## 更新
 
 腾讯分析将于2020年12月31日下线，这里引导的腾讯移动分析也将在2021年3月份下线，所以只能放弃腾讯分析了。
@@ -57,10 +55,9 @@ var _hmt = _hmt || [];
 (function() {
   var hm = document.createElement("script");
   hm.src = "https://hm.baidu.com/hm.js?xxxxxx";
-  var s = document.getElementsByTagName("script")[0]; 
+  var s = document.getElementsByTagName("script")[0];
   s.parentNode.insertBefore(hm, s);
 })();
 </script>
 
 ```
-

@@ -15,7 +15,6 @@ typora-copy-images-to: ..\raw\2020-12-03-using-latex-in-visual-studio-code
 
 ![image-20201203195703950](/raw/2020-12-03-using-latex-in-visual-studio-code/image-20201203195703950.png)
 
-
 对应的代码如下（看着也还好对吧？）
 
 ```latex
@@ -33,7 +32,7 @@ typora-copy-images-to: ..\raw\2020-12-03-using-latex-in-visual-studio-code
     来个公式：
 
     $$ \int x^{\mu}\mathrm{d}x=\frac{x^{\mu +1}}{\mu +1}+C, \left({\mu \neq -1}\right) $$
-    
+
     来个函数图：
 
     \begin{center}
@@ -55,12 +54,12 @@ typora-copy-images-to: ..\raw\2020-12-03-using-latex-in-visual-studio-code
 
 目前最新的是`TexLive 2020`，可以在[官网](https://www.tug.org/texlive/)下载在线安装包，不过更建议直接下载完整的ios安装包。可以直接点击[链接](http://mirror.ctan.org/systems/texlive/Images/texlive2020.iso)下载，这个地址会自动选择合适的镜像地址。如果发现下载速度很慢，也可以在下述地址中手动选择，或者使用迅雷之类的工具进行下载：
 
-- 清华大学（北京）：https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso
-- 北京交通大学（北京）：https://mirror.bjtu.edu.cn/ctan/systems/texlive/Images/texlive2020.iso
-- 上海交通大学（上海）：https://mirrors.sjtug.sjtu.edu.cn/ctan/systems/texlive/Images/texlive2020.iso
-- 中国科技大学（合肥）：https://mirrors.ustc.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso
-- 重庆大学（重庆）：https://mirrors.cqu.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso
-- 腾讯云：https://mirrors.cloud.tencent.com/CTAN/systems/texlive/Images/texlive2020.iso
+- 清华大学（北京）：<https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso>
+- 北京交通大学（北京）：<https://mirror.bjtu.edu.cn/ctan/systems/texlive/Images/texlive2020.iso>
+- 上海交通大学（上海）：<https://mirrors.sjtug.sjtu.edu.cn/ctan/systems/texlive/Images/texlive2020.iso>
+- 中国科技大学（合肥）：<https://mirrors.ustc.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso>
+- 重庆大学（重庆）：<https://mirrors.cqu.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso>
+- 腾讯云：<https://mirrors.cloud.tencent.com/CTAN/systems/texlive/Images/texlive2020.iso>
 
 下载完之后可以直接用资源管理器打开可以直接加载（Windows10支持，使用虚拟光驱），或者也可以使用压缩工具打开后直接解压缩。不管使用哪种方式，iso文件或者解压后的文件需要保留，以方便后续安装宏包。
 
