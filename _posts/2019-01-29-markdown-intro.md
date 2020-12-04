@@ -212,7 +212,7 @@ $$
 f(x)=\sum^{\infty}_{n=0}\frac{f^{(n)}(a)}{n!}(x-a)^n
 $$
 
-行内数学公式，直接使用`$$`作为起始和终止：$\delta=b^2-4ac$（不同的解析器支持并不一致，有些解析器需要使用`$`而不是`$$`作为起始和终止）。
+行内数学公式，直接使用`$`作为起始和终止：$\delta=b^2-4ac$（有些解析器需要使用`$$`作为起始和终止）。
 
 ### html标签
 
@@ -264,7 +264,7 @@ gfm不支持流程图，`Typora`支持。
 
 ### mermaid图
 
-[`mermaid`](https://mermaidjs.github.io/)相比时序图和流程图来说，功能会更强大，支持时序图、流程图、甘特图等，同样的gfm不支持，`Typora`支持。目前来看，算是相对使用比较广泛。官网提供了较丰富的例子，[Mermaid Live Editor](https://mermaidjs.github.io/mermaid-live-editor/)提供了在线编辑以及导出svg。
+[`mermaid`](https://mermaidjs.github.io/)相比时序图和流程图来说，功能会更强大，支持时序图、流程图、UML图、状态图、甘特图等，`Typora`支持但是GFM不支持。目前来看，使用算是比较广泛了。官网提供了较丰富的例子，[Mermaid Live Editor](https://mermaidjs.github.io/mermaid-live-editor/)提供了在线编辑以及导出SVG。
 
 看下用`mermaid`来画时序图的例子：
 
@@ -277,15 +277,25 @@ sequenceDiagram
 
 ![image-20201204112846477](/raw/2019-01-29-markdown-intro/image-20201204112846477.png)
 
-### 脚标
+### 脚标和上下标
 
 可以使用语法​`[^脚标A]: 这是脚标A`来创建角标（需要使用代码块模式），在需要引用的地方使用`[^脚标A]`进行引用[^脚标A]。`Typora`支持该语法，GFM不支持该语法。
 
 [^脚标A]: 这是脚标A
 
+上标和下标没有一致的标准，在Typora中使用`^文字^`表示上标，使用`~文字~`表示下标，但我看并没有得到广泛支持。建议在markdown中尽量避免使用上下标，如果要保持兼容性的话采用HTML的`<sup>文字</sup>`展示上标，使用`<sub>文字</sub>`的方式展示下标。
+
 ### YAML头信息
 
 在文件的头部使用使用独立行的`---`作为开始和终止，其中间部分会作为metadata，并不会生成可视内容，这本来是[jekyll](https://jekyllrb.com/docs/front-matter/)的特殊格式，现在`Typora`也支持该语法（尽管不一定会生成html里面的metadata）。
+
+### Github emoji
+
+按文本形式输入类似`:smile:`，常见的可以直接输入，完整的可以参考[列表](https://gist.github.com/rxaviers/7360908)。Typora和github都支持，vscode的相关插件不支持。
+
+- 人：:boy::girl::man::woman::baby::older_woman::older_man::princess::cop::angel::couple::walking::runner::dancers:
+- 动物：:cat::dog::pig::frog::cow::horse::snake::bird::mouse::wolf::monkey::camel:
+- 表情：:smile::cry::confused::sob::joy::mask::worried::wink::relaxed::grin::kissing::open_mouth::heart_eyes:
 
 ## 参考资料
 
