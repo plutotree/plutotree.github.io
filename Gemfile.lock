@@ -37,7 +37,7 @@ GEM
       jekyll (>= 3.8, < 5.0)
     jekyll-watch (2.2.1)
       listen (~> 3.0)
-    kramdown (2.3.0)
+    kramdown (2.3.1)
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
@@ -76,7 +76,7 @@ PLATFORMS
 DEPENDENCIES
   jekyll (~> 3.9.0)
   jekyll-feed (~> 0.6)
-  kramdown (~> 2.3.0)
+  kramdown (~> 2.3.1)
   kramdown-parser-gfm (~> 1.1.0)
   minima (~> 2.5.1)
   tzinfo-data
