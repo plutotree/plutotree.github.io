@@ -4,6 +4,7 @@ title:  "在github pages上使用jekyll"
 date:   2021-09-06 15:30:00 +0800
 categories: [jekyll]
 typora-root-url: ..
+comments: true
 ---
 
 网上有大量文章说明如何在github pages上面使用jekyll，这里仅说明下大致流程
