@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "在github pages上使用jekyll"
-date:   2020-12-04 18:30:00 +0800
+date:   2021-09-06 15:30:00 +0800
 categories: [jekyll]
 typora-root-url: ..
 ---
