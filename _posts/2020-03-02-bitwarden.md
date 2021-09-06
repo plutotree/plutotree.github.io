@@ -5,6 +5,7 @@ date:   2020-03-02 00:10:00 +0800
 categories: bitwarden
 typora-root-url: ..
 typora-copy-images-to: ../raw
+comments: true
 ---
 
 ## 背景

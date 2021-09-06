@@ -4,6 +4,7 @@ title:  "使用alfred连接AirPods"
 date:   2020-03-02 00:10:00 +0800
 categories: alfred
 typora-root-url: ..
+comments: true
 ---
 
 ## 操作步骤

@@ -1,10 +1,11 @@
 ---
 layout: post
 title:  "markdown语法详解"
-date:   2019-01-29 12:03:00 +0800
+date:  2019-01-29 12:03:00 +0800
 categories: markdown
 typora-root-url: ..
 typora-copy-images-to: ..\raw\2019-01-29-markdown-intro
+comments: true
 ---
 
 ## 说明

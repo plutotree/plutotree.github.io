@@ -5,6 +5,7 @@ date:   2019-02-01 15:30:00 +0800
 categories: jekyll
 typora-root-url: ..
 typora-copy-images-to: ..\raw\2019-02-02-using-tencent-analytics-in-jekyll
+comments: true
 ---
 
 ## 操作步骤

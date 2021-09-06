@@ -2,9 +2,10 @@
 layout: post
 title:  "思源字体介绍"
 date:   2020-12-04 18:30:00 +0800
-categories: [思源宋体, 思源黑体, 字体]
+categories: [font, 思源宋体, 思源黑体, 字体]
 typora-root-url: ..
 typora-copy-images-to: ..\raw\2020-12-04-source-hans-font-intro
+comments: true
 ---
 
 思源字体是Adobe和Google联合开发的开源字体，以Apache 2.0授权，可以免费商用。每套字体提供了7个尺寸，并且为中日韩，更具体的说大陆、香港、台湾、韩国、日本都进行了针对化的设计。
