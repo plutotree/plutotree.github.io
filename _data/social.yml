@@ -1,0 +1,5 @@
+valine_comment:
+  enable: true
+  leancloud_appid: J5NixkF8qVNfHXdDcs7g0mHJ-gzGzoHsz
+  leancloud_appkey: AwVytl9RdE1qJbSx2Ud3DnS7
+  placeholder: just go go
