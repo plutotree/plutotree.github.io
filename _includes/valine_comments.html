@@ -4,6 +4,10 @@
         el: '#comments',
         app_id: '{{ site.data.social.valine_comment.leancloud_appid }}',
         app_key: '{{ site.data.social.valine_comment.leancloud_appkey }}',
-        placeholder: '{{ site.data.social.valine_comment.placeholder }}'
+        placeholder: '{{ site.data.social.valine_comment.placeholder }}',
+        guest_info: ['nick', 'mail'],
+        visitor: true,
+        enableQQ: true,
+        requiredFields: ['nick']
     });
 </script>
