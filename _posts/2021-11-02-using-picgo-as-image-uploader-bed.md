@@ -118,3 +118,12 @@ https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/80da56.png，这个图�
 打开偏好设置，勾选之后可以点击“验证图片上传选项”确认上传是否正常。
 
 ![image-20211103191432287](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/30c0b7.png)
+
+这里要注意下mac系统的这个PicGo-Core选项并不可用，需要选择Custom Commeand，并手动输入命令，另外命令还需要输入完整才行。我配置的命令内容如下：
+
+```bash
+/opt/homebrew/bin/node /opt/homebrew/bin/picgo upload
+```
+
+![image-20211103191923824](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/5f16d7.png)
+
