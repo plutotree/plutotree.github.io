@@ -7,23 +7,27 @@ typora-root-url: ..
 comments: true
 ---
 
-在markdown文件中一直没有采用图床，而是直接放在一起维护，之前主要有几个考虑点：
+## 前言
 
-1. markdown、图片以及其他资源是一个整体，可以理解成一个项目；
-2. 图片的访问权限跟随markdown文件，所在场景有统一的访问鉴权策略也可以统一生效，而图床一般都是公开访问；
-3. 方便在文章维度直接删除无用的图片，而图床比较难清理文章涉及到所有历史图片；
+Markdown已然成为事实上的技术文档编写标准，作为markdown编辑器，typora也收到越来越多人的推荐和喜爱。在markdown中我们经常需要插入图片，而markdown只是普通文本文件，因此图片只能作为外部链接而存在。这里的链接可以使用本地的相对路径，也可以使用网络url。当使用网络url的时候，我们需要一个地方去维护和存储图片，这就是我们所谓的“图床”。
 
-但是在使用过程中也越来越遇到了不变之处：
+而我之前一直没有考虑使用“图床，图片都是和markdown文件一起在git里面维护，主要的考虑点有：
 
-1. github网站在国内访问速度较慢，文字内容还可以接受，但是大量的图片下载需要大量等待时间；
-2. 在分享给他人包含图片的markdown文件时需要导出pdf，而不能直接丢个文本文件；
-3. 图片占用git存储空间，图片大量增加也影响了git仓库的导出速度，而使用lfs会将问题变得复杂；
-4. 在不同的文件中，图片文件存储路径有差异，需要切换的时候会很麻烦；
-5. 图片的大小尺寸不方便管理，不能动态进行缩放；
+1. markdown文件以及图片是作为一个整体，可以理解成是一个项目，那么项目内容本身就是密不可分的；
+2. 图片的访问权限可以跟随markdown文件，需要时可以有统一的访问鉴权策略；
+3. 方便管理一篇文章的所有图片，对于无用的图片可以直接删除；
 
-权衡再三之后决定还是使用图床的方式来维护图片，图床选择了“腾讯云cos”，上传工具采用了“picgo-core”命令行工具。
+但是在使用过程中也越来越遇到了不便之处：
 
-## 腾讯云相关
+1. github网站在国内访问速度较慢，文字影响不大，却很难接受大量的图片下载耗时；
+2. 不方便直接分享给他人markdown文件，需要导出pdf；
+3. 在github仓库中，大量的图片也影响了git仓库的导出速度；
+4. 本地存储图片时，图片存储路径在不同场景有差异，不方便统一管理；
+5. 不能方便地进行图片的动态缩放；
+
+权衡之后决定还是决定拥抱“图床”。typora自带支持iPic、uPic、PicGo等图片上传工具，我选择国人开发的PicGo作为图片上传工具。因为一直在用腾讯云服务器，自然选择了腾讯云Cos作为图床。
+
+## 腾讯云
 
 ### 对象存储
 
@@ -51,11 +55,11 @@ comments: true
 
 ### 访问授权
 
-在[腾讯云控制台的访问管理](https://console.cloud.tencent.com/cam/user/userType)中新建用户，可以直接使用"快速创建"。这里访问方式修改为“编程访问”，用户权限清空，可接受消息类型清空，用户名称可以用比较清晰明了的，比如`picgo-upload`。创建成功之后记录下新子账号的账号ID。
+在[腾讯云控制台的访问管理](https://console.cloud.tencent.com/cam/user/userType)中新建用户，可以直接使用"快速创建"。这里访问方式修改为“编程访问”，用户权限清空，可接受消息类型清空，用户名称可以用比较清晰明了的，比如`picgo-upload`。创建成功之后能看到子账号的账号ID，还有SecretId和SecretKey，把这些信息记录下来，我们后续需要用到。
 
 ![image-20211103183050087](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/426baa.png)
 
-回到[对象存储控制台](https://console.cloud.tencent.com/cos5/bucket)，选择“授权管理”，勾选存储桶后修改“用户权限”，增加子账号的权限，权限内容可以勾选数据读取和数据写入
+回到[对象存储控制台](https://console.cloud.tencent.com/cos5/bucket)，选择“授权管理”，勾选存储桶后修改“用户权限”，增加子账号的权限，权限内容可以勾选数据读取和数据写入。
 
 ![image-20211103183428148](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/1c889d.png)
 
@@ -63,7 +67,7 @@ comments: true
 
 ## Picgo
 
-[PicGo](https://github.com/Molunerfinn/PicGo)是一个快速图片上传工具，其核心部分是[PicGo-Core](https://picgo.github.io/PicGo-Core-Doc/)。我们只需要使用PicGo-Core，再加上[插件能力](https://github.com/PicGo/Awesome-PicGo)就能满足需求了。
+[PicGo](https://github.com/Molunerfinn/PicGo)是一款开源跨平台的图片上传工具，能方便地上传至各种图床和云存储服务器上。可以使用带图片GUI的应用，也可以直接使用其核心部分基于命令行的[PicGo-Core](https://picgo.github.io/PicGo-Core-Doc/)。我推荐直接使用PicGo-Core，再加上[插件能力](https://github.com/PicGo/Awesome-PicGo)足够满足我们的需求了。
 
 ```bash
 # 如果没有npm的话需要先安装
@@ -75,9 +79,7 @@ picgo install autocopy
 picgo install rename-file
 ```
 
-接着就是对picgo进行配置了，包括图床配置和插件配置，可以参考[这里](https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html#%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90)执行`picgo set uploader`交互式的方式配置腾讯云cos相关信息，不过我更喜欢直接编辑配置文件。
-
-Windows下路径为： `%HOMEPATH%\.picgo\config.json`，Mac路径为`~/.picgo/config.json`。
+安装完picgo和插件之后需要进行相关配置，同样有两种方式，一种是[基于命令行的交互输入](https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html#%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90)，而另一种是推荐的直接修改配置文件。配置文件在Windows下路径为 `%HOMEPATH%\.picgo\config.json`，Mac下路径为`~/.picgo/config.json`。
 
 ```json
 {
@@ -106,19 +108,19 @@ Windows下路径为： `%HOMEPATH%\.picgo\config.json`，Mac路径为`~/.picgo/c
 }
 ```
 
-需要编辑的字段内容都已经注明了，重命名插件的具体参数可以参考[这里](https://github.com/liuwave/picgo-plugin-rename-file)。配置完成之后可以通过执行`picgo upload xxx.png`来验证图片上传及插件配置是否生效。这里xxx.png可以支持本地也可以支持网络的url，是不是很方便？
+根据上面的注释进行字段的编辑，重命名插件的具体参数可以参考[这里](https://github.com/liuwave/picgo-plugin-rename-file)。配置完成之后可以通过执行`picgo upload xxx.png`来验证图片上传及插件配置是否生效。这里xxx.png可以支持本地也可以支持网络的url。如果上传成功之后能看到完整的url，同时也会将url写入剪切板，可以直接在浏览器中进行访问验证。
 
 ![image-20211103191206334](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/80da56.png)
 
-<https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/80da56.png>，查看这个图片的url规则，符合我们前面rename-file插件的配置。
+比如这个地址<https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/80da56.png，>，可以查看其链接规则是符合rename-file插件的配置的。
 
 ## Typora
 
-打开偏好设置，勾选之后可以点击“验证图片上传选项”确认上传是否正常。
+打开偏好设置，按需要勾选之后点击“验证图片上传选项”确认上传是否正常。
 
 ![image-20211103191432287](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/30c0b7.png)
 
-这里要注意下mac系统的这个PicGo-Core选项并不可用，需要选择Custom Commeand，并手动输入命令，另外命令还需要输入完整才行。我配置的命令内容如下：
+这里要注意下mac系统的`PicGo-Core`选项并不可用，需要选择`Custom Commeand`，手动输入命令。另外命令还需要输入完整地址（我尝试了三遍才知道）。我配置的命令内容如下：
 
 ```bash
 /opt/homebrew/bin/node /opt/homebrew/bin/picgo upload
@@ -126,4 +128,4 @@ Windows下路径为： `%HOMEPATH%\.picgo\config.json`，Mac路径为`~/.picgo/c
 
 ![image-20211103191923824](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/5f16d7.png)
 
-好了，配置完成之后可以在文章中很方便的插入图片了。另外提一点，本地图片转化为网络图片是需要一些时间的，如果在中途不小心编辑到这段内容的话，会导致后续替换失败。不过好在我们是用了autocopy的插件，我们只要手动ctrl+v就可以了。
+好了，到这里就可以在文章中很方便的插入图片了。另外说功能说明下，本地图片转化为网络图片是需要一些时间的，在上传成功之后才会替换掉一个本地url。但是如果在中途不小心修改或者删除了相关内容，会导致后续替换url失败。好在我们是用了autocopy的插件，正确地址已经写入剪切板了，只要ctrl+v就可以了啦。
