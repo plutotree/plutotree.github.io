@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "使用腾讯云cos作为markdown图床"
+title: "markdown图床实践：Typora+PicGo-core+腾讯云cos"
 date: 2021-11-02 19:58:28
-categories: [picgo, markdown]
+categories: [picgo, markdown, 腾讯云, typora]
 typora-root-url: ..
 comments: true
 ---
@@ -126,4 +126,8 @@ https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/80da56.png，这个图�
 ```
 
 ![image-20211103191923824](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/5f16d7.png)
+
+好了，配置完成之后可以在文章中很方便的插入图片了。另外提一点，本地图片转化为网络图片是需要一些时间的，如果在中途不小心编辑到这段内容的话，会导致后续替换失败。不过好在我们是用了autocopy的插件，我们只要手动ctrl+v就可以了。
+
+
 
