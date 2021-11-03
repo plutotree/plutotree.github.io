@@ -19,3 +19,6 @@ comments: true
 
 有一点的问题在于`ClipWait`看着并不生效，没有后续的`Sleep`是会有概率粘贴失败的。所以这个方案也并不完美，只是勉强可用，需要的可以[点击下载](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/20dd72.ahk)。
 
+实现效果就是这样子（这里的序号手动加的）：
+
+![image-20211103195545338](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/f48336.png)

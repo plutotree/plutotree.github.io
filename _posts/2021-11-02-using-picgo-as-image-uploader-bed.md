@@ -7,8 +7,6 @@ typora-root-url: ..
 comments: true
 ---
 
-[TOC]
-
 在markdown文件中一直没有采用图床，而是直接放在一起维护，之前主要有几个考虑点：
 
 1. markdown、图片以及其他资源是一个整体，可以理解成一个项目；
@@ -30,8 +28,9 @@ comments: true
 ### 对象存储
 
 1. 在[对象存储控制台](https://console.cloud.tencent.com/cos5/bucket)创建一个存储桶，选择所属地域，填写桶名称，访问权限选择“公有读私有写”
-	![image-20211103181029412](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/5a3994.png)
-	
+
+   ![image-20211103181029412](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/5a3994.png)
+
 2. 点击桶名称进入管理页面，在左侧“域名与传输管理”中打开默认CDN加速域名，这里需要理解下CDN和源站的概念
 
    ![image-20211103181539258](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/4320b5.png)
@@ -111,7 +110,7 @@ Windows下路径为： `%HOMEPATH%\.picgo\config.json`，Mac路径为`~/.picgo/c
 
 ![image-20211103191206334](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/80da56.png)
 
-https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/80da56.png，这个图片地址符合我们插件的配置。
+<https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/80da56.png>，查看这个图片的url规则，符合我们前面rename-file插件的配置。
 
 ## Typora
 
@@ -128,6 +127,3 @@ https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/80da56.png，这个图�
 ![image-20211103191923824](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/5f16d7.png)
 
 好了，配置完成之后可以在文章中很方便的插入图片了。另外提一点，本地图片转化为网络图片是需要一些时间的，如果在中途不小心编辑到这段内容的话，会导致后续替换失败。不过好在我们是用了autocopy的插件，我们只要手动ctrl+v就可以了。
-
-
-
