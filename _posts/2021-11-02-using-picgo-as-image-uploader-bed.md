@@ -130,4 +130,61 @@ picgo install rename-file
 
 好了，到这里就可以在文章中很方便的插入图片了。使用过程中，可以发现本地图片转化为网络图片是需要一些时间，在上传成功之后才会替换掉本地url。如果在中途不小心修改或者删除了相关内容，会导致后续替换url失败。好在我们是用了autocopy的插件，正确地址已经写入剪切板了，只要ctrl+v就可以了啦。
 
-## 将历史i
+## 将历史文章中的本地图片批量上传
+
+不想旧文章使用本地图片，而新文章才使用网络图片，这些批量化的工作当然得交给程序。用node或许是比较理想的方式，可以直接以API形式调用picgo。但这是在我用python写到最后才想起的点。不多说，直接给代码，直接保存运行就好了：
+
+```python
+import os
+import re
+import pyperclip
+
+def Upload(img):
+    # 使用picgo上传，需要安装插件autocopy
+    pyperclip.copy("")
+    ret = os.system('picgo upload ./{}'.format(img))
+    if ret != 0:
+        print('图片[{}]上传失败'.format(img))
+        return img
+    new_img = pyperclip.paste().rstrip('\n')
+    if not new_img:
+        print('图片[{}]似乎上传失败'.format(img))
+        return img
+    print('图片[{}]上传成功 ->[{}]'.format(img, new_img))
+    return new_img
+
+def Process(root, file):
+    content = ''
+    print('process file:{}/{}'.format(root, file))
+    inf = open('{}/{}'.format(root, file), 'r')
+    for line in inf.readlines():
+        result = re.finditer('!\[([^]]*)\]\(([^)]*)\)', line)
+        update = False
+        new_line = ''
+        last_pos = 0
+        for r in result:
+            img = r.group(2)
+            if not (img.startswith('http://') or img.startswith('https://')):
+                update = True
+                new_line += line[last_pos : r.start(2)]
+                last_pos = r.end(2)
+                new_line += Upload(img)
+        new_line += line[last_pos:]
+        if update:
+            content += new_line
+        else:
+            content += line
+    inf.close()
+
+    outf = open('{}/{}'.format(root, file), 'w')
+    outf.write(content)
+    outf.close()
+
+if __name__ == '__main__':
+    for root, dirs, files in os.walk('./_posts/'):
+        for file in files:
+            if file.endswith(".md") or file.endswith(".markdown"):
+                Process(root, file)
+
+```
+
