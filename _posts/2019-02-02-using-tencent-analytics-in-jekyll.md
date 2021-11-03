@@ -46,7 +46,7 @@ JEKYLL_ENV=production bundle exec jekyll serve
 
 腾讯分析将于2020年12月31日下线，这里引导的腾讯移动分析也将在2021年3月份下线，所以只能放弃腾讯分析了。
 
-![image-20201203214147198](/raw/2019-02-02-using-tencent-analytics-in-jekyll/image-20201203214147198.png)
+![image-20201203214147198](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/49ed9a.png)
 
 只能切到[百度统计](https://tongji.baidu.com/sc-web)了，百度统计的js看着有点复杂，先直接拷贝吧。
 

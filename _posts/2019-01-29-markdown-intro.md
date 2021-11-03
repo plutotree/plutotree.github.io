@@ -239,7 +239,7 @@ $$
 罗密欧->>朱丽叶: 我也想你了
 ```
 
-![image-20201204112218341](raw/2019-01-29-markdown-intro/image-20201204112218341.png)
+![image-20201204112218341](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/bcb72a.png)
 
 gfm不支持时序图，Typora支持。
 
@@ -259,7 +259,7 @@ cond(yes)->op1->op2->e
 cond(no)->e
 ```
 
-![image-20201204112431026](/raw/2019-01-29-markdown-intro/image-20201204112431026.png)
+![image-20201204112431026](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/850c41.png)
 
 gfm不支持流程图，Typora支持。
 
@@ -276,7 +276,7 @@ sequenceDiagram
 罗密欧->>朱丽叶: 我也想你了
 ```
 
-![image-20201204112846477](/raw/2019-01-29-markdown-intro/image-20201204112846477.png)
+![image-20201204112846477](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/cc62aa.png)
 
 ### 脚标和上下标
 
