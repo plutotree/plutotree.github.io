@@ -1,26 +1,17 @@
-\---
-
+---
 layout: post
-
 title: "Windows下R mardown入门实战"
-
 date: 2022-02-20 19:30:00
-
 categories: [rmarkdown]
-
 typora-root-url: ..
-
 comments: true
+---
 
-\---
+## R 基础实战
 
+- 安装比较简单，从[官网](https://cran.r-project.org/)下载后执行，可以只选择 x64；
 
-
-## R基础实战
-
-- 安装比较简单，从[官网](https://cran.r-project.org/)下载后执行，可以只选择x64；
-
-- 使用`R Gui`执行R命令：
+- 使用`R Gui`执行 R 命令：
 
   - 运行`R Gui`
 
@@ -28,7 +19,7 @@ comments: true
 
     ```R
     print('hello world!')
-    
+
     sqrt(2)
     [1] 1.414214
     > plot(1:10,sqrt(1:10))
@@ -58,22 +49,21 @@ comments: true
 
   - 执行`rscript.exe "demo.r"`
 
-## R markdown实战
+## R markdown 实战
 
-### 安装Rmarkdown
+### 安装 Rmarkdown
 
 启动`R gui`，然后执行语句`install.packages("rmarkdown")`，执行之后会让选择下载节点；
 
-### 编写Rmarkdown文件
+### 编写 Rmarkdown 文件
 
-使用任意编辑器创建文件`demo.rmd`，里面内容如下，其实就是markdown文件内嵌了r语句，这也是R markdown的由来
+使用任意编辑器创建文件`demo.rmd`，里面内容如下，其实就是 markdown 文件内嵌了 r 语句，这也是 R markdown 的由来
 
 ````markdown
 ---
 title: "Rmarkdown demo"
 output: html_document
 ---
-
 
 ## 绘图示例
 
@@ -88,6 +78,7 @@ curve(sin(x), 0, 2*pi)
 ```{r}
 barplot(c("男生"=48,"女生"=38), main="男女生人数")
 ```
+
 ### 散点图
 
 ```{r}
@@ -104,13 +95,13 @@ summary(data[['营业额']])
 ```
 ````
 
-### 编译Rmarkdown 文件
+### 编译 Rmarkdown 文件
 
-在命令行下执行语句：`Rscript.exe -e "library('rmarkdown');render('demo.rmd')"`，可以看到有一段编译过程，中间生成了demo.knit.md，最后生成了demo.html
+在命令行下执行语句：`Rscript.exe -e "library('rmarkdown');render('demo.rmd')"`，可以看到有一段编译过程，中间生成了 demo.knit.md，最后生成了 demo.html
 
 ![image-20220222210347215](https://pic-1251468582.picsh.myqcloud.com/pic/2022/02/22/7d0352.png)
 
-### 查看html文件
+### 查看 html 文件
 
 查看生成的`demo.html`，效果如下：
 
@@ -118,6 +109,6 @@ summary(data[['营业额']])
 
 ## 推荐教程
 
-- [R语言教程 by 李东风](https://www.math.pku.edu.cn/teachers/lidf/docs/Rbook/html/_Rbook/index.html)
-- [庄闪闪的R语言手册](https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI1NjUwMjQxMQ==&action=getalbum&album_id=1684900703049138178&scene=173&from_msgid=2247491318&from_itemidx=1&count=3&nolastread=1#wechat_redirect)
+- [R 语言教程 by 李东风](https://www.math.pku.edu.cn/teachers/lidf/docs/Rbook/html/_Rbook/index.html)
+- [庄闪闪的 R 语言手册](https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI1NjUwMjQxMQ==&action=getalbum&album_id=1684900703049138178&scene=173&from_msgid=2247491318&from_itemidx=1&count=3&nolastread=1#wechat_redirect)
 - [bookdown: Authoring Books and Technical Documents with R Markdown](https://bookdown.org/yihui/bookdown/about-the-author.html)
