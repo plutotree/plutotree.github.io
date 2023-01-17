@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "从pushbullet切换到pushover作为消息通知工具"
-date: 2023-01-17 20:30:00
+date: 2023-01-17 16:30:00
 categories: [pushover]
 typora-root-url: ..
 comments: true
