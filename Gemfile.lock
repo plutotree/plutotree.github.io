@@ -64,15 +64,16 @@ GEM
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
-    tzinfo (2.0.4)
+    tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
-    tzinfo-data (1.2021.5)
+    tzinfo-data (1.2022.7)
       tzinfo (>= 1.0.0)
-    wdm (0.1.1)
 
 PLATFORMS
   arm64-darwin-20
   x64-mingw32
+  x86_64-darwin-20
+  x86_64-darwin-21
 
 DEPENDENCIES
   jekyll (~> 3.9.0)
@@ -81,7 +82,6 @@ DEPENDENCIES
   kramdown-parser-gfm (~> 1.1.0)
   minima (~> 2.5.1)
   tzinfo-data
-  wdm (~> 0.1.1)
 
 BUNDLED WITH
    2.2.31
