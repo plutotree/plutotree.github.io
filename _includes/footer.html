@@ -14,10 +14,11 @@
             {%- else -%}
               {{ site.title | escape }}
             {%- endif -%}
-            </li>
-            {%- if site.email -%}
-            <li><a class="u-email" href="mailto:{{ site.email }}">{{ site.email }}</a></li>
-            {%- endif -%}
+          </li>
+          
+          {%- if site.email -%}
+          <li><a class="u-email" href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+          {%- endif -%}
         </ul>
       </div>
 
@@ -30,12 +31,18 @@
       </div>
     </div>
 
+    {%- if site.icp_footer == 1 -%}
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <a href="https://beian.miit.gov.cn/">粤ICP备19153799号-1</a>
+      </div>
+    </div>
+    {%- endif -%}
   </div>
 
 </footer>
 
-{%- if jekyll.environment == 'production' and site.tencent_analytics == 1 -%}
-
+{%- if jekyll.environment == 'production' and site.baidu_analytics == 1 -%}
   <script>
   var _hmt = _hmt || [];
   (function() {
@@ -46,3 +53,4 @@
   })();
   </script>
 {%- endif -%}
+

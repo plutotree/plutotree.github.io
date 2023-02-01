@@ -13,6 +13,7 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
+
 title: Pluto Tree's Blog
 email: plutotreetree@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
@@ -22,7 +23,10 @@ url: "http://plutotree.me" # the base hostname & protocol for your site, e.g. ht
 twitter_username: 
 github_username:  plutotree
 
-tencent_analytics: 1
+# 是否添加百度统计
+baidu_analytics: 1
+# 底部是否展示ICP备案信息
+icp_footer: 0
 
 # Build settings
 markdown: kramdown
