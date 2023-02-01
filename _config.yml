@@ -30,10 +30,14 @@ baidu_analytics: 1
 icp_footer: 0
 
 # Build settings
+permalink: /:year-:month-:day/:title.html 
 markdown: kramdown
 theme: minima
 plugins:
   - jekyll-feed
+
+exclude:
+  - deploy_cn.sh
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list

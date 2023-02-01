@@ -30,6 +30,7 @@ baidu_analytics: 1
 icp_footer: 1
 
 # Build settings
+permalink: /:year-:month-:day/:title.html 
 markdown: kramdown
 theme: minima
 plugins:
