@@ -14,7 +14,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Pluto Tree's Blog
+title: 我的文章分享
 author: plutotree
 email: plutotreetree@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
@@ -27,7 +27,7 @@ github_username:  plutotree
 # 是否添加百度统计
 baidu_analytics: 1
 # 底部是否展示ICP备案信息
-icp_footer: 0
+icp_footer: 1
 
 # Build settings
 markdown: kramdown
