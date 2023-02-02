@@ -14,7 +14,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Pluto Tree's Blog
+title: 我的文章分享
 author: plutotree
 email: plutotreetree@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
@@ -27,7 +27,7 @@ github_username:  plutotree
 # 是否添加百度统计
 baidu_analytics: 1
 # 底部是否展示ICP备案信息
-icp_footer: 0
+icp_footer: 1
 
 # Build settings
 permalink: /:year-:month-:day/:title.html 
@@ -37,7 +37,8 @@ plugins:
   - jekyll-feed
 
 exclude:
-  - deploy_cn.sh
+  - publish_cn.sh
+  - Gemfile.lock
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
@@ -46,7 +47,3 @@ exclude:
 #   - Gemfile
 #   - Gemfile.lock
 #   - node_modules
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
