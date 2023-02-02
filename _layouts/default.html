@@ -13,6 +13,13 @@
   </main>
 
   {% if site.data.social.valine_comment.enable and page.comments == true %}
+  <span id="{{ page.url }}" class="leancloud_visitors" data-flag-title="{{ site.title }}">
+    <em class="post-meta-item-text">阅读量</em>
+    <i class="leancloud-visitors-count">-</i>
+  </span>
+  {% endif %}
+
+  {% if site.data.social.valine_comment.enable and page.comments == true %}
   <div id="comments"></div>
   {% endif %}
   {% include scripts.html %}
