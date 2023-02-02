@@ -12,7 +12,7 @@
     </div>
   </main>
 
-  {% if site.data.social.valine_comment.enable and page.comments == true %}
+  {% if site.data.social.valine_comment.enable %}
   <span id="{{ page.url }}" class="leancloud_visitors" data-flag-title="{{ site.title }}">
     <em class="post-meta-item-text">阅读量</em>
     <i class="leancloud-visitors-count">-</i>
@@ -23,7 +23,6 @@
   <div id="comments"></div>
   {% endif %}
   {% include scripts.html %}
- 
   {%- include footer.html -%}
 
 </body>
