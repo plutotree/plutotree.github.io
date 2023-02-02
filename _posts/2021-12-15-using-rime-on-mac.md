@@ -2,7 +2,7 @@
 layout: post
 title: "在mac上使用RIME"
 date: 2021-12-15 17:50:00
-categories: [autohotkey, evernote, multi-level title]
+categories: [RIME]
 typora-root-url: ..
 comments: true
 ---
