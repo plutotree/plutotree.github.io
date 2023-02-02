@@ -7,7 +7,7 @@ typora-root-url: ..
 comments: true
 ---
 
-> 最近发现无法展示评论，找不到 AV 相关的定义，因此移除了`av-min.js`，以及`AV`的字段，现在也不知道为啥要引入的。
+> 最近发现无法展示评论，提示找不到 AV 相关的定义，移除了`av-min.js`，以及`AV`的字段定义，似乎是新版本改了实现，会在内部引用`av-min.js`。
 
 博客怎么能少了评论系统，但是一直没有找到满意的，各种国内被禁的，缺乏更新维护的，做得太复杂的等等之类的。今天看到一个感觉还不错的评论系统[Valine](https://valine.js.org/)，一款快速、简洁且高效的无后端评论系统，存储基于 leancloud。作者的[博客](https://github.com/staticblog/staticblog.github.io)提供了一个 jekyll 的示例，直接引入。
 
