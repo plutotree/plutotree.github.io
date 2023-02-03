@@ -37,5 +37,3 @@ plugins:
   - jekyll-feed
 
 exclude:
-  - publish_cn.sh
-  - Gemfile.lock
