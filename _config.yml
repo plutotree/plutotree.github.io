@@ -14,23 +14,23 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: 我的文章分享
+title: PlutoTree's Blog
 author: plutotree
 email: plutotreetree@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   I am thinking about what to write...
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://plutotree.me" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://plutotree.me" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: 
 github_username:  plutotree
 
 # 是否添加百度统计
 baidu_analytics: 1
 # 底部是否展示ICP备案信息
-icp_footer: 1
+icp_footer: 0
 
 # Build settings
-permalink: /:year-:month-:day/:title.html 
+permalink: /:year-:month-:day/:title.html
 markdown: kramdown
 theme: minima
 plugins:
