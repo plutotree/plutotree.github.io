@@ -11,13 +11,7 @@
       {{ content }}
     </div>
   </main>
-
-  {% if site.data.social.valine_comment.enable and page.comments == true %}
-  <div id="comments"></div>
-  {% endif %}
-  {% include scripts.html %}
+  
   {%- include footer.html -%}
-
 </body>
-
 </html>
