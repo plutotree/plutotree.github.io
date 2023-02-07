@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "latex中文书籍模板"
-date: 2021-11-22 12:30:00
+date: 2021-11-22 12:30:00 +0800
 categories: [latex, ctex, ctexbook]
 typora-root-url: ..
 comments: true
