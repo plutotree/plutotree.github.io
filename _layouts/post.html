@@ -7,23 +7,41 @@ layout: default
     <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
     <p class="post-meta">
       <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
-        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        {%- assign date_format = site.minima.date_format | default: "%Y-%m-%d" -%}
         {{ page.date | date: date_format }}
       </time>
+
       {%- if page.author -%}
-        • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ page.author }}</span></span>
-      {%- endif -%}</p>
+        <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <span class="p-author h-card" itemprop="name">{{ page.author }}</span>
+        </span>
+      {%- endif -%}
+   
+      {% if site.data.social.valine_comment.enable and page.comments == true %}
+      <span style="margin-left:50px;">
+      <span id="{{ page.url }}" class="leancloud_visitors" data-flag-title="{{ site.title }}">
+        <em class="post-meta-item-text">阅读量:</em>
+        <i class="leancloud-visitors-count">-</i>
+      </span>
+      </span>
+      {% endif %}
+
+      {% if page.tags %}
+      <span style="margin-left:50px;">
+          <em>标签:</em>
+          {% for tag in page.tags %} 
+            <em style="text-decoration: underline;">{{ tag }}</em>
+            {% unless forloop.last %}&nbsp;{% endunless %}
+          {% endfor %}
+      </span>
+      {% endif %}
+    </p>
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
     {% include toc.html html=content %}
     {{ content }}
-    
   </div>
-
-  {%- if site.disqus.shortname -%}
-    {%- include disqus_comments.html -%}
-  {%- endif -%}
 
   <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
 </article>
