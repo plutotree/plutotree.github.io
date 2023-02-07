@@ -9,6 +9,8 @@ comments: true
 
 对于输入法来说，皮肤可以说是非常重要，我们设置一款感觉舒适的，对于打字体验来说能提升不少。毕竟大家不是设计师，我们可以自己盗取成熟的输入法的皮肤效果就好了。这里我们参考的是微软拼音输入法，毕竟作为 windows 系统自带的，微软的设计师水准还是值得信赖的。
 
+## 效果对比
+
 先看下效果，这个是 Windows 系统自带的微软拼音输入法
 
 ![image-20230207152007275](https://pic-1251468582.picsh.myqcloud.com/pic/2023/02/07/210a5e.png)
@@ -17,7 +19,7 @@ comments: true
 
 ![image-20230207160021058](https://pic-1251468582.picsh.myqcloud.com/pic/2023/02/07/5d9de1.png)
 
-### 皮肤颜色设置
+## 皮肤颜色设置
 
 [官网](https://github.com/rime/home/wiki/CustomizationGuide#%E4%B8%80%E4%BE%8B%E5%AE%9A%E8%A3%BD%E5%B0%8F%E7%8B%BC%E6%AF%AB%E9%85%8D%E8%89%B2%E6%96%B9%E6%A1%88)给了比较清晰的颜色样式配置说明，另外也提供了一个方便的[在线工具](https://bennyyip.github.io/Rime-See-Me/)用来生成配置。我们用取色工具获取微软拼音输入法的相关颜色填充即可（可以用系统自带的画图工具）。
 
