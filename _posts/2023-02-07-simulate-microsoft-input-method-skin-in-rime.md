@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "小狼毫100%模仿微软输入法的皮肤"
-date: 2023-02-07 17:30:00
+date: 2023-02-07 17:30:00 +0800
 categories: [RIME]
 typora-root-url: ..
 comments: true
