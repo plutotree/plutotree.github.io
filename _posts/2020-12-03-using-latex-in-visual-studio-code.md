@@ -1,16 +1,16 @@
 ---
 layout: post
-title:  "在Visual Studio Code中使用LaTeX"
-date:   2020-12-03 18:30:00 +0800
-categories: [latex, vscode, tex]
+title: "在Visual Studio Code中使用LaTeX"
+date: 2020-12-03 18:30:00 +0800
+tags: [latex, vscode, tex]
 typora-root-url: ..
 typora-copy-images-to: ..\raw\2020-12-03-using-latex-in-visual-studio-code
 comments: true
 ---
 
-## 关于LaTex
+## 关于 LaTex
 
-[`LaTeX`](https://zh.wikipedia.org/wiki/LaTeX)是一种基于TeX的排版系统，而TeX是[高德纳](https://zh.wikipedia.org/wiki/%E9%AB%98%E5%BE%B7%E7%BA%B3)在发表《计算机程序艺术》的时候，因为当时的排版软件无法达到他的要求，自己编写的（牛人就是这么牛）。`LaTeX`非常适用于生成高质量的科技文章，在学术界用的较多，期刊杂志都会提供`LaTex`的模板，对于工科研究生来说算是必备的技能了。`LaTeX`作为一种标记语言，遵循的一个基本理念就是呈现和内容分离，和现在的markdown有点类似。
+[`LaTeX`](https://zh.wikipedia.org/wiki/LaTeX)是一种基于 TeX 的排版系统，而 TeX 是[高德纳](https://zh.wikipedia.org/wiki/%E9%AB%98%E5%BE%B7%E7%BA%B3)在发表《计算机程序艺术》的时候，因为当时的排版软件无法达到他的要求，自己编写的（牛人就是这么牛）。`LaTeX`非常适用于生成高质量的科技文章，在学术界用的较多，期刊杂志都会提供`LaTex`的模板，对于工科研究生来说算是必备的技能了。`LaTeX`作为一种标记语言，遵循的一个基本理念就是呈现和内容分离，和现在的 markdown 有点类似。
 
 下面看看一个示例效果吧
 
@@ -51,9 +51,9 @@ comments: true
 
 对`LaTeX`感兴趣的话，可以参考相关资料，这里还是先回归正题，有空的话我也会写写`LaTeX`的使用文章。
 
-## 安装TexLive
+## 安装 TexLive
 
-目前最新的是`TexLive 2020`，可以在[官网](https://www.tug.org/texlive/)下载在线安装包，不过更建议直接下载完整的ios安装包。可以直接点击[链接](http://mirror.ctan.org/systems/texlive/Images/texlive2020.iso)下载，这个地址会自动选择合适的镜像地址。如果发现下载速度很慢，也可以在下述地址中手动选择，或者使用迅雷之类的工具进行下载：
+目前最新的是`TexLive 2020`，可以在[官网](https://www.tug.org/texlive/)下载在线安装包，不过更建议直接下载完整的 ios 安装包。可以直接点击[链接](http://mirror.ctan.org/systems/texlive/Images/texlive2020.iso)下载，这个地址会自动选择合适的镜像地址。如果发现下载速度很慢，也可以在下述地址中手动选择，或者使用迅雷之类的工具进行下载：
 
 - 清华大学（北京）：<https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso>
 - 北京交通大学（北京）：<https://mirror.bjtu.edu.cn/ctan/systems/texlive/Images/texlive2020.iso>
@@ -62,7 +62,7 @@ comments: true
 - 重庆大学（重庆）：<https://mirrors.cqu.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso>
 - 腾讯云：<https://mirrors.cloud.tencent.com/CTAN/systems/texlive/Images/texlive2020.iso>
 
-下载完之后可以直接用资源管理器打开可以直接加载（Windows10支持，使用虚拟光驱），或者也可以使用压缩工具打开后直接解压缩。不管使用哪种方式，iso文件或者解压后的文件需要保留，以方便后续安装宏包。
+下载完之后可以直接用资源管理器打开可以直接加载（Windows10 支持，使用虚拟光驱），或者也可以使用压缩工具打开后直接解压缩。不管使用哪种方式，iso 文件或者解压后的文件需要保留，以方便后续安装宏包。
 
 双击运行`install-tl-windows.bat`
 
@@ -80,7 +80,7 @@ comments: true
 
 ![image-20201203200900391](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/b61eb4.png)
 
-## 配置Visual Studio Code
+## 配置 Visual Studio Code
 
 `Visual Studio Code`的安装就不介绍了，直接安装插件`LaTeX Workshop`和`LaTeX Utilities`
 
@@ -128,7 +128,7 @@ comments: true
 
 ## 使用说明
 
-打开一个文件夹，新建一个tex文件，把前面那段代码拷贝进去，点击右上方的箭头进行编译，或者使用快捷键`Ctrl+Alt+B`，成功之后可以点击左边的`View Latex PDF`，默认会启动浏览器进行查看。
+打开一个文件夹，新建一个 tex 文件，把前面那段代码拷贝进去，点击右上方的箭头进行编译，或者使用快捷键`Ctrl+Alt+B`，成功之后可以点击左边的`View Latex PDF`，默认会启动浏览器进行查看。
 
 ![image-20201203202813198](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/68579a.png)
 
@@ -139,5 +139,5 @@ comments: true
 ## 参考资料
 
 1. [TeX Live 下载及安装说明](https://liam.page/texlive/)
-2. [使用VSCode编写LaTeX](https://zhuanlan.zhihu.com/p/38178015)
-3. [2020搭建Latex环境](https://zhuanlan.zhihu.com/p/58811994)
+2. [使用 VSCode 编写 LaTeX](https://zhuanlan.zhihu.com/p/38178015)
+3. [2020 搭建 Latex 环境](https://zhuanlan.zhihu.com/p/58811994)

@@ -2,7 +2,7 @@
 layout: post
 title: "Windows下R mardown入门实战"
 date: 2022-02-20 19:30:00 +0800
-categories: [rmarkdown]
+tags: [rmarkdown]
 typora-root-url: ..
 comments: true
 ---

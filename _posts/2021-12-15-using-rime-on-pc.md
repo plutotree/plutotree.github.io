@@ -2,7 +2,7 @@
 layout: post
 title: "在PC上使用RIME"
 date: 2021-12-15 17:50:00 +0800
-categories: [RIME]
+tags: [rime]
 typora-root-url: ..
 comments: true
 ---

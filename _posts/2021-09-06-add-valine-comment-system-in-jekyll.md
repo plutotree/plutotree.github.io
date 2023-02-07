@@ -2,7 +2,7 @@
 layout: post
 title: "在jekyll中使用valine评论系统"
 date: 2021-09-06 17:30:00 +0800
-categories: [jekyll, 评论系统, valine]
+tags: [jekyll, valine]
 typora-root-url: ..
 comments: true
 ---

@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "在jekyll中使用腾讯统计或百度统计"
+title: "在jekyll中使用百度统计"
 date: 2019-02-01 15:30:00 +0800
-categories: jekyll
+tags: [jekyll]
 typora-root-url: ..
 typora-copy-images-to: ..\raw\2019-02-02-using-tencent-analytics-in-jekyll
 comments: true

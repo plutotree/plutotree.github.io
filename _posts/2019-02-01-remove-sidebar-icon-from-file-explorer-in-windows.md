@@ -1,19 +1,19 @@
 ---
 layout: post
-title:  "从windows资源管理器中移除左侧边栏图标"
-date:   2019-02-01 15:30:00 +0800
-categories: windows
+title: "从windows资源管理器中移除左侧边栏图标"
+date: 2019-02-01 15:30:00 +0800
+tags: [windows]
 typora-root-url: ..
 comments: true
 ---
 
-windows10资源管理器，左侧有较多无用的图标，尤其对于洁癖者来说更想把这些图标都清理干净。
+windows10 资源管理器，左侧有较多无用的图标，尤其对于洁癖者来说更想把这些图标都清理干净。
 
 ![1549007376153](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/0b0d31.png)
 
-下面先介绍如何移除上面3个图标：`OneDrive`、`Dropbox`和`Creative Cloud Files`，然后再介绍移除“此电脑”里面的图标。
+下面先介绍如何移除上面 3 个图标：`OneDrive`、`Dropbox`和`Creative Cloud Files`，然后再介绍移除“此电脑”里面的图标。
 
-## 移除OneDrive图标
+## 移除 OneDrive 图标
 
 1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
 
@@ -23,13 +23,13 @@ windows10资源管理器，左侧有较多无用的图标，尤其对于洁癖�
    HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
    ```
 
-3. 将右侧的`System.IsPinnedToNameSpaceTree`值设置为0
+3. 将右侧的`System.IsPinnedToNameSpaceTree`值设置为 0
 
    ![1549008970481](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/a30ad4.png)
 
-4. 打开新的资源管理器看看，OneDrive图标是不是消失了；
+4. 打开新的资源管理器看看，OneDrive 图标是不是消失了；
 
-如果使用的是64位版本的windows，在运行32位程序的时候，还是能在`保存`对话框里看到OneDrive。
+如果使用的是 64 位版本的 windows，在运行 32 位程序的时候，还是能在`保存`对话框里看到 OneDrive。
 
 ![1549009483968](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/83d49e.png)
 
@@ -39,11 +39,11 @@ windows10资源管理器，左侧有较多无用的图标，尤其对于洁癖�
 HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 ```
 
-修改右侧的`System.IsPinnedToNameSpaceTree`值为0。重新打开`保存`对话框，可以发现已经没有OneDrive图标了。
+修改右侧的`System.IsPinnedToNameSpaceTree`值为 0。重新打开`保存`对话框，可以发现已经没有 OneDrive 图标了。
 
-如果需要还原的话，将前面操作中的值设置回1即可。
+如果需要还原的话，将前面操作中的值设置回 1 即可。
 
-## 移除Dropbox图标
+## 移除 Dropbox 图标
 
 1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
 
@@ -64,7 +64,7 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 5. 将右侧的`Attributes`值从`f080004d`改为`f090004d`
 6. 该操作需要[重启`explorer`进程](https://www.winhelponline.com/blog/exit-explorer-restart-windows-10-8/)或者注销后重新登录才能生效，也可以选择重启系统。
 
-## 移除Creative Cloud Files图标
+## 移除 Creative Cloud Files 图标
 
 1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
 
@@ -76,7 +76,7 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 
 4. 该操作需要[重启`explorer`进程](https://www.winhelponline.com/blog/exit-explorer-restart-windows-10-8/)或者注销后重新登录才能生效，也可以选择重启系统。
 
-经过上述3个操作之后，左侧的边栏变得清晰了很多，如果有其他程序图标，也可以参考类似的方法移除
+经过上述 3 个操作之后，左侧的边栏变得清晰了很多，如果有其他程序图标，也可以参考类似的方法移除
 
 ![1549012686611](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/9f3e82.png)
 
@@ -98,7 +98,7 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 
 5. 打开新的资源管理器窗口查看是否生效；
 
-## 移除此电脑里面的3D对象
+## 移除此电脑里面的 3D 对象
 
 1. 按`Win+R`，输入`regedit`，打开注册表编辑器；
 
@@ -110,7 +110,7 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 
 3. 右键选择该项删除
 
-4. 进入下述地址（如果是32位的windows系统则不需要该操作）
+4. 进入下述地址（如果是 32 位的 windows 系统则不需要该操作）
 
    ```bash
    HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}

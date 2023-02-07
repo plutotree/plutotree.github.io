@@ -2,8 +2,8 @@
 layout: post
 title: "记录一个curl访问的https证书问题"
 date: 2023-02-01 12:30:00 +0800
-categories: [https证书]
 typora-root-url: ..
+tags: [ssl证书]
 comments: true
 ---
 

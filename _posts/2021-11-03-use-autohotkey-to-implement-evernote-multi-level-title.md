@@ -2,7 +2,7 @@
 layout: post
 title: "使用autohotkey实现evernote的多级标题"
 date: 2021-11-03 11:32:25 +0800
-categories: [autohotkey, evernote, multi-level title]
+tags: [autohotkey, evernote]
 typora-root-url: ..
 comments: true
 ---
