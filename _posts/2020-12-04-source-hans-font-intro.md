@@ -4,7 +4,6 @@ title: "思源字体介绍"
 date: 2020-12-04 18:30:00 +0800
 tags: [思源宋体, 思源黑体, 字体]
 typora-root-url: ..
-typora-copy-images-to: ..\raw\2020-12-04-source-hans-font-intro
 comments: true
 ---
 
