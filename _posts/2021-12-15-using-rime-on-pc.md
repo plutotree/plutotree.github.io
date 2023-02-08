@@ -13,7 +13,7 @@ comments: true
 
 ## 选择一款开源的输入法
 
-[RIME](https://rime.im/)算是最好、最强大的开源输入法，甚至没有之一。它在一个统一的后端服务基础上，利用不同的前端来支持 Windows、MacOS、Android、Linux，实现跨操作系统和跨设备。在 Windows 下叫“小狼毫”，在 Mac 下是“鼠须管”，此外还有 Linux 和 android 版本。这里只介绍 windows 和 mac 上的安装和使用方式，而 iOS 上输入法如果不打开联网权限安全和隐私保护是可靠的。
+[RIME](https://rime.im/)算是最好、最强大的开源输入法，甚至没有之一。它在一个统一的后端服务基础上，利用不同的前端来支持 Windows、MacOS、Android、Linux，实现跨操作系统和跨设备。在 Windows 下叫“小狼毫”(Weasel)，在 Mac 下是“鼠须管”(Squirrel)，在 Linux 下叫“中州韵”(ibus)。此外还有 Linux 版本。这里只介绍 windows 和 mac 上的安装和使用方式，而 iOS 上输入法如果不打开联网权限安全和隐私保护是可靠的。
 
 ## 安装及基础使用
 
