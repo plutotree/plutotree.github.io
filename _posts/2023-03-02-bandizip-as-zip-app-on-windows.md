@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "Windows下使用Bandzip替换7zip"
+title: "Windows下使用Bandizip替换7zip"
 date: 2023-03-02 12:20:00 +0800
-tags: [工具软件]
+tags: [软件推荐]
 typora-root-url: ..
 comments: true
 ---
