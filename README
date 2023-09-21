@@ -1,7 +1,15 @@
 # plutotree.github.io
 
+## 访问说明
+
+国外使用域名<https://plutotree.me>，或者使用github自带的域名<https://plutotree.github.io>，国内使用域名<https://plutotree.cn>，部署在自己的服务器上。
+两者会有部分差异，比如国内站点会增加备案信息等。
+
+
+
 个人博客网站 使用jekyll
 
 2019年全新启用，希望能坚持写下去
 
 - 2023-09-21: 过去了4年，没有坚持下去，内容少的可怜啊
+
