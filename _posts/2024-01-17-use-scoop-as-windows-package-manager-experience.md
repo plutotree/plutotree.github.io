@@ -94,9 +94,7 @@ comments: true
 - 删除软件的旧版本：`scoop cleanup xx` （*表示所有软件）
 - 删除软件的旧版本同时清理缓存：`scoop cleanup -k xx`（*表示所有软件）
 
-
-
-### 哪些软件不适合scoop
+### 哪些软件不适合
 
 绿色软件是更适合的，而和系统关联性太强的软件是不适合的，尤其是需要管理员权限进行安装的。尽管scoop也支持使用管理权限进行安装，但是同样更新和卸载也许要管理权限，我觉得就没必要了而且维护起来会比较麻烦。
 
@@ -110,7 +108,7 @@ comments: true
 6. 专业软件，或者内部使用的软件；
 7. 部分还没来得及迁移的软件，比如TortoseSVN、QQ、微云等；
 
-### 如何查找软件
+### 查找软件
 
 可以使用命令`scoop search`进行搜索，不过建议是在[官网](https://scoop.sh)进行搜索，需要注意的是选项`Official bucket only`选项是否开启，一般情况下是建议安装官方包，以及可信赖的第三方。而我个人而言，第三方目前会控制在自己的bucket范围。
 
@@ -120,7 +118,7 @@ comments: true
 
 ![image-20240117200008573](https://pic-1251468582.picsh.myqcloud.com/pic/2024/01/17/6b538b.png)
 
-## 如何维护自己的bucket
+## 维护自己的bucket
 
 1. 创建一个自己的bucket
    - 在GitHub上直接通过[Bucket模板](https://github.com/ScoopInstaller/BucketTemplate)新建一个仓库；
@@ -131,11 +129,11 @@ comments: true
 3. 增加自己的bucket：`scoop bucket add BUCKET_NAME YOUR_BUCKET_GIT_ADDRESS`
 4. 安装自己的软件：`scoop install BUCKET_NAME/APP_NAME`
 
-## 如何写应用描述信息
+## 写应用描述信息
 
 这块算是scoop中最复杂的内容了，官方文档提供了基础的介绍，更有用的话应该需要多参考已有的描述。我们来看几个例子
 
-## Cos-Browser
+### Cos-Browser
 
 ```json
 {
@@ -176,8 +174,6 @@ comments: true
 }
 
 ```
-
-
 
 看下整体流程：
 
@@ -227,9 +223,7 @@ comments: true
 
 基本上和Cos-Browser的信息是类似的，但是autoupdate这里没有指定Hash获取方式，其实是官方没有提供，这种情况下的话就只能等文件下载完成之后再进行hash计算了，理论上来说是存在文件下载异常描述信息有问题的，这种的话就只能等发现之后手动修复了。
 
-
-
-## QQ音乐
+### QQ音乐
 
 ```json
 {
