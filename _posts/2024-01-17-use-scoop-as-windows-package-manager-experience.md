@@ -11,8 +11,6 @@ comments: true
 
 ![image-20240117194514171](https://pic-1251468582.picsh.myqcloud.com/pic/2024/01/17/767a1a.png)
 
-
-
 ## Scoop操作示例
 
 1. 安装scoop
@@ -88,7 +86,7 @@ comments: true
 - 安装： `scoop install xx`
 - 卸载：`scoop uninstall xx`
 - 升级: `scoop update; scoop update xx`
-- 查看缓存（下载的安装包）：`scoop cache  `
+- 查看缓存（下载的安装包）：`scoop cache`
 - 删除缓存：`scoop cache rm xx` （*表示所有软件）
 - 查看已安装软件：`scoop list`
 - 删除软件的旧版本：`scoop cleanup xx` （*表示所有软件）
@@ -114,9 +112,13 @@ comments: true
 
 ![image-20240117195631058](https://pic-1251468582.picsh.myqcloud.com/pic/2024/01/17/fb9b29.png)
 
-在官方查找不到的时候，可以扩展到第三方，找到之后可以修改后何如自己的bucket中。第三方的bucket其实质量并一定能保证，最后看下描述文件内容，以及是否从官网下载。还有部分维护破解软件的第三方bucket，建议就不要使用了。还有就是关注下bucket的star数量，毕竟star多点还是稍微靠谱点。这个[网站]（https://rasa.github.io/scoop-directory/by-stars）提供按star数量排名的bucket列表，也可以参考下，蛮多是中国人维护的bucket。
+在官方查找不到的时候，可以扩展到第三方，找到之后可以修改后何如自己的bucket中。第三方的bucket其实质量并一定能保证，最后看下描述文件内容，以及是否从官网下载。还有部分维护破解软件的第三方bucket，建议就不要使用了。还有就是关注下bucket的star数量，毕竟star多点还是稍微靠谱点。这个[网站](https://rasa.github.io/scoop-directory/by-stars)提供按star数量排名的bucket列表，也可以参考下，蛮多是中国人维护的bucket。
 
 ![image-20240117200008573](https://pic-1251468582.picsh.myqcloud.com/pic/2024/01/17/6b538b.png)
+
+### github 访问问题
+
+遇上API访问受限导致的401问题，可以设置环境变量`SCOOP_GH_TOKEN`，使用自己的Access Token即可。创建Access Token的时候不需要指定任何特别的权限，使用默认权限即可。
 
 ## 维护自己的bucket
 
@@ -279,6 +281,3 @@ comments: true
 ```
 
 有些软件是不能直接解压缩的，而是通过Inno方式进行安装，这种的话scoop也有自带提供支持，可以参考其它软件，等我遇到的时候再补充。
-
-
-
