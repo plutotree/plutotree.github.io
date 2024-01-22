@@ -17,6 +17,15 @@ comments: true
 - [思源黑体简体中文下载](https://github.com/adobe-fonts/source-han-sans/releases/download/2.004R/SourceHanSansSC.zip)
 - [思源等宽](https://github.com/adobe-fonts/source-han-mono/releases/download/1.002/SourceHanMono.ttc)
 
+最方便的安装办法是使用scoop，只要执行：
+
+```powershell
+scoop bucket add nerd-fonts
+scoop install nerd-fonts/Source-Han-Serif-SC   
+scoop install nerd-fonts/Source-Han-Sans-SC   
+scoop install nerd-fonts/Source-Han-Mono-SC  
+```
+
 | 字体中文名 | adobe 字体英文名 | google 字体英文名  |
 | ---------- | ---------------- | ------------------ |
 | 思源宋体   | Source Han Serif | Noto Serif CJK     |
