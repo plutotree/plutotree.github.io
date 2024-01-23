@@ -28,6 +28,6 @@ header, .context-menu, .megamenu-content, footer{
 
 ```
 
-这里其实就是修改了字体为思源黑体、微软雅黑，以及代码字体为 `Consolas`。关于思源字体的介绍，可以参考之前发表的[文章]({%- site.url -%}/2020-12-04/source-hans-font-intro.html)。重新打开Typora，或者切换其它主题再切换回来就可以生效了。最近新装了Windows11， 把常用软件都切换成了深色界面了，Typora也换成了官方的Night主题。
+这里其实就是修改了字体为思源黑体、微软雅黑，以及代码字体为 `Consolas`。关于思源字体的介绍，可以参考之前发表的[文章](/2020-12-04/source-hans-font-intro.html)。重新打开Typora，或者切换其它主题再切换回来就可以生效了。最近新装了Windows11， 把常用软件都切换成了深色界面了，Typora也换成了官方的Night主题。
 
 顺便补充一点，字体的英文名可以通过 `Exif` 查看工具（比如 `exif-tool` 命令行工具或者在线工具也行）获取真实的 `font-family`，在windows的字体设置中展示的是中文font-family，实测并不可用。
