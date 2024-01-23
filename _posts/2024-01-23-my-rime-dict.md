@@ -15,7 +15,7 @@ comments: true
 
 - `luna_pinyin.dict.yaml`：默认字库，有部分的词语，总计7万；
 - `luna_pinyin.sogou.dict.yaml`：来源于搜狗词库，总计105万；
--  `easy_en.dict.yaml`：英文词库，总计11万；
+- `easy_en.dict.yaml`：英文词库，总计11万；
 
 此外还用了几份自己维护的词库：
 
@@ -49,4 +49,3 @@ comments: true
 - `cn_dicts/base`     # 基础词库
 - `cn_dicts/ext`      # 扩展词库
 - `cn_dicts/tencent`  # 腾讯词向量
-
