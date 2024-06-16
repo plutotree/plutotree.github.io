@@ -1,13 +1,13 @@
 ---
 layout: post
-title: "减肥数据可视化探索之路"
+title: "自动化服务器更新之路：从 Cronicle 到 n8n "
 date: 2024-06-16 00:31:00 +0800
-tags: [body weight]
+tags: [cronicle,n8n]
 typora-root-url: ..
 comments: true
 ---
 
-> 文章经过 AI 润色，AI 废话还是略多了哈
+> 文章经过 AI 润色
 
 最近又开始折腾起我的服务器了，重点关注数据更新流程中的一些不满意之处：
 
