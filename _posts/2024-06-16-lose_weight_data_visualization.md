@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "减肥数据可视化探索之路"
+title: "减肥数据可视化"
 date: 2024-06-16 00:31:00 +0800
-tags: [body weight]
+tags: [body weight,life]
 typora-root-url: ..
 comments: true
 ---

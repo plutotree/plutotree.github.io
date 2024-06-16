@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "自动化服务器更新之路：从 Cronicle 到 n8n "
-date: 2024-06-16 00:31:00 +0800
+title: "从 Cronicle 到 n8n 实践自动化工作流"
+date: 2024-06-16 01:00:00 +0800
 tags: [cronicle,n8n]
 typora-root-url: ..
 comments: true
