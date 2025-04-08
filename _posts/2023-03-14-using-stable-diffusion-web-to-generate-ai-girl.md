@@ -38,8 +38,6 @@ comments: true
 
 3. 切换到`Extensions`，选择`Load From`，搜索`Kohya-ss Additional Networks`，点击`Install`
 
-   ![image-20230314201537601](/C:/Users/tonghuang/AppData/Roaming/Typora/typora-user-images/image-20230314201537601.png)
-
 4. 切换`Settings`，选择`Reload UI`
 
 ## 开始玩耍
