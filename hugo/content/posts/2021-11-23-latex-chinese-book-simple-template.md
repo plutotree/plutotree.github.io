@@ -1,8 +1,7 @@
 ---
 title: "latex中文书籍模板"
 date: 2021-11-22 12:30:00 +0800
-tags: [latex, ctex, ctexbook]
-comments: true
+tags: [latex]
 ---
 
 使用`ctexbook`的一个最简单的模板

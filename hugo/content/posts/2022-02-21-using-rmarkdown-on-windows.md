@@ -1,8 +1,7 @@
 ---
-title: "Windows下R mardown入门实战"
+title: "Windows 下 R mardown 入门实战"
 date: 2022-02-20 19:30:00 +0800
 tags: [rmarkdown]
-comments: true
 ---
 
 ## R 基础实战

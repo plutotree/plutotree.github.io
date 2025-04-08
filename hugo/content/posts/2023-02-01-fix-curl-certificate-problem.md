@@ -1,8 +1,7 @@
 ---
 title: "记录一个curl访问的https证书问题"
 date: 2023-02-01 12:30:00 +0800
-tags: [ssl证书]
-comments: true
+tags: [ssl]
 ---
 
 ## 问题描述

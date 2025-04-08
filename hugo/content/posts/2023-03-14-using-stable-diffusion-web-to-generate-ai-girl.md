@@ -2,7 +2,7 @@
 title: "使用Stable Diffusion生成美女图"
 date: 2023-03-14 20:00:00 +0800
 tags: [AI]
-comments: true
+categories: ["AI"]
 ---
 
 最近 Stable Diffusion 都大火，小红书上也是各种 AI 美女图，我也来凑一把热闹。
@@ -13,7 +13,7 @@ comments: true
 
 1. 导出git仓库：`git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git`
 2. 运行脚本：`webui-user.bat`，这一步下载`pytorch`可能耗时较长，耐心等待即可；
-3. 执行完成之后，会提示访问http://127.0.0.1:7860/即可体验了；
+3. 执行完成之后，会提示访问<http://127.0.0.1:7860/>即可体验了；
 4. 可以输入一些简单的标签体验下效果，多个标签用`,`分割，只支持英文；对于不熟悉的标签可以参考[网站](https://tags.novelai.dev/)；
 
 这时候会发现效果没想象的那么好，尤其是生成的“美女”图，可能千奇百怪。

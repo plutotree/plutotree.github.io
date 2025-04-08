@@ -3,7 +3,6 @@ title: "Markdown 语法详解"
 date: 2019-01-29 12:03:00 +0800
 tags: [markdown]
 categories: [markdown]
-comments: true
 ---
 
 ## Markdown 简介

@@ -2,7 +2,6 @@
 title: "我的RIME词库说明"
 date: 2024-01-23 18:00:00 +0800
 tags: [rime]
-comments: true
 ---
 
 最开始用的基础词库来源于[ssnhd/rime](https://github.com/ssnhd/rime)，这是它的词表介绍

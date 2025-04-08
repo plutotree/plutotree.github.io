@@ -1,8 +1,7 @@
 ---
 title: "从告警聊到IFTTT"
 date: 2023-02-14 18:30:00 +0800
-tags: [ifttt, 集简云]
-comments: true
+tags: [ifttt]
 ---
 
 ## 从腾讯云告警聊起

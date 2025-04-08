@@ -2,7 +2,6 @@
 title: "搭建自己的bitwarden密码管理服务器"
 date: 2020-03-02 00:10:00 +0800
 tags: [bitwarden, password]
-comments: true
 ---
 
 ## 背景

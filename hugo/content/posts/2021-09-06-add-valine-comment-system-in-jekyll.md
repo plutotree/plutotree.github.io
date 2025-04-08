@@ -2,7 +2,6 @@
 title: "在jekyll中使用valine评论系统"
 date: 2021-09-06 17:30:00 +0800
 tags: [jekyll, valine]
-comments: true
 ---
 
 > 最近发现无法展示评论，提示找不到 AV 相关的定义，移除了`av-min.js`，以及`AV`的字段定义，似乎是新版本改了实现，会在内部引用`av-min.js`。

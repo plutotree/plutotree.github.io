@@ -2,7 +2,6 @@
 title: "鼠须管Squirrel选项词横排配置调整"
 date: 2024-06-13 00:30:00 +0800
 tags: [rime, squirrel]
-comments: true
 ---
 
 
@@ -11,19 +10,19 @@ comments: true
 - candidate_list_layout: linear
 - text_orientation: vertical
 
-![](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/13/261fde.png)
+![261fde](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/13/261fde.png)
 
 - candidate_list_layout: linear
 - text_orientation: horizontal
 
-![](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/13/1ce68f.png)
+![1ce68f](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/13/1ce68f.png)
 
 - candidate_list_layout: stacked
 - text_orientation: horizontal
 
-![](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/13/d459fa.png)
+![d459fa](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/13/d459fa.png)
 
 - candidate_list_layout: stacked
 - text_orientation: vertical
 
-![](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/13/f74978.png)
+![f74978](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/13/f74978.png)
