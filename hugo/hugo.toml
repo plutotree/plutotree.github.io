@@ -33,7 +33,7 @@ copyright = ""
 enableRobotsTXT = true
 # whether to use git commit log
 # 是否使用 git 信息
-enableGitInfo = true
+enableGitInfo = false
 # whether to use emoji code
 # 是否使用 emoji 代码
 enableEmoji = true
@@ -89,7 +89,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   defaultTheme = "auto"
   # public git repo url only then enableGitInfo is true
   # 公共 git 仓库路径，仅在 enableGitInfo 设为 true 时有效
-  gitRepo = "https://github.com/dillonzq/LoveIt"
+  gitRepo = ""
   # which hash function used for SRI, when empty, no SRI is used
   # ["sha256", "sha384", "sha512", "md5"]
   # 哪种哈希函数用来 SRI, 为空时表示不使用 SRI
@@ -132,12 +132,12 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       logo = ""
       # title name
       # 标题名称
-      name = "PlutoTree (布鲁树)"
+      name = "PlutoTree 布鲁树"
       # you can add extra information before the name (HTML format is supported), such as icons
       # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
       pre = "<i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i>"
       # you can add extra information after the name (HTML format is supported), such as icons
-      # 你可以在名称 (允许 HTML 格式) 之后添加其他信息, 例如图标
+      # 你可以在名称 (允许 HTML 格false息, 例如图标
       post = ""
       # whether to use typeit animation for title name
       # 是否为标题显示打字机动画
@@ -167,7 +167,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     icp = ""
     # license info (HTML format is supported)
     # 许可协议信息 (支持 HTML 格式)
-    license= '<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>'
+	license = ""
 
   # Section (all posts) page config
   # Section (所有文章) 页面配置
@@ -284,7 +284,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       enable = true
       # special amount of posts in each home posts page
       # 主页每页显示文章数量
-      paginate = 6
+      paginate = 10
   # Social config in home page
   # 主页的社交信息设置
   [params.social]
@@ -395,10 +395,10 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     fontawesome = true
     # whether to show link to Raw Markdown content of the content
     # 是否显示原始 Markdown 文档内容的链接
-    linkToMarkdown = true
+    linkToMarkdown = false
     # whether to show the full text content in RSS
     # 是否在 RSS 中显示全文内容
-    rssFullText = false
+    rssFullText = true
     # Table of the contents config
     # 目录配置
     [params.page.toc]
@@ -470,7 +470,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     [params.page.share]
       enable = true
       X = true
-      Threads = true
+      Threads = false
       Facebook = true
       Linkedin = false
       Whatsapp = false
@@ -481,7 +481,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       VK = false
       Buffer = false
       Xing = false
-      Line = true
+      Line = false
       Instapaper = false
       Pocket = false
       Flipboard = false
@@ -492,9 +492,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       Evernote = false
       Skype = false
       Trello = false
-      Diaspora = true
+      Diaspora = false
       Mix = false
-      Telegram = true
+      Telegram = false
     # Comment config
     # 评论系统设置
     [params.page.comment]
@@ -530,8 +530,8 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         visitor = true
         recordIP = true
         highlight = true
-        enableQQ = false
-        serverURLs = "https://valine.hugoloveit.com"
+        enableQQ = true
+        serverURLs = "https://plutotree.me"
         # emoji data file name, default is "google.yml"
         # ["apple.yml", "google.yml", "facebook.yml", "twitter.yml"]
         # located in "themes/LoveIt/assets/lib/valine/emoji/" directory
@@ -942,19 +942,12 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
           enable = true
           gravatarEmail = ""
           avatarURL = "/images/avatar.jpg"
-          title = ""
-          subtitle = "这里是布鲁树的家 来者是客 随处逛逛"
+          title = "PlutoTree's Blog"
+          subtitle = "这里是布鲁树的家 欢迎您的到访"
           typeit = true
           social = true
           disclaimer = ""
       [languages.zh-cn.params.social]
         GitHub = "plutotree"
-        Weibo = ""
-        Steam = ""
-        Zhihu = ""
-        Douban = ""
-        Devto = ""
-        Bilibili = ""
         Email = "plutotreetree@gmail.com"
-        Phone = ""
         RSS = true

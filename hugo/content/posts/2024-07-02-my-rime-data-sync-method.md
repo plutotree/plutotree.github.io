@@ -3,7 +3,7 @@ title: "继续折腾Rime输入法"
 date: 2024-07-02 00:31:00 +0800
 tags: [rime]
 featuredImage: https://pic-1251468582.picsh.myqcloud.com/pic/2025/04/08/5fef0a.jpg
-description: "在 Windows 和 Mac 使用了 Rime 输入法已经有一段时间了，这一次手机上也切换到 Rime 家族的仓输入法了。如何选择输入法方案，如何在多端进行配置和数据的自动同步，开始 Rime 的折腾之路了。"
+description: "在 Windows 和 Mac 使用了 Rime 输入法已经有一段时间了，最近随着“仓输入法”稳定性的增强和功能的完善，iPhone 上也终于切换到 Rime 家族了。面对新的输入法，开始思考形码与音码的选择。实践中如何在PC、Mac 和 iPhone 上进行配置和数据的自动同步，继续 Rime 的折腾之路吧。"
 lightgallery: true
 ---
 
