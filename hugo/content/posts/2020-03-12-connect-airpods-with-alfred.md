@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "使用alfred连接AirPods"
 date: 2020-03-02 00:10:00 +0800
 tags: [alfred, airpods]
-typora-root-url: ..
 comments: true
 ---
 

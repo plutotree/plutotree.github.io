@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "继续折腾Rime输入法"
 date: 2024-07-02 00:31:00 +0800
 tags: [rime]
-typora-root-url: ..
 comments: true
 ---
 

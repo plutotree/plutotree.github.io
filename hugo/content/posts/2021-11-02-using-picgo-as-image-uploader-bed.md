@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "markdown图床实践：Typora+PicGo-core+腾讯云cos"
 date: 2021-11-02 19:58:28 +0800
 tags: [picgo, markdown, 腾讯云, typora]
-typora-root-url: ..
 comments: true
 ---
 

@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "在jekyll中使用百度统计"
 date: 2019-02-01 15:30:00 +0800
 tags: [jekyll]
-typora-root-url: ..
 comments: true
 ---
 

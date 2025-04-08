@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "从pushbullet切换到pushover作为消息通知工具"
 date: 2023-01-17 16:30:00 +0800
 tags: [pushover, pushbullet]
-typora-root-url: ..
 comments: true
 ---
 

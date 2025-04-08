@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "从告警聊到IFTTT"
 date: 2023-02-14 18:30:00 +0800
 tags: [ifttt, 集简云]
-typora-root-url: ..
 comments: true
 ---
 

@@ -1,29 +1,32 @@
 ---
-layout: post
-title: "markdown语法详解"
+title: "Markdown 语法详解"
 date: 2019-01-29 12:03:00 +0800
 tags: [markdown]
-typora-root-url: ..
+categories: [markdown]
 comments: true
-lightgallery: true
 ---
 
-## 说明
+## Markdown 简介
 
-尽管基础的 markdown 语法很简单，但是由于解析器实现的不一致性，尤其是对于扩展的 markdown 语法的支持程度差异很大，导致我们在使用 markdown 的时候会出现不同场景的差异性。这篇文章打算以 GFM 和 Typora 为主，去介绍一下 markdown 的语法格式规范以及各个解析器的支持程度。
+**Markdown**是一种轻量级标记语言，旨在通过易读易写的纯文本格式来编辑文档，并可转换生成格式化的文档。
 
-本文中涉及到的所有的 markdown 语法我都会尽量注明各种情况是否支持（没有特别指出的时候，默认都支持），同时也会加一些[markdownlint](https://github.com/DavidAnson/markdownlint)的规则描述。
+Markdown 最早由 John Gruber 于 2004 年创立。2014 年发布的 CommonMark 是第一套严谨的规范。2017 年，GitHub 发布了基于 CommonMark 的 GitHub Flavored Markdown（GFM）的正式规范。
 
-- [GFM](https://github.github.com/gfm/)：GitHub Flavored Markdown，算是最通用的 markdown 扩展规范了；
-- [Typora](https://typora.io/)：个人认为最好的 markdown 可视化编辑器和查看器，支持`windows`和`mac`，在 GFM 基础上，它还支持很多额外的 markdown 扩展；
-- [kramdown](https://kramdown.gettalong.org/index.html)：作为`jekyll`的默认 markdown 解析器，现在应该是 github pages 默认的 markdown 解析器；
-- `visual studio code`的 markdown 扩展：可以方便启用`markdownlint`检查，尽管该解析器还存在较多问题，也会关注下其解析效果；
+尽管基础的 Markdown 语法简单直观，但不同解析器在实现上多少还是存在差异，特别是对于扩展的 Markdown 语法的支持上。
+
+- [GFM](https://github.github.com/gfm/)：目前最流行的 Mermaidarkdown 扩展规范了；
+- [Typora](https://typora.io/)：个人认为最好的 Markdown 编辑器和查看器，支持`windows`和`mac`，在 GFM 基础上，它还支持很多额外的扩展语法；
+- [kramdown](https://kramdown.gettalong.org/index.html)：作为`jekyll`的默认 Markdown 解析器，现在也是 github pages 默认的 markdown 解析器；
+- [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint): VSCode 的 Markdown Lint 插件，可以检查语法是否规范；
+- [Markdown Preview Enhanced](https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced): VSCode 的 Markdown 查看插件，近 700 万的下载次数就能说明其受欢迎程度了；
+
+本文打算以 GFM 和 Typora 为主，来介绍 Markdown 的基础和扩展语法格式规范，以及不同语法在不同解析器下的支持情况，另外还会增加一些[markdownlint](https://github.com/DavidAnson/markdownlint)的规范描述。
 
 ## 基础语法
 
 ### 标题
 
-使用`#`字符就可以指定标题，输入 1-6 个`#`，分别对应 1-6 级标题。顾名思义，`#`数目越少，标题级别就越高。`#`和标题名之间应该确保包含一个空格，另外标题前后需要存在一行空行。
+使用`#`指定标题，1-6 个`#`，分别对应 1-6 级标题。顾名思义，`#`数目越少，标题级别就越高。按照语法规范，建议`#`和标题名之间保留一个空格，标题行的前后需要保留一行空行。
 
 ```markdown
 # 一级标题
@@ -46,12 +49,35 @@ lightgallery: true
 
 ### 正文段落
 
-普通文本可以直接输入，需要注意的是普通的换行是不生效的（也有部分 markdown 解析器会生效），只是方便在编辑器中查看而已。如果要实现换行的话，需要在行尾加上两个空格，或者手动加上`<br/>`标签（不符合 markdown lint 标准，非必要情况下不要这么操作）。  
-我在上面末尾加了两个空格，所以这是新的一行（但不是新的一段）。
+普通文本直接输入就好，但是文本中的换行是不生效的，即使在编辑器中能看到有换行效果，但是导出生成HTML仍然是不生效的。如果要实现换行的话，需要在行尾加上两个空格。直接用`<br/>`的html标签的话，也是能实现换行，不过这就不算是markdown语法了。
 
 如果中间有一行空行的话，则会产生是一个新的段落。换行对应到 html 的`<br/>`，段落对应到 html`<p> </p>`。
 
-行首和行尾的单个空格一般会被忽略，段落之间不要有多行空行。
+对于下述的Markdown 文本：
+
+```markdown
+这是第一段的第一行（结尾加两个空格）  
+这是第二行
+
+这是第二段的第一行（结尾没有空格）
+这仍然是第二段的第一行
+```
+
+使用Typora生成的HTML如下：
+
+```html
+<p>
+   <span>这是第一段的第一行（结尾加两个空格）</span>
+   <br/>
+   <span>这是第二行</span>
+</p>
+<p>
+   <span>这是第二段的第一行（结尾没有空格）</span>
+   <span>这仍然是第二段的第一行</span>
+</p>
+```
+
+对于行首和行尾的单个空格常见的渲染处理是会被直接忽略。段落之间多行空行也没有意义，保留一行空行即可。
 
 ### 字体样式
 
@@ -251,6 +277,8 @@ gfm 不支持时序图，Typora 支持。
 
 使用[flowchart.js](http://flowchart.js.org/)渲染
 
+{{< highlight markdown >}}
+
 ```flow
 st=>start: 开始
 cond=>condition: 有房有车
@@ -262,6 +290,8 @@ st->cond
 cond(yes)->op1->op2->e
 cond(no)->e
 ```
+
+{{< /highlight >}}
 
 ![image-20201204112431026](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/850c41.png)
 

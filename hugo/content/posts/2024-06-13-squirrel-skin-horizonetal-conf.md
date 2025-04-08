@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "鼠须管Squirrel选项词横排配置调整"
 date: 2024-06-13 00:30:00 +0800
 tags: [rime, squirrel]
-typora-root-url: ..
 comments: true
 ---
 

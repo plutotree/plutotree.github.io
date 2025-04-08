@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "Windows下R mardown入门实战"
 date: 2022-02-20 19:30:00 +0800
 tags: [rmarkdown]
-typora-root-url: ..
 comments: true
 ---
 

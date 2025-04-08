@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "我的RIME词库说明"
 date: 2024-01-23 18:00:00 +0800
 tags: [rime]
-typora-root-url: ..
 comments: true
 ---
 

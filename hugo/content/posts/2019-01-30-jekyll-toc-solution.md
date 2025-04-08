@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "jekyll自动生成目录的几种方案"
 date: 2019-01-30 13:00:00 +0800
 tags: [jekyll]
-typora-root-url: ..
 comments: true
 ---
 

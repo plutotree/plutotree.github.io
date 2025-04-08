@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "在github pages上使用jekyll"
 date: 2021-09-06 15:30:00 +0800
 tags: [jekyll]
-typora-root-url: ..
 comments: true
 ---
 

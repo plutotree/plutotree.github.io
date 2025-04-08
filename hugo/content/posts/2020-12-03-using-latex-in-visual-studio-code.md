@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "在Visual Studio Code中使用LaTeX"
 date: 2020-12-03 18:30:00 +0800
 tags: [latex, vscode, tex]
-typora-root-url: ..
 comments: true
 ---
 

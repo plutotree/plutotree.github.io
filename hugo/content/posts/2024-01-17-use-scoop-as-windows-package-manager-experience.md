@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "Windows包管理器Scoop的使用经验"
 date: 2024-01-17 18:00:00 +0800
 tags: [scoop]
-typora-root-url: ..
 comments: true
 ---
 

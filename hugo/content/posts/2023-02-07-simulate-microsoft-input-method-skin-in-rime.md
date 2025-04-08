@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "小狼毫100%模仿微软输入法的皮肤"
 date: 2023-02-07 17:30:00 +0800
 tags: [rime, 小狼毫]
-typora-root-url: ..
 comments: true
 ---
 

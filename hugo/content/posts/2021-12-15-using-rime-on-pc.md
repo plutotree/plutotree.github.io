@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "使用RIME输入法"
 date: 2021-12-15 17:50:00 +0800
 tags: [rime]
-typora-root-url: ..
 comments: true
 ---
 

@@ -1,9 +1,7 @@
 ---
-layout: post
 title: "修改Typora的字体"
 date: 2024-01-22 18:00:00 +0800
 tags: [typora]
-typora-root-url: ..
 comments: true
 ---
 
