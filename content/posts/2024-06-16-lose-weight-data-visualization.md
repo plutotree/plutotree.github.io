@@ -3,7 +3,7 @@ title: 减肥数据可视化
 date: 2024-06-16 00:31:00 +0800
 tags: [body weight, life]
 categories: [My Life]
-featuredImage: https://pic-1251468582.picsh.myqcloud.com/pic/2025/04/09/j8rOLc.jpg
+featuredImage: https://pic-1251468582.file.myqcloud.com/pic/2025/04/09/j8rOLc.jpg
 description: 本文记录了我为减肥数据可视化所做的技术探索。基于Echarts开发了动态图表，采用无极平台实现云端表格编辑和API调用，最后结合GitHub自动化部署，搭建出可在线更新的数据看板。
 slug: lose-weight-data-visualization
 aliases: [/2024-06-16/lose_weight_data_visualization copy.html]
@@ -26,4 +26,4 @@ aliases: [/2024-06-16/lose_weight_data_visualization copy.html]
 
 这纯粹是一趟折腾之旅，不过好在不管是 GitHub 的流水线更新流程，还是 Nginx 服务器也都是现成的，所以工作量倒是不大。最后还是展现下我的趋势图吧，网址就先不贴了。
 
-![image-20240616004024031](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/16/d21e1a.png)
+![image-20240616004024031](https://pic-1251468582.file.myqcloud.com/pic/2024/06/16/d21e1a.png)

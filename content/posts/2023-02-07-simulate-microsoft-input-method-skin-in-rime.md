@@ -12,19 +12,19 @@ aliases: [/2023-02-07/simulate-microsoft-input-method-skin-in-rime.html]
 
 先看下效果，这个是 Windows 系统自带的微软拼音输入法
 
-![image-20230207152007275](https://pic-1251468582.picsh.myqcloud.com/pic/2023/02/07/210a5e.png)
+![image-20230207152007275](https://pic-1251468582.file.myqcloud.com/pic/2023/02/07/210a5e.png)
 
 这个是小狼毫模拟的效果，应该做到了 99%的相似度吧。
 
-![image-20230207160021058](https://pic-1251468582.picsh.myqcloud.com/pic/2023/02/07/5d9de1.png)
+![image-20230207160021058](https://pic-1251468582.file.myqcloud.com/pic/2023/02/07/5d9de1.png)
 
 ## 皮肤颜色设置
 
 [官网](https://github.com/rime/home/wiki/CustomizationGuide#%E4%B8%80%E4%BE%8B%E5%AE%9A%E8%A3%BD%E5%B0%8F%E7%8B%BC%E6%AF%AB%E9%85%8D%E8%89%B2%E6%96%B9%E6%A1%88)给了比较清晰的颜色样式配置说明，另外也提供了一个方便的[在线工具](https://bennyyip.github.io/Rime-See-Me/)用来生成配置。我们用取色工具获取微软拼音输入法的相关颜色填充即可（可以用系统自带的画图工具）。
 
-![img](https://pic-1251468582.picsh.myqcloud.com/pic/2023/02/07/f711c9)
+![img](https://pic-1251468582.file.myqcloud.com/pic/2023/02/07/f711c9)
 
-![image-20230207160813197](https://pic-1251468582.picsh.myqcloud.com/pic/2023/02/07/aa4b39.png)
+![image-20230207160813197](https://pic-1251468582.file.myqcloud.com/pic/2023/02/07/aa4b39.png)
 
 在配置文件`weasel.custom.yaml`里面将相关内容填写进入即可。
 

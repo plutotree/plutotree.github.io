@@ -32,35 +32,35 @@ Markdown 已然成为事实上的技术文档编写标准，作为 markdown 编�
 
 1. 在[对象存储控制台](https://console.cloud.tencent.com/cos5/bucket)创建一个存储桶，选择所属地域，填写桶名称，访问权限选择“公有读私有写”
 
-   ![image-20211103181029412](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/5a3994.png)
+   ![image-20211103181029412](https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/5a3994.png)
 
 2. 点击桶名称进入管理页面，在左侧“域名与传输管理”中打开默认 CDN 加速域名，这里需要理解下 CDN 和源站的概念
 
-   ![image-20211103181539258](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/4320b5.png)
+   ![image-20211103181539258](https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/4320b5.png)
 
 3. 回到文件列表页，可以在页面进行上传测试，点击“详情”可以查看文件的具体信息，这里对象有两个访问地址，一个是源站域名，一个是加速域名，我们一般都会选择加速域名。
 
-   ![image-20211103181734118](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/2142aa.png)
+   ![image-20211103181734118](https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/2142aa.png)
 
 ### 数据万象
 
 使用图床还有一点很重要的作用是能实现动态的图片处理，简单的比如缩放、裁剪，复杂的比如高斯模糊、水印等等，这里需要用到腾讯的[数据万象](https://console.cloud.tencent.com/ci)。在数据万象的存储通管理中，选择绑定存储桶即可。
 
-![image-20211103182342325](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/fc984c.png)
+![image-20211103182342325](https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/fc984c.png)
 
 点击存储通名称进入管理页面，发现这里也有个域名管理，通过这个域名访问才会支持图片的在线处理功能，这个域名本身也是支持 cdn 加速的，我们会统一采用这个域名来提供用户访问。
 
-![image-20211103182312319](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/752d6c.png)
+![image-20211103182312319](https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/752d6c.png)
 
 ### 访问授权
 
 在[腾讯云控制台的访问管理](https://console.cloud.tencent.com/cam/user/userType)中新建用户，可以直接使用"快速创建"。这里访问方式修改为“编程访问”，用户权限清空，可接受消息类型清空，用户名称可以用比较清晰明了的，比如`picgo-upload`。创建成功之后能看到子账号的账号 ID，还有 SecretId 和 SecretKey，把这些信息记录下来，我们后续需要用到。
 
-![image-20211103183050087](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/426baa.png)
+![image-20211103183050087](https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/426baa.png)
 
 回到[对象存储控制台](https://console.cloud.tencent.com/cos5/bucket)，选择“授权管理”，勾选存储桶后修改“用户权限”，增加子账号的权限，权限内容可以勾选数据读取和数据写入。
 
-![image-20211103183428148](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/1c889d.png)
+![image-20211103183428148](https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/1c889d.png)
 
 到此，腾讯云上的工作做完了。其实有一点没有谈的是费用问题，这个的话还是有必要了解的，只是这篇文章略过了。
 
@@ -109,15 +109,15 @@ picgo install rename-file
 
 根据上面的注释进行字段的编辑，重命名插件的具体参数可以参考[这里](https://github.com/liuwave/picgo-plugin-rename-file)。配置完成之后可以通过执行`picgo upload xxx.png`来验证图片上传及插件配置是否生效。这里 xxx.png 可以支持本地也可以支持网络的 url。如果上传成功之后能看到完整的 url，同时也会将 url 写入剪切板，可以直接在浏览器中进行访问验证。
 
-![image-20211103191206334](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/80da56.png)
+![image-20211103191206334](https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/80da56.png)
 
-比如这个地址<https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/80da56.png，>，可以查看其链接规则是符合 rename-file 插件的配置的。
+比如这个地址<https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/80da56.png，>，可以查看其链接规则是符合 rename-file 插件的配置的。
 
 ## Typora
 
 打开偏好设置，按需要勾选之后点击“验证图片上传选项”确认上传是否正常。
 
-![image-20211103191432287](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/30c0b7.png)
+![image-20211103191432287](https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/30c0b7.png)
 
 这里要注意下 mac 系统的`PicGo-Core`选项并不可用，需要选择`Custom Commeand`，手动输入命令。另外命令还需要输入完整地址（我尝试了三遍才知道）。我配置的命令内容如下：
 
@@ -125,7 +125,7 @@ picgo install rename-file
 /opt/homebrew/bin/node /opt/homebrew/bin/picgo upload
 ```
 
-![image-20211103191923824](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/03/5f16d7.png)
+![image-20211103191923824](https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/5f16d7.png)
 
 好了，到这里就可以在文章中很方便的插入图片了。使用过程中，可以发现本地图片转化为网络图片是需要一些时间，在上传成功之后才会替换掉本地 url。如果在中途不小心修改或者删除了相关内容，会导致后续替换 url 失败。好在我们是用了 autocopy 的插件，正确地址已经写入剪切板了，只要 ctrl+v 就可以了啦。
 

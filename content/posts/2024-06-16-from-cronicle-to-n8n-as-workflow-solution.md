@@ -2,7 +2,7 @@
 title: 从 Cronicle 到 n8n 实践自动化工作流
 date: 2024-06-16 01:00:00 +0800
 tags: [cronicle, n8n]
-featuredImage: https://pic-1251468582.picsh.myqcloud.com/pic/2025/04/09/Zqor7I.jpg
+featuredImage: https://pic-1251468582.file.myqcloud.com/pic/2025/04/09/Zqor7I.jpg
 description: 通过部署 Cronicle 实现了定时任务可视化的管理，并利用其API功能搭建自动化流程。结合 n8n 工作流平台，可以用 GitHub Webhook 触发同步任务，这样就能实现博客和仓库的自动化同步更新流程，基于 n8n，我们还能探索更多的自动化工作流。
 slug: from-cronicle-to-n8n-as-workflow-solution
 aliases: [/2024-06-16/from-cronicle-to-n8n-as-workflow-solution.html]
@@ -59,12 +59,12 @@ return $input.item;
 
 整体流水线的配置，只包含三类节点
 
-![image-20240616012923132](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/16/deb5cb.png)
+![image-20240616012923132](https://pic-1251468582.file.myqcloud.com/pic/2024/06/16/deb5cb.png)
 
 ### 实现博客的同步更新
 
 有了git仓库同步的经验，要解决博客的同步更新其实就比较简单了。不过这里顺便提下n8n的消息通知并不优雅，没有地方统一配置成功和失败的消息发送。目前来看需要针对每一条流水线进行配置。
 
-![image-20240616013153943](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/16/27e707.png)
+![image-20240616013153943](https://pic-1251468582.file.myqcloud.com/pic/2024/06/16/27e707.png)
 
 后续会将更多任务挪到n8n上面来，这只是一个起步。

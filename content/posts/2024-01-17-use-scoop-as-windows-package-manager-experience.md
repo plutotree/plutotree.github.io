@@ -9,7 +9,7 @@ aliases: [/2024-01-17/use-scoop-as-windows-package-manager-experience.html]
 
 如果有在 Mac 下用过`HomeBrew`的都知道，软件安装起来是多么方便。Windows 一直缺少这么方便的包管理工具。`Chocolatey`只能算是便捷的安装工具，和包管理工具差距还挺大的。`WinGet`可以算是一个包管理工具，只是目前支持的应用还比较少。以前有听说过[`Scoop`](https://scoop.sh)，印象中说法是支持的软件数量较少。不过最近试了下，发现其支持的软件数量已经相当广泛。各类常见开发工具自然不必说了，主流的软件其中包括部分国内软件都能在官方的 bucket 中找到。官方不支持的软件，我们也能通过第三方的 bucket 进行安装。目前我有 59 个软件是通过 scoop 进行安装了。
 
-![image-20240117194514171](https://pic-1251468582.picsh.myqcloud.com/pic/2024/01/17/767a1a.png)
+![image-20240117194514171](https://pic-1251468582.file.myqcloud.com/pic/2024/01/17/767a1a.png)
 
 ## Scoop 操作示例
 
@@ -110,11 +110,11 @@ aliases: [/2024-01-17/use-scoop-as-windows-package-manager-experience.html]
 
 可以使用命令`scoop search`进行搜索，不过建议是在[官网](https://scoop.sh)进行搜索，需要注意的是选项`Official bucket only`选项是否开启，一般情况下是建议安装官方包，以及可信赖的第三方。而我个人而言，第三方目前会控制在自己的 bucket 范围。
 
-![image-20240117195631058](https://pic-1251468582.picsh.myqcloud.com/pic/2024/01/17/fb9b29.png)
+![image-20240117195631058](https://pic-1251468582.file.myqcloud.com/pic/2024/01/17/fb9b29.png)
 
 在官方查找不到的时候，可以扩展到第三方，找到之后可以修改后何如自己的 bucket 中。第三方的 bucket 其实质量并一定能保证，最后看下描述文件内容，以及是否从官网下载。还有部分维护破解软件的第三方 bucket，建议就不要使用了。还有就是关注下 bucket 的 star 数量，毕竟 star 多点还是稍微靠谱点。这个[网站](https://rasa.github.io/scoop-directory/by-stars)提供按 star 数量排名的 bucket 列表，也可以参考下，蛮多是中国人维护的 bucket。
 
-![image-20240117200008573](https://pic-1251468582.picsh.myqcloud.com/pic/2024/01/17/6b538b.png)
+![image-20240117200008573](https://pic-1251468582.file.myqcloud.com/pic/2024/01/17/6b538b.png)
 
 ## 维护自己的 bucket
 

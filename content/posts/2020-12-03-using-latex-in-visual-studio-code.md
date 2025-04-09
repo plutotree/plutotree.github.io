@@ -12,7 +12,7 @@ aliases: [/2020-12-03/using-latex-in-visual-studio-code.html]
 
 下面看看一个示例效果吧
 
-![image-20201203195703950](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/724e0b.png)
+![image-20201203195703950](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/724e0b.png)
 
 对应的代码如下（看着也还好对吧？）
 
@@ -64,33 +64,33 @@ aliases: [/2020-12-03/using-latex-in-visual-studio-code.html]
 
 双击运行`install-tl-windows.bat`
 
-![image-20201203205630699](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/dc45e7.png)
+![image-20201203205630699](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/dc45e7.png)
 
 点击`Advanced`，修改默认的安装路径，然后点击安装
 
-![image-20201203205818216](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/25c3de.png)
+![image-20201203205818216](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/25c3de.png)
 
 安装包较大，耐心等待
 
-![image-20201203205928065](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/58d3d3.png)
+![image-20201203205928065](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/58d3d3.png)
 
 安装完成之后可以直接打开`TeXworks editor`进行编辑`tex`文件，以及编译生成`pdf`。如果能接受`TeXworks`的丑陋界面，其实可以不用往后看了哈。除了`Visual Studio Code`之外，也可以选择自己喜欢的任意文本编辑器来使用，包括`vim`、`emacs`、`notepad++`，配置好相关的语法提示，以及快捷命令之后也都可以正常使用。
 
-![image-20201203200900391](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/b61eb4.png)
+![image-20201203200900391](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/b61eb4.png)
 
 ## 配置 Visual Studio Code
 
 `Visual Studio Code`的安装就不介绍了，直接安装插件`LaTeX Workshop`和`LaTeX Utilities`
 
-![image-20201203165405193](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/281094.png)
+![image-20201203165405193](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/281094.png)
 
 安装完成之后点击`LaTex Workshop`插件的配置选项
 
-![image-20201203201257832](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/8c4677.png)
+![image-20201203201257832](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/8c4677.png)
 
 搜索`tools`，然后选择在`settings.json`中编辑（这时候会将默认的配置插入）
 
-![image-20201203201359586](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/c0743f.png)
+![image-20201203201359586](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/c0743f.png)
 
 在前面加上下述参数，不要忘记末尾的逗号
 
@@ -109,7 +109,7 @@ aliases: [/2020-12-03/using-latex-in-visual-studio-code.html]
         },
 ```
 
-![image-20201203201816560](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/faef01.png)
+![image-20201203201816560](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/faef01.png)
 
 回到插件的配置页面，在上面有`Recipes`的配置说明，同样点击在`settings.json`中编辑（这时候会将默认的配置插入），在前面加上下述参数，同样不要忘记末尾的逗号
 
@@ -122,17 +122,17 @@ aliases: [/2020-12-03/using-latex-in-visual-studio-code.html]
         },
 ```
 
-![image-20201203201909440](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/b3b213.png)
+![image-20201203201909440](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/b3b213.png)
 
 ## 使用说明
 
 打开一个文件夹，新建一个 tex 文件，把前面那段代码拷贝进去，点击右上方的箭头进行编译，或者使用快捷键`Ctrl+Alt+B`，成功之后可以点击左边的`View Latex PDF`，默认会启动浏览器进行查看。
 
-![image-20201203202813198](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/68579a.png)
+![image-20201203202813198](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/68579a.png)
 
 这时候也可以直接查看文件所在目录，会发现除了生成的`pdf`文件之外，还有一些其他文件。
 
-![image-20201203203020259](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/826905.png)
+![image-20201203203020259](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/826905.png)
 
 ## 参考资料
 

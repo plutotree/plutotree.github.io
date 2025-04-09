@@ -24,11 +24,11 @@ A-->B-->C
 
 - 这是现在Google表格的数据内容，只有股票代号，没有其余信息
 
-  ![image-20230414200118396](https://pic-1251468582.picsh.myqcloud.com/pic/2023/04/14/777ecb.png)
+  ![image-20230414200118396](https://pic-1251468582.file.myqcloud.com/pic/2023/04/14/777ecb.png)
 
 - 这是执行脚本后的效果，自动填充了所有内容（这里表格的列是可以动态调整的）
 
-  ![image-20230414200156119](https://pic-1251468582.picsh.myqcloud.com/pic/2023/04/14/d4e1ef.png)
+  ![image-20230414200156119](https://pic-1251468582.file.myqcloud.com/pic/2023/04/14/d4e1ef.png)
 
 下面简单描述下技术细节：
 
@@ -91,7 +91,7 @@ class FutuHelper:
 
 为了方便表的列名使用中文描述，做一层简单的转换，同时增加一些自定义的字段。比如富途本身不支持涨跌幅，我们可以拿最新价和昨日收盘价计算即可。还有一些用来方便查看的数据，比如高点对比、低点对比等。
 
-![image-20230414200923885](https://pic-1251468582.picsh.myqcloud.com/pic/2023/04/14/91fee0.png)
+![image-20230414200923885](https://pic-1251468582.file.myqcloud.com/pic/2023/04/14/91fee0.png)
 
 处理流程相对比较简单，主要的数据通过[`get_market_snapshot`](https://openapi.futunn.com/futu-api-doc/quote/get-market-snapshot.html)获取即可。这里扩展的话，我们可以增加一些历史K线数据字段，比如3日最高价、3日均线等等。
 

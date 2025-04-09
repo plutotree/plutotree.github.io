@@ -8,7 +8,7 @@ aliases: [/2024-01-23/my-rime-dict.html]
 
 最开始用的基础词库来源于[ssnhd/rime](https://github.com/ssnhd/rime)，这是它的词表介绍
 
-![img](https://pic-1251468582.picsh.myqcloud.com/pic/2024/01/23/63c9cf)
+![img](https://pic-1251468582.file.myqcloud.com/pic/2024/01/23/63c9cf)
 
 主要用了这几份词库：
 
@@ -30,7 +30,7 @@ aliases: [/2024-01-23/my-rime-dict.html]
 
 最近发现两份还不错的简体词库，分别是[四叶草拼音](https://github.com/fkxxyz/rime-cloverpinyin)和[雾凇拼音](https://github.com/iDvel/rime-ice)。其中雾凇拼音有6K的star数量，并且更新还是比较及时的，提供的功能也比较完善，下面是一个功能介绍：
 
-![demo](https://pic-1251468582.picsh.myqcloud.com/pic/2024/01/23/92f3d3.webp)
+![demo](https://pic-1251468582.file.myqcloud.com/pic/2024/01/23/92f3d3.webp)
 
 作者也明确说明了他会长期维护几份词库：
 

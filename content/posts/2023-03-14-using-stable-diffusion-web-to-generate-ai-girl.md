@@ -28,7 +28,7 @@ aliases: [/2023-03-14/using-stable-diffusion-web-to-generate-ai-girl.html]
 
 3. 重新刷新页面就可以看到左上角可以选择模型了；
 
-   ![image-20230314200940381](https://pic-1251468582.picsh.myqcloud.com/pic/2023/03/14/88c2ac.png)
+   ![image-20230314200940381](https://pic-1251468582.file.myqcloud.com/pic/2023/03/14/88c2ac.png)
 
 ## 使用Lora插件
 
@@ -46,6 +46,6 @@ aliases: [/2023-03-14/using-stable-diffusion-web-to-generate-ai-girl.html]
 
 2. 看看生成的效果
 
-   ![image-20230314202031188](https://pic-1251468582.picsh.myqcloud.com/pic/2023/03/14/53a658.png)
+   ![image-20230314202031188](https://pic-1251468582.file.myqcloud.com/pic/2023/03/14/53a658.png)
 
 仔细看能发现一个比较大的问题，就是手指还是会有各种奇怪的现象

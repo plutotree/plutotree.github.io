@@ -270,7 +270,7 @@ $$
 
 {{< /highlight >}}
 
-![image-20201204112218341](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/bcb72a.png)
+![image-20201204112218341](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/bcb72a.png)
 
 gfm 不支持时序图，Typora 支持。
 
@@ -294,7 +294,7 @@ cond(no)->e
 
 {{< /highlight >}}
 
-![image-20201204112431026](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/850c41.png)
+![image-20201204112431026](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/850c41.png)
 
 gfm 不支持流程图，Typora 支持。
 
@@ -315,7 +315,7 @@ sequenceDiagram
 
 {{< /highlight >}}
 
-![image-20201204112846477](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/cc62aa.png)
+![image-20201204112846477](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/cc62aa.png)
 
 ### 脚标和上下标
 

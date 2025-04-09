@@ -2,7 +2,7 @@
 title: 继续折腾Rime输入法
 date: 2024-07-02 00:31:00 +0800
 tags: [rime]
-featuredImage: https://pic-1251468582.picsh.myqcloud.com/pic/2025/04/08/5fef0a.jpg
+featuredImage: https://pic-1251468582.file.myqcloud.com/pic/2025/04/08/5fef0a.jpg
 description: 在 Windows 和 Mac 使用了 Rime 输入法已经有一段时间了，最近随着“仓输入法”稳定性的增强和功能的完善，iPhone 上也终于切换到
   Rime 家族了。面对新的输入法，开始思考形码与音码的选择。实践中如何在PC、Mac 和 iPhone 上进行配置和数据的自动同步，继续 Rime 的折腾之路吧。
 lightgallery: true
@@ -20,9 +20,9 @@ aliases: [/2024-07-02/my-rime-data-sync-method.html]
 
 对于不想深入研究配置细节的用户，仓输入法的新手友好度相当高。我选择保留 26 键布局，以无缝迁移电脑端配置，避免重新适应 9 键布局。习惯了从 Nokia 时代的 T9 输入法，我能够实现高速单手盲打，但现在是时候转变了。仓输入法的上下左右划动设定，极大地扩展了单键输入内容的可能性，使得快捷输入变得异常方便。。我们可以很方便在一个 26 键字母键盘上加上数字，及大量的标点符号。快捷输入（手机号、邮箱地址、车牌号等等）真的很方便，相比起电脑上之前的 v 模式，这个下划真的就是那么一下就搞定了。此外，我们还可以增加很多系统命令，复制、粘贴、剪切等，以及输入法的方案切换等等。
 
-![image-20240702012911714](https://pic-1251468582.picsh.myqcloud.com/pic/2024/07/02/389af8.png)
+![image-20240702012911714](https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/389af8.png)
 
-键盘配置方面，官方文档尚需完善。注意区分字符（symbols）和符号（characters），只有符号才支持 Rime 处理。此外，确保勾选了“经过 Rime 处理”选项。 ![image-20240702014340221](https://pic-1251468582.picsh.myqcloud.com/pic/2024/07/02/97dbdf.png)
+键盘配置方面，官方文档尚需完善。注意区分字符（symbols）和符号（characters），只有符号才支持 Rime 处理。此外，确保勾选了“经过 Rime 处理”选项。 ![image-20240702014340221](https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/97dbdf.png)
 
 除了键盘配置之外，其他的配置和 PC 端是完全一致的，基本上可以直接复用 PC 端配置。将 PC 端配置打包发到手机后，导入到仓输入法基本就能生效了。
 
@@ -38,9 +38,9 @@ aliases: [/2024-07-02/my-rime-data-sync-method.html]
 
 双拼方案众多，主要区别在于是否使用`;`键。搜狗和微软双拼用了`;`做`ing`的输入，而自然码和小鹤并没有去用`;`。我更喜欢后者，小鹤算是在自然码上做了一些改进，尽管这个改进有很多作者自己的因素在里面。花了十几分钟去做打字练习，发现完全没有记住，不过我下载了一张键位图放在桌面了，以后还是会试一试的。顺便推荐一个这个[双拼在线练习](https://api.ihint.me/shuang/)的网站，提供了各种不同的双拼方案的在线练习，另外还有提供小程序。
 
-![image-20240702224244991](https://pic-1251468582.picsh.myqcloud.com/pic/2024/07/02/65c521.png "双拼在线练习")
+![image-20240702224244991](https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/65c521.png "双拼在线练习")
 
-另我还发现了[双拼方案评测](https://macroxue.github.io/shuangpin/eval.html)工具，它根据击键手指、位置和过程预估打字时间，评估分数，并提供优化方案。理论上，我们可以根据数据设计出最高效的双拼输入法。 ![image-20240702225206097](https://pic-1251468582.picsh.myqcloud.com/pic/2024/07/02/5f4c51.png "双拼方案评测工具")
+另我还发现了[双拼方案评测](https://macroxue.github.io/shuangpin/eval.html)工具，它根据击键手指、位置和过程预估打字时间，评估分数，并提供优化方案。理论上，我们可以根据数据设计出最高效的双拼输入法。 ![image-20240702225206097](https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/5f4c51.png "双拼方案评测工具")
 
 在对不同双拼方案进行比较后，发现主流方案之间的差异不大，从 114.9 到 123.6，差异在 10%不到，简单看数据，相比全拼输入法大概能有 20%-30%的速度提升吧。但是“飞猫”和“乱序”从分数上看却是遥遥领先，这是为啥呢？
 
@@ -60,17 +60,17 @@ aliases: [/2024-07-02/my-rime-data-sync-method.html]
 
 我们先来看下“飞猫”和“乱序优化”的键位图。有没有发现和其他双拼输入法很明显的差异，他们的声母是乱序的，你不仅需要记住韵母，还得重新去记声母。通过这一点，能比其他双拼输入法的输入速度再继续提升 30%。而“飞猫”还有一个特点在于部分拼音是支持多个键的，就是所谓的“飞键”，比如`sh`既可以通过`N`也可以通过`A`进行输入，你哪个手指方便就用哪个手指去打印，有点像是按`Shift`键的感觉，你左手打字母那就右手按右边的`Shift`，反之亦然。不过我估计挺多人没有遵守这个基础打字规范，我个人大部分情况还是遵循了这一点的。
 
-![image-20240702230905969](https://pic-1251468582.picsh.myqcloud.com/pic/2024/07/02/72561e.png "飞猫键位图")
+![image-20240702230905969](https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/72561e.png "飞猫键位图")
 
-![image-20240702230921266](https://pic-1251468582.picsh.myqcloud.com/pic/2024/07/02/cd486b.png "乱序优化键位图")
+![image-20240702230921266](https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/cd486b.png "乱序优化键位图")
 
 网上关于“飞猫”的资料相当少，[这一篇](https://tieba.baidu.com/p/4676554242?pn=1)算是作者在 2016 年发的原文，的确是通过程序计算出来的按键，可是后面就没啥新内容了。GitHub 上也没有其他资料，只有[这一篇](https://github.com/zebats/flying-cat-rime?tab=readme-ov-file)写到在 Rime 中的飞猫配置。下面这些是作者文章中的截图。
 
-![img](https://pic-1251468582.picsh.myqcloud.com/pic/2024/07/02/d4ce20.jpg)
+![img](https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/d4ce20.jpg)
 
-![img](https://pic-1251468582.picsh.myqcloud.com/pic/2024/07/02/abd4a7.jpg)
+![img](https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/abd4a7.jpg)
 
-![img](https://pic-1251468582.picsh.myqcloud.com/pic/2024/07/02/091564.jpg)
+![img](https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/091564.jpg)
 
 ## 多端数据同步方案
 

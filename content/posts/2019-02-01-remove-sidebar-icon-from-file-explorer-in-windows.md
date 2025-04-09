@@ -8,7 +8,7 @@ aliases: [/2019-02-01/remove-sidebar-icon-from-file-explorer-in-windows.html]
 
 windows10 资源管理器，左侧有较多无用的图标，尤其对于洁癖者来说更想把这些图标都清理干净。
 
-![1549007376153](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/0b0d31.png)
+![1549007376153](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/0b0d31.png)
 
 下面先介绍如何移除上面 3 个图标：`OneDrive`、`Dropbox`和`Creative Cloud Files`，然后再介绍移除“此电脑”里面的图标。
 
@@ -24,13 +24,13 @@ windows10 资源管理器，左侧有较多无用的图标，尤其对于洁癖�
 
 3. 将右侧的`System.IsPinnedToNameSpaceTree`值设置为 0
 
-   ![1549008970481](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/a30ad4.png)
+   ![1549008970481](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/a30ad4.png)
 
 4. 打开新的资源管理器看看，OneDrive 图标是不是消失了；
 
 如果使用的是 64 位版本的 windows，在运行 32 位程序的时候，还是能在`保存`对话框里看到 OneDrive。
 
-![1549009483968](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/83d49e.png)
+![1549009483968](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/83d49e.png)
 
 可以进入注册表编辑器里面的下述地址：
 
@@ -69,7 +69,7 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 
 2. 按`Ctrl+F`搜索，输入`Creative Cloud Files`，找到`\HKEY_CLASSES_ROOT\CLSID`下面的一项
 
-   ![1549012475286](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/f0e4e3.png)
+   ![1549012475286](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/f0e4e3.png)
 
 3. 将右侧的`System.IsPinnedToNameSpaceTree`值从`1`改为`0`；
 
@@ -77,7 +77,7 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 
 经过上述 3 个操作之后，左侧的边栏变得清晰了很多，如果有其他程序图标，也可以参考类似的方法移除
 
-![1549012686611](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/9f3e82.png)
+![1549012686611](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/9f3e82.png)
 
 ## 移除此电脑里面的应用图标
 
@@ -125,12 +125,12 @@ HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
 
 1. 打开文件夹选项
 
-   ![1549018401493](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/0a99da.png)
+   ![1549018401493](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/0a99da.png)
 
 2. 在隐私下去除展现最近文件和文件夹的勾选；
 
-   ![1549018096295](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/b3ea05.png)
+   ![1549018096295](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/b3ea05.png)
 
 3. 如果不喜欢默认展现快速访问的话，还可以将默认打开配置为此电脑
 
-   ![1549018130947](https://pic-1251468582.picsh.myqcloud.com/pic/2021/11/04/210175.png)
+   ![1549018130947](https://pic-1251468582.file.myqcloud.com/pic/2021/11/04/210175.png)

@@ -26,7 +26,7 @@ aliases: [/2022-02-20/using-rmarkdown-on-windows.html]
 
   - 看下执行效果：
 
-    ![image-20220221205209820](https://pic-1251468582.picsh.myqcloud.com/pic/2022/02/22/5233f3.png)
+    ![image-20220221205209820](https://pic-1251468582.file.myqcloud.com/pic/2022/02/22/5233f3.png)
 
 - 使用命令行执行：
 
@@ -98,13 +98,13 @@ summary(data[['营业额']])
 
 在命令行下执行语句：`Rscript.exe -e "library('rmarkdown');render('demo.rmd')"`，可以看到有一段编译过程，中间生成了 demo.knit.md，最后生成了 demo.html
 
-![image-20220222210347215](https://pic-1251468582.picsh.myqcloud.com/pic/2022/02/22/7d0352.png)
+![image-20220222210347215](https://pic-1251468582.file.myqcloud.com/pic/2022/02/22/7d0352.png)
 
 ### 查看 html 文件
 
 查看生成的`demo.html`，效果如下：
 
-![image-20220222210531697](https://pic-1251468582.picsh.myqcloud.com/pic/2022/02/22/503338.png)
+![image-20220222210531697](https://pic-1251468582.file.myqcloud.com/pic/2022/02/22/503338.png)
 
 ## 推荐教程
 

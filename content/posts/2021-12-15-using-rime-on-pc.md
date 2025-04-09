@@ -22,11 +22,11 @@ aliases: [/2021-12-15/using-rime-on-pc.html]
 
 2. 安裝完成需要选择输入方案，可以只保留朙月输入法，在皮肤选择中可以选择自己喜欢的样式
 
-   ![image-20230206181740122](https://pic-1251468582.picsh.myqcloud.com/pic/2023/02/06/742201.png)
+   ![image-20230206181740122](https://pic-1251468582.file.myqcloud.com/pic/2023/02/06/742201.png)
 
 3. 这时候可以正常输入，但是展示的是繁体字，按 F4 选择简体；
 
-   ![image-20230206182144701](https://pic-1251468582.picsh.myqcloud.com/pic/2023/02/06/7edf8d.png)
+   ![image-20230206182144701](https://pic-1251468582.file.myqcloud.com/pic/2023/02/06/7edf8d.png)
 
 4. 默认的是纵向选择候选词，可能不符合一般的使用习惯，可以打开目录`%APPDATA%\Rime`中下的文件`weasel.custom.yaml`（如果不存在的话则新建即可），增加下述内容：
 
@@ -48,11 +48,11 @@ aliases: [/2021-12-15/using-rime-on-pc.html]
 
 2. 添加输入法，在输入法管理中添加“鼠须管”输入法
 
-   ![image-20211215143151253](https://pic-1251468582.picsh.myqcloud.com/pic/2021/12/15/ca0e5b.png)
+   ![image-20211215143151253](https://pic-1251468582.file.myqcloud.com/pic/2021/12/15/ca0e5b.png)
 
 3. 这时候就可以正常输入了，不过出来的是繁体字，需要调整为简体字。在输入状态下，按 F4 可以选择切换为简体。
 
-   ![image-20211215143850106](https://pic-1251468582.picsh.myqcloud.com/pic/2021/12/15/1d8811.png)
+   ![image-20211215143850106](https://pic-1251468582.file.myqcloud.com/pic/2021/12/15/1d8811.png)
 
 4. 默认的是纵向选择候选词，可能不符合一般的使用习惯，打开目录`~/Library/Rime`下的文件`squirrel.custom.yaml`（如果不存在则新建），内容如下：
 
@@ -64,7 +64,7 @@ aliases: [/2021-12-15/using-rime-on-pc.html]
 
 5. 选择重新部署后，可以实现横向选择了
 
-   ![image-20211216175250203](https://pic-1251468582.picsh.myqcloud.com/pic/2021/12/16/7074b9.png)
+   ![image-20211216175250203](https://pic-1251468582.file.myqcloud.com/pic/2021/12/16/7074b9.png)
 
 ## Rime的相关参考资料
 

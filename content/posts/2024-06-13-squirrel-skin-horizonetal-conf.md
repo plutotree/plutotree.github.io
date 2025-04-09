@@ -12,19 +12,19 @@ aliases: [/2024-06-13/squirrel-skin-horizonetal-conf.html]
 - candidate_list_layout: linear
 - text_orientation: vertical
 
-![261fde](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/13/261fde.png)
+![261fde](https://pic-1251468582.file.myqcloud.com/pic/2024/06/13/261fde.png)
 
 - candidate_list_layout: linear
 - text_orientation: horizontal
 
-![1ce68f](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/13/1ce68f.png)
+![1ce68f](https://pic-1251468582.file.myqcloud.com/pic/2024/06/13/1ce68f.png)
 
 - candidate_list_layout: stacked
 - text_orientation: horizontal
 
-![d459fa](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/13/d459fa.png)
+![d459fa](https://pic-1251468582.file.myqcloud.com/pic/2024/06/13/d459fa.png)
 
 - candidate_list_layout: stacked
 - text_orientation: vertical
 
-![f74978](https://pic-1251468582.picsh.myqcloud.com/pic/2024/06/13/f74978.png)
+![f74978](https://pic-1251468582.file.myqcloud.com/pic/2024/06/13/f74978.png)
