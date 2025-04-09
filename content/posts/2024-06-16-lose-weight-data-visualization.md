@@ -3,11 +3,12 @@ title: 减肥数据可视化
 date: 2024-06-16 00:31:00 +0800
 tags: [body weight, life]
 categories: [My Life]
+featuredImage: https://pic-1251468582.picsh.myqcloud.com/pic/2025/04/09/j8rOLc.jpg
+description: 本文记录了我为减肥数据可视化所做的技术探索。基于Echarts开发了动态图表，采用无极平台实现云端表格编辑和API调用，最后结合GitHub自动化部署，搭建出可在线更新的数据看板。
 slug: lose-weight-data-visualization
 aliases: [/2024-06-16/lose_weight_data_visualization copy.html]
 ---
 
-> 文章经过 AI 润色
 
 最近，我踏上了减肥的征程，并在过去一个月里取得了小小成果。不过这里重要不是减肥，而是我需要一种方式来直观展示我的减肥进展，其实最主要的也就是体重数据的折线图。但市面上的多数健康追踪应用似乎都未能满足我的需要，它们提供的图表功能缺乏对时间选择的灵活性——大多数应用仅支持以自然日、周或月为单位的折线图展示，其实我需要的也就是我从减肥开始到现在一个区间段的数据变化而已。
 
