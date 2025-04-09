@@ -1,7 +1,9 @@
 ---
-title: "从告警聊到IFTTT"
+title: 从告警聊到IFTTT
 date: 2023-02-14 18:30:00 +0800
 tags: [ifttt]
+slug: from-monitor-to-ifttt-intro
+aliases: [/2023-02-14/from-monitor-to-ifttt-intro.html]
 ---
 
 ## 从腾讯云告警聊起

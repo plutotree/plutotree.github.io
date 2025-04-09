@@ -1,7 +1,9 @@
 ---
-title: "鼠须管Squirrel选项词横排配置调整"
+title: 鼠须管Squirrel选项词横排配置调整
 date: 2024-06-13 00:30:00 +0800
 tags: [rime, squirrel]
+slug: squirrel-skin-horizonetal-conf
+aliases: [/2024-06-13/squirrel-skin-horizonetal-conf.html]
 ---
 
 

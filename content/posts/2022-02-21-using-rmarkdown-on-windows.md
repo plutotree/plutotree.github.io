@@ -1,7 +1,9 @@
 ---
-title: "Windows 下 R mardown 入门实战"
+title: Windows 下 R mardown 入门实战
 date: 2022-02-20 19:30:00 +0800
 tags: [rmarkdown]
+slug: using-rmarkdown-on-windows
+aliases: [/2022-02-21/using-rmarkdown-on-windows.html]
 ---
 
 ## R 基础实战

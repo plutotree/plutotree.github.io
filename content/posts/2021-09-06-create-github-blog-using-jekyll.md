@@ -1,7 +1,9 @@
 ---
-title: "在github pages上使用jekyll"
+title: 在github pages上使用jekyll
 date: 2021-09-06 15:30:00 +0800
 tags: [jekyll]
+slug: create-github-blog-using-jekyll
+aliases: [/2021-09-06/create-github-blog-using-jekyll.html]
 ---
 
 网上有大量文章说明如何在 github pages 上面使用 jekyll，这里仅说明下大致流程

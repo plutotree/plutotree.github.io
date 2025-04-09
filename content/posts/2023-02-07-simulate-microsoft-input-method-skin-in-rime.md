@@ -1,7 +1,9 @@
 ---
-title: "小狼毫100%模仿微软输入法的皮肤"
+title: 小狼毫100%模仿微软输入法的皮肤
 date: 2023-02-07 17:30:00 +0800
 tags: [rime, 小狼毫]
+slug: simulate-microsoft-input-method-skin-in-rime
+aliases: [/2023-02-07/simulate-microsoft-input-method-skin-in-rime.html]
 ---
 
 对于输入法来说，皮肤可以说是非常重要，我们设置一款感觉舒适的，对于打字体验来说能提升不少。毕竟大家不是设计师，我们可以自己盗取成熟的输入法的皮肤效果就好了。这里我们参考的是微软拼音输入法，毕竟作为 windows 系统自带的，微软的设计师水准还是值得信赖的。

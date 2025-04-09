@@ -1,7 +1,9 @@
 ---
-title: "从 pushbullet 切换到 pushover 作为消息通知工具"
+title: 从 pushbullet 切换到 pushover 作为消息通知工具
 date: 2023-01-17 16:30:00 +0800
 tags: [pushover, pushbullet]
+slug: using-pushover-as-push-channel
+aliases: [/2023-01-17/using-pushover-as-push-channel.html]
 ---
 
 ## 背景

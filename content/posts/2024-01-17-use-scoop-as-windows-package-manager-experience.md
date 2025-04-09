@@ -1,8 +1,10 @@
 ---
-title: "Windows包管理器Scoop的使用经验"
+title: Windows包管理器Scoop的使用经验
 date: 2024-01-17 18:00:00 +0800
 tags: [scoop]
-categories: ["Software"]
+categories: [Software]
+slug: use-scoop-as-windows-package-manager-experience
+aliases: [/2024-01-17/use-scoop-as-windows-package-manager-experience.html]
 ---
 
 如果有在 Mac 下用过`HomeBrew`的都知道，软件安装起来是多么方便。Windows 一直缺少这么方便的包管理工具。`Chocolatey`只能算是便捷的安装工具，和包管理工具差距还挺大的。`WinGet`可以算是一个包管理工具，只是目前支持的应用还比较少。以前有听说过[`Scoop`](https://scoop.sh)，印象中说法是支持的软件数量较少。不过最近试了下，发现其支持的软件数量已经相当广泛。各类常见开发工具自然不必说了，主流的软件其中包括部分国内软件都能在官方的 bucket 中找到。官方不支持的软件，我们也能通过第三方的 bucket 进行安装。目前我有 59 个软件是通过 scoop 进行安装了。

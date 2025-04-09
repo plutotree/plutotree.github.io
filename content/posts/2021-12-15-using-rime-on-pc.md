@@ -1,7 +1,9 @@
 ---
-title: "使用RIME输入法"
+title: 使用RIME输入法
 date: 2021-12-15 17:50:00 +0800
 tags: [rime]
+slug: using-rime-on-pc
+aliases: [/2021-12-15/using-rime-on-pc.html]
 ---
 
 ## 为啥需要更换输入法？

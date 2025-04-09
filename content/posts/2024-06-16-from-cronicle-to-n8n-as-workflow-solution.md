@@ -1,7 +1,9 @@
 ---
-title: "从 Cronicle 到 n8n 实践自动化工作流"
+title: 从 Cronicle 到 n8n 实践自动化工作流
 date: 2024-06-16 01:00:00 +0800
-tags: [cronicle,n8n]
+tags: [cronicle, n8n]
+slug: from-cronicle-to-n8n-as-workflow-solution
+aliases: [/2024-06-16/from-cronicle-to-n8n-as-workflow-solution.html]
 ---
 
 > 文章经过 AI 润色

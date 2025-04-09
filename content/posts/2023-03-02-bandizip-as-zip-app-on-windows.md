@@ -1,8 +1,10 @@
 ---
-title: "Windows下使用Bandizip替换7zip"
+title: Windows下使用Bandizip替换7zip
 date: 2023-03-02 12:20:00 +0800
 tags: [bandizip]
 categories: [Software]
+slug: bandizip-as-zip-app-on-windows
+aliases: [/2023-03-02/bandizip-as-zip-app-on-windows.html]
 ---
 
 Windows 下一直在使用 7zip 作为唯一的压缩解压缩工具，不过解压缩的手有个一直困扰的问题：如果直接解压缩到当前目录，可能会出现一堆散乱的文件；如果解压缩到同名的目录，可能会导致多一层无用目录。原因就是因为有些压缩文件里面有根目录，而有些又没有。实际上一般会选择第二种方案，毕竟多一层目录结构总好于散乱的文件还要花时间清理。其实要解决这个问题很简单，提供一个所谓的“智能解压缩”就够了，实现起来可能也没几行代码，不知道 7zip 为啥一直没有支持。

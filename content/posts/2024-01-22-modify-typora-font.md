@@ -1,7 +1,9 @@
 ---
-title: "修改Typora的字体"
+title: 修改Typora的字体
 date: 2024-01-22 18:00:00 +0800
 tags: [typora]
+slug: modify-typora-font
+aliases: [/2024-01-22/modify-typora-font.html]
 ---
 
 从typora早起的beta版就开始在用，现在应该越来越多人认可其作为最佳Markdown编辑器。不过默认情况下，在windows展示的字体使用的是宋体，看起来其实不太美观，我们可以换成其它更好看得字体。微软雅黑我最不满意的是中文标点符号太丑，甚至不太容易分辨，我还是比较喜欢思源黑体。

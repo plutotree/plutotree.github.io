@@ -1,8 +1,10 @@
 ---
-title: "减肥数据可视化"
+title: 减肥数据可视化
 date: 2024-06-16 00:31:00 +0800
 tags: [body weight, life]
-categories: ["My Life"]
+categories: [My Life]
+slug: lose-weight-data-visualization
+aliases: [/2024-06-16/lose_weight_data_visualization copy.html]
 ---
 
 > 文章经过 AI 润色

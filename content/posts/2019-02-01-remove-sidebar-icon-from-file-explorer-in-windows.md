@@ -1,7 +1,9 @@
 ---
-title: "从windows资源管理器中移除左侧边栏图标"
+title: 从windows资源管理器中移除左侧边栏图标
 date: 2019-02-01 15:30:00 +0800
 tags: [windows]
+slug: remove-sidebar-icon-from-file-explorer-in-windows
+aliases: [/2019-02-01/remove-sidebar-icon-from-file-explorer-in-windows.html]
 ---
 
 windows10 资源管理器，左侧有较多无用的图标，尤其对于洁癖者来说更想把这些图标都清理干净。

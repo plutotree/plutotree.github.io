@@ -1,7 +1,9 @@
 ---
-title: "latex中文书籍模板"
+title: latex中文书籍模板
 date: 2021-11-22 12:30:00 +0800
 tags: [latex]
+slug: latex-chinese-book-simple-template
+aliases: [/2021-11-23/latex-chinese-book-simple-template.html]
 ---
 
 使用`ctexbook`的一个最简单的模板

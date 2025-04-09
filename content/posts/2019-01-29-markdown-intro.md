@@ -1,8 +1,10 @@
 ---
-title: "Markdown 语法详解"
+title: Markdown 语法详解
 date: 2019-01-29 12:03:00 +0800
 tags: [markdown]
 categories: [markdown]
+slug: markdown-intro
+aliases: [/2019-01-29/markdown-intro.html]
 ---
 
 ## Markdown 简介

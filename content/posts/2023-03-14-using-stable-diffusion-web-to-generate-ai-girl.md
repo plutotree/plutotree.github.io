@@ -1,8 +1,10 @@
 ---
-title: "使用Stable Diffusion生成美女图"
+title: 使用Stable Diffusion生成美女图
 date: 2023-03-14 20:00:00 +0800
 tags: [AI]
-categories: ["AI"]
+categories: [AI]
+slug: using-stable-diffusion-web-to-generate-ai-girl
+aliases: [/2023-03-14/using-stable-diffusion-web-to-generate-ai-girl.html]
 ---
 
 最近 Stable Diffusion 都大火，小红书上也是各种 AI 美女图，我也来凑一把热闹。

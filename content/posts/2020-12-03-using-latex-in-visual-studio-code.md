@@ -1,7 +1,9 @@
 ---
-title: "在Visual Studio Code中使用LaTeX"
+title: 在Visual Studio Code中使用LaTeX
 date: 2020-12-03 18:30:00 +0800
 tags: [latex, vscode]
+slug: using-latex-in-visual-studio-code
+aliases: [/2020-12-03/using-latex-in-visual-studio-code.html]
 ---
 
 ## 关于 LaTex

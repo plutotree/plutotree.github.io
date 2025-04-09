@@ -1,7 +1,9 @@
 ---
-title: "使用autohotkey实现evernote的多级标题"
+title: 使用autohotkey实现evernote的多级标题
 date: 2021-11-03 11:32:25 +0800
 tags: [autohotkey, evernote]
+slug: use-autohotkey-to-implement-evernote-multi-level-title
+aliases: [/2021-11-03/use-autohotkey-to-implement-evernote-multi-level-title.html]
 ---
 
 一直没想明白 evernote 国际版为啥一直不支持多级标题，这几乎是一个基础特性的缺失。网上的资料大多是用`autohotkey`来实现的，基本处理函数如下：

@@ -1,7 +1,9 @@
 ---
-title: "思源字体介绍"
+title: 思源字体介绍
 date: 2020-12-04 18:30:00 +0800
 tags: [fonts]
+slug: source-hans-font-intro
+aliases: [/2020-12-04/source-hans-font-intro.html]
 ---
 
 思源字体是 Adobe 和 Google 联合开发的开源字体，以 Apache 2.0 授权，可以免费商用。每套字体提供了 7 个尺寸，并且为中日韩，更具体的说大陆、香港、台湾、韩国、日本都进行了针对化的设计，包括[思源宋体](https://github.com/adobe-fonts/source-han-serif)、[思源黑体](https://github.com/adobe-fonts/source-han-sans)和[思源等宽](https://github.com/adobe-fonts/source-han-mono)三类字体。

@@ -1,7 +1,9 @@
 ---
-title: "markdown图床实践：Typora+PicGo-core+腾讯云cos"
+title: markdown图床实践：Typora+PicGo-core+腾讯云cos
 date: 2021-11-02 19:58:28 +0800
 tags: [picgo, markdown, cos, typora]
+slug: using-picgo-as-image-uploader-bed
+aliases: [/2021-11-02/using-picgo-as-image-uploader-bed.html]
 ---
 
 ## 前言

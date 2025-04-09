@@ -1,7 +1,9 @@
 ---
-title: "在jekyll中使用百度统计"
+title: 在jekyll中使用百度统计
 date: 2019-02-01 15:30:00 +0800
 tags: [jekyll]
+slug: using-baidu-analytics-in-jekyll
+aliases: [/2019-02-02/using-baidu-analytics-in-jekyll.html]
 ---
 
 > 腾讯统计已下线，可以查看最后一部分引入百度统计

@@ -1,7 +1,9 @@
 ---
-title: "使用富途API实现Google表格的股票数据在线更新"
+title: 使用富途API实现Google表格的股票数据在线更新
 date: 2023-04-14 19:00:00 +0800
 tags: [stock]
+slug: futu-update-stock-data-with-futuapi-and-google-sheets
+aliases: [/2023-04-14/futu-update-stock-data-with-futuapi-and-google-sheets.html]
 ---
 
 对于查看和分析股票的基础数据，在线表格其实是很不错的分析工具，筛选、排序、数据透视图等操作简直太方便了。
