@@ -58,4 +58,5 @@ libFiles:
   # waline@2.6.1 https://waline.js.org/
   walineCSS: '@waline/client@2.6.1/dist/waline.css'
   walineJS: '@waline/client@2.6.1/dist/waline.min.js'
-  valineJS: https://pic-1251468582.cos.ap-shanghai.myqcloud.com/res/valine/1.5.3/Valine.min.js
+  valineJS: https://pic-1251468582.file.myqcloud.com/res/valine/1.5.3/Valine.min.js
+  
