@@ -1,5 +1,5 @@
 ---
-title: 记录一个curl访问的https证书问题
+title: 记录一个 curl 访问的 https 证书问题
 date: 2023-02-01 12:30:00 +0800
 tags: [ssl]
 slug: fix-curl-certificate-problem

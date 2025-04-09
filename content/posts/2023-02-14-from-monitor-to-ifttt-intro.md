@@ -1,5 +1,5 @@
 ---
-title: 从告警聊到IFTTT
+title: 从告警聊到 IFTTT
 date: 2023-02-14 18:30:00 +0800
 tags: [ifttt]
 slug: from-monitor-to-ifttt-intro

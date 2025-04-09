@@ -1,7 +1,7 @@
 ---
 title: 减肥数据可视化
 date: 2024-06-16 00:31:00 +0800
-tags: [body weight, life]
+tags: [lose weight, life]
 categories: [My Life]
 featuredImage: https://pic-1251468582.file.myqcloud.com/pic/2025/04/09/j8rOLc.jpg
 description: 本文记录了我为减肥数据可视化所做的技术探索。基于Echarts开发了动态图表，采用无极平台实现云端表格编辑和API调用，最后结合GitHub自动化部署，搭建出可在线更新的数据看板。

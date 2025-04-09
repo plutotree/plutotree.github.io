@@ -22,7 +22,9 @@ aliases: [/2024-07-02/my-rime-data-sync-method.html]
 
 ![image-20240702012911714](https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/389af8.png)
 
-键盘配置方面，官方文档尚需完善。注意区分字符（symbols）和符号（characters），只有符号才支持 Rime 处理。此外，确保勾选了“经过 Rime 处理”选项。 ![image-20240702014340221](https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/97dbdf.png)
+键盘配置方面，官方文档尚需完善。注意区分字符（symbols）和符号（characters），只有符号才支持 Rime 处理。此外，确保勾选了“经过 Rime 处理”选项。 
+
+![image-20240702014340221](https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/97dbdf.png)
 
 除了键盘配置之外，其他的配置和 PC 端是完全一致的，基本上可以直接复用 PC 端配置。将 PC 端配置打包发到手机后，导入到仓输入法基本就能生效了。
 

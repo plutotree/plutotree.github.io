@@ -1,5 +1,5 @@
 ---
-title: Windows下使用Bandizip替换7zip
+title: Windows 下使用 Bandizip 替换 7zip
 date: 2023-03-02 12:20:00 +0800
 tags: [bandizip]
 categories: [Software]

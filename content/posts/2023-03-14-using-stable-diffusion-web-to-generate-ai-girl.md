@@ -1,5 +1,5 @@
 ---
-title: 使用Stable Diffusion生成美女图
+title: 使用 Stable Diffusion 生成美女图
 date: 2023-03-14 20:00:00 +0800
 tags: [AI]
 categories: [AI]

@@ -1,5 +1,5 @@
 ---
-title: 修改Typora的字体
+title: 修改 Typora 的字体
 date: 2024-01-22 18:00:00 +0800
 tags: [typora]
 slug: modify-typora-font

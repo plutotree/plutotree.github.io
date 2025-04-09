@@ -1,11 +1,10 @@
 ---
-title: 鼠须管Squirrel选项词横排配置调整
+title: 鼠须管 Squirrel 选项词横排配置调整
 date: 2024-06-13 00:30:00 +0800
 tags: [rime, squirrel]
 slug: squirrel-skin-horizonetal-conf
 aliases: [/2024-06-13/squirrel-skin-horizonetal-conf.html]
 ---
-
 
 最近鼠须管squirrel升级之后选项变成纵向排列了，本地没有改过配置，那应该就是新版本对`style/horizontal`参数不再兼容了，看了下 `Release notes` 果然如此，这里备注下这两个选项配置不同情况下的效果。一般只需要设置 `candidate_list_layout: linear` 即可。
 
