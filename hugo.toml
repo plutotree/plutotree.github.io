@@ -522,7 +522,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         appKey = "AwVytl9RdE1qJbSx2Ud3DnS7"
         placeholder = "支持markdown语法，昵称可以填写QQ号"
         avatar = "mp"
-        meta= ""
+        meta= ['nick', 'mail']
         pageSize = 10
         # automatically adapt the current theme i18n configuration when empty
         # 为空时自动适配当前主题 i18n 配置
