@@ -3,7 +3,7 @@ title: 使用alfred连接AirPods
 date: 2020-03-02 00:10:00 +0800
 tags: [alfred]
 slug: connect-airpods-with-alfred
-aliases: [/2020-03-12/connect-airpods-with-alfred.html]
+aliases: [/2020-03-02/connect-airpods-with-alfred.html]
 ---
 
 ## 操作步骤
