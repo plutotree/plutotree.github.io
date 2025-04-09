@@ -12,10 +12,10 @@ jobs:
           submodules: recursive # 包含主题子模块
 
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
+        uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: "latest"
-          extended: true # 必须启用 Extended 版本
+          extended: true # 启用 Extended 版本
 
       - name: Build
         run: hugo --minify --cleanDestinationDir
