@@ -521,8 +521,10 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         appId = "J5NixkF8qVNfHXdDcs7g0mHJ-gzGzoHsz"
         appKey = "AwVytl9RdE1qJbSx2Ud3DnS7"
         placeholder = "支持markdown语法，昵称可以填写QQ号"
-        avatar = "mp"
+        avatar = "wavatar"
         meta= ['nick', 'mail']
+		requiredFields = ['nick']
+		avatar_cdn="https://cn.cravatar.com/avatar/"
         pageSize = 10
         # automatically adapt the current theme i18n configuration when empty
         # 为空时自动适配当前主题 i18n 配置
