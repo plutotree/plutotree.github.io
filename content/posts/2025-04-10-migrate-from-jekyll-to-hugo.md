@@ -1,8 +1,8 @@
 ---
-title: 博客正式从 Jekyll 迁移到 Hugo
+title: 博客从 Jekyll 迁移到 Hugo
 date: 2025-04-10T01:00:00+08:00
 tags: [jekyll, hugo]
-featuredImage: https://pic-1251468582.file.myqcloud.com/pic/2025/04/10/1KhQj8.jpeg
+featuredImage: https://pic-1251468582.file.myqcloud.com/pic/2025/04/10/VZLUG8.jpg
 slug: migrate-from-jekyll-to-hugo
 ---
 
