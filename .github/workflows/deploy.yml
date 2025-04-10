@@ -27,3 +27,12 @@ jobs:
           publish_dir: ./public
           cname: plutotree.me
           force_orphan: true
+      - name: Pushover Notification
+        uses: umahmood/pushover-actions@v1.1.0
+        env:
+          PUSHOVER_TOKEN: ${{ secrets.PUSHOVER_TOKEN }}
+          PUSHOVER_USER: ${{ secrets.PUSHOVER_USER }}
+        with:
+          status: ${{ job.status }}
+          title: "pages Deploy Notification"
+          message: ${{github.event.head_commit.message}}
