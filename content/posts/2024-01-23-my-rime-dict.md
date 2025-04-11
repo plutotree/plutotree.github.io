@@ -2,6 +2,7 @@
 title: 我的 RIME 词库说明
 date: 2024-01-23 18:00:00 +0800
 tags: [rime]
+featuredImage: https://pic-1251468582.file.myqcloud.com/pic/2025/04/11/BfbxR8.jpg
 slug: my-rime-dict
 aliases: [/2024-01-23/my-rime-dict.html]
 ---
