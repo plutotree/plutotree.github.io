@@ -8,6 +8,8 @@ slug: from-cronicle-to-n8n-as-workflow-solution
 aliases: [/2024-06-16/from-cronicle-to-n8n-as-workflow-solution.html]
 ---
 
+<!--more-->
+
 最近又开始折腾起我的服务器了，重点关注数据更新流程中的一些不满意之处：
 
 1. Git仓库同步更新：广州和香港的服务器通过crontab任务每分钟执行git pull操作；

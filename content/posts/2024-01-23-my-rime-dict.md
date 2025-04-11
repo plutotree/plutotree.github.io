@@ -3,9 +3,12 @@ title: 我的 RIME 词库说明
 date: 2024-01-23 18:00:00 +0800
 tags: [rime]
 featuredImage: https://pic-1251468582.file.myqcloud.com/pic/2025/04/11/BfbxR8.jpg
+description: 开源输入法的好处就是可以定制自己的输入方案，选择喜欢的词库，甚至程序化方式生成专业词库。这篇文章介绍了我使用的词库来源及更新流程。
 slug: my-rime-dict
 aliases: [/2024-01-23/my-rime-dict.html]
 ---
+
+<!--more-->
 
 最开始用的基础词库来源于[ssnhd/rime](https://github.com/ssnhd/rime)，这是它的词表介绍
 
