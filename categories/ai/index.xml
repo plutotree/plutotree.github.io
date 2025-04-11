@@ -1,0 +1,50 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>AI - 分类 - PlutoTree's Blog</title><link>https://plutotree.me/categories/ai/</link><description>AI - 分类 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 14 Mar 2023 20:00:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/categories/ai/" rel="self" type="application/rss+xml"/><item><title>使用 Stable Diffusion 生成美女图</title><link>https://plutotree.me/2023/03/using-stable-diffusion-web-to-generate-ai-girl/</link><pubDate>Tue, 14 Mar 2023 20:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2023/03/using-stable-diffusion-web-to-generate-ai-girl/</guid><description><![CDATA[<p>最近 Stable Diffusion 都大火，小红书上也是各种 AI 美女图，我也来凑一把热闹。</p>
+<h2 id="安装stable-diffusion-web-ui">安装Stable Diffusion web UI</h2>
+<p>需要先安装好<code>python 3.10</code>和<code>git</code>（对于程序员的机器来说应该都是必备的了），直接两步执行就好了：</p>
+<ol>
+<li>导出git仓库：<code>git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git</code></li>
+<li>运行脚本：<code>webui-user.bat</code>，这一步下载<code>pytorch</code>可能耗时较长，耐心等待即可；</li>
+<li>执行完成之后，会提示访问<a href="http://127.0.0.1:7860/" target="_blank" rel="noopener noreffer ">http://127.0.0.1:7860/</a>即可体验了；</li>
+<li>可以输入一些简单的标签体验下效果，多个标签用<code>,</code>分割，只支持英文；对于不熟悉的标签可以参考<a href="https://tags.novelai.dev/" target="_blank" rel="noopener noreffer ">网站</a>；</li>
+</ol>
+<p>这时候会发现效果没想象的那么好，尤其是生成的“美女”图，可能千奇百怪。</p>
+<h2 id="使用chilloutmix模型">使用ChilloutMix模型</h2>
+<ol>
+<li>
+<p>在<a href="https://civitai.com/models/6424" target="_blank" rel="noopener noreffer ">civitai</a>上下载ChilloutMix模型，模型较大，耐心等待；</p>
+</li>
+<li>
+<p>下载完成后放入目录<code>stable-diffusion-webui\models\Stable-diffusion</code>；</p>
+</li>
+<li>
+<p>重新刷新页面就可以看到左上角可以选择模型了；</p>
+<p></p>
+</li>
+</ol>
+<h2 id="使用lora插件">使用Lora插件</h2>
+<ol>
+<li>
+<p>在<a href="https://civitai.com/models/4503/amber-genshin-impact-lora" target="_blank" rel="noopener noreffer ">civirtai</a>上下载lora插件；</p>
+</li>
+<li>
+<p>下载完成后放入目录<code>stable-diffusion-webui\extensions\sd-webui-additional-networks\models\lora</code>；</p>
+</li>
+<li>
+<p>切换到<code>Extensions</code>，选择<code>Load From</code>，搜索<code>Kohya-ss Additional Networks</code>，点击<code>Install</code></p>
+</li>
+<li>
+<p>切换<code>Settings</code>，选择<code>Reload UI</code></p>
+</li>
+</ol>
+<h2 id="开始玩耍">开始玩耍</h2>
+<ol>
+<li>
+<p>在<a href="https://civitai.com/models/6424/chilloutmix" target="_blank" rel="noopener noreffer ">ChilloutMix</a>中选择你喜欢的图片，比如<a href="https://civitai.com/gallery/249318?reviewId=41236" target="_blank" rel="noopener noreffer ">这张</a>，拷贝右侧的标签信息；</p>
+</li>
+<li>
+<p>看看生成的效果</p>
+<p></p>
+</li>
+</ol>
+<p>仔细看能发现一个比较大的问题，就是手指还是会有各种奇怪的现象</p>
+]]></description></item></channel></rss>

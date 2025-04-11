@@ -1,0 +1,744 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>PlutoTree's Blog</title><link>https://plutotree.me/</link><description>PlutoTree's blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 10 Apr 2025 01:00:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/index.xml" rel="self" type="application/rss+xml"/><item><title>博客从 Jekyll 迁移到 Hugo：Valine评论系统相关问题</title><link>https://plutotree.me/2025/04/migrate-from-jekyll-to-hugo/</link><pubDate>Thu, 10 Apr 2025 01:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2025/04/migrate-from-jekyll-to-hugo/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/10/VZLUG8.jpg" referrerpolicy="no-referrer">
+            </div><p>最近在将博客从 Jekyll 迁移到 Hugo 的过程中，遇到了一些关于 Valine 评论系统的问题。虽然 Valine 在 Hugo 中可以直接通过配置文件 <code>hugo.toml</code> 进行设置，但在实际使用中发现了一些问题。以下是我整理的解决方案和经验总结。</p>
+<h2 id="1-配置-requiredfields-无效问题">1. 配置 <code>requiredFields</code> 无效问题</h2>
+<p>在 Valine 的官方文档中提到，可以通过 <code>requiredFields</code> 配置字段来设置评论时的必填项，比如昵称、邮箱等。然而，在 Hugo 中直接配置后发现该功能无效。</p>
+<h3 id="问题原因">问题原因</h3>
+<p>经过研究，发现 Hugo 的 <code>layouts/partials/comment.html</code> 文件中只针对部分字段进行了处理，而没有对 <code>requiredFields</code> 进行正确处理。</p>
+<h3 id="解决方法">解决方法</h3>
+<p>将 <code>comment.html</code> 文件复制到项目中相同目录下，然后增加以下代码：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-html">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">{{- with $valine.requiredFields -}}
+</span></span><span class="line"><span class="cl">    {{- $commentConfig = dict &#34;requiredFields&#34; . | dict &#34;valine&#34; | merge $commentConfig -}}
+</span></span><span class="line"><span class="cl">{{- end -}}</span></span></code></pre></div></div>
+<p>运行后，评论功能恢复正常，但头像显示出现问题。</p>
+<h2 id="2-gravatar-头像显示问题">2. Gravatar 头像显示问题</h2>
+<p>在配置头像时发现，随机头像无法正常显示，例如以下头像地址，如果将域名替换为 <a href="https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?d=wavatar&amp;v=1.5.2" target="_blank" rel="noopener noreffer ">www.gravatar.com</a> 则可以正常显示。<br>
+<a href="https://gravatar.loli.net/avatar/d41d8cd98f00b204e9800998ecf8427e?d=wavatar&amp;v=1.5.2" target="_blank" rel="noopener noreffer ">https://gravatar.loli.net/avatar/d41d8cd98f00b204e9800998ecf8427e?d=wavatar&v=1.5.2</a></p>
+<h3 id="问题原因-1">问题原因</h3>
+<p>Gravatar的中转服务，gravatar.loli.net 存在处理上的问题，导致随机头像无法显示。</p>
+<h3 id="解决方法-1">解决方法</h3>
+<p>由于 Gravatar 的官网在国内访问存在较多问题，建议更换为另一个Gravatar的中转服务 cn.gravatar.com。这里也有同样的问题，在配置文件中增加avatar_cdn之后，发现这个配置不生效。需要增加类似的处理逻辑，修改 <code>comment.html</code> 文件：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-html">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">{{- with $valine.avatar_cdn -}}
+</span></span><span class="line"><span class="cl">    {{- $commentConfig = dict &#34;avatar_cdn&#34; . | dict &#34;valine&#34; | merge $commentConfig -}}
+</span></span><span class="line"><span class="cl">{{- end -}}</span></span></code></pre></div></div>
+<p>修改后，Gravatar 头像和随机头像的显示恢复正常，但邮箱为空时随机头像无法随机。</p>
+<h2 id="邮箱为空时随机头像问题">邮箱为空时随机头像问题</h2>
+<h3 id="问题原因-2">问题原因</h3>
+<p>Valine 在邮箱为空时不管昵称是什么，都是直接根据空邮箱去生成MD5，这就导致无法随机生成头像。</p>
+<h3 id="解决方法-2">解决方法</h3>
+<p>将 <code>valine.min.js</code> 中的 <code>t.get(&quot;mail&quot;)</code> 修改为 <code>t.get(&quot;mail&quot;) || t.get(&quot;nick&quot;)</code>，即邮箱为空时使用昵称计算随机头像。修改后需要将文件发布到 CDN 才能使用，具体步骤不在此赘述。</p>
+<h2 id="qq头像和昵称获取问题">QQ头像和昵称获取问题</h2>
+<p>在 Valine 中，昵称字段输入 QQ 时，是可以摘取QQ头像和昵称的，但是测试的时候却发现无法获取。在Chrome的调试窗口，可以看到访问该地址会报错： <a href="https://api.qjqq.cn/api/qqinfo?qq=12345" target="_blank" rel="noopener noreffer ">https://api.qjqq.cn/api/qqinfo?qq=12345</a> 。</p>
+<h3 id="问题原因-3">问题原因</h3>
+<p>几天前我验证的时候浏览器直接打开这个地址是能存在访问的，只是在Valine中使用存在跨域问题。但是神奇的是，今天这个服务彻底失效了。麻烦的是我连服务的回包结构都不知道。好在有强大的AI，直接把压缩的JS代码丢给AI，它就能很聪明的分析出QQ头像和昵称的处理逻辑。</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">n</span> <span class="o">=</span> <span class="nx">i</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">QQCacheKey</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">n</span> <span class="o">&amp;&amp;</span> <span class="nx">n</span><span class="p">.</span><span class="nx">qq</span> <span class="o">==</span> <span class="nx">e</span> <span class="o">?</span> <span class="nx">t</span> <span class="o">&amp;&amp;</span> <span class="nx">t</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="o">:</span> <span class="nx">i</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">url</span><span class="o">:</span> <span class="s2">&#34;https://api.nsmao.net/api/qq/query?key=xx&amp;qq=&#34;</span> <span class="o">+</span> <span class="nx">e</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">method</span><span class="o">:</span> <span class="s2">&#34;get&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nx">json</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="mi">200</span> <span class="o">==</span> <span class="nx">n</span><span class="p">.</span><span class="nx">code</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">nick</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">a</span> <span class="o">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">avatar</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">u</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">nick</span><span class="o">:</span> <span class="nx">r</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">qq</span><span class="o">:</span> <span class="nx">e</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">pic</span><span class="o">:</span> <span class="nx">a</span>
+</span></span><span class="line"><span class="cl">                <span class="p">};</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">i</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">QQCacheKey</span><span class="p">,</span> <span class="nx">u</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">t</span> <span class="o">&amp;&amp;</span> <span class="nx">t</span><span class="p">(</span><span class="nx">u</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<h3 id="解决方法-3">解决方法</h3>
+<p>访问API接口，可以发现会跳转到使用奶思猫 API 。在该网站搜索后，发现存在免费的QQ信息服务接口 <a href="https://api.nsmao.net/api/qq/query" target="_blank" rel="noopener noreffer ">https://api.nsmao.net/api/qq/query</a>，需要注册后获取密钥即可访问。需要注意的是，这个API的回包结构和Valine中使用的是不一致的。</p>
+<p>解决方案1：修改Valine中请求的url以及回包解析。这个方案修改起来很容易，最大的问题是暴露了密钥，尽管密钥是免费的，但也不能随便暴露呀。</p>
+<ul>
+<li>修改请求URL：<code>api.njqq.cn/api/qqinfo?qq=xxx</code> 修改成 <code>https://api.nsmao.net/api/qq/query?key=xx&amp;qq=</code></li>
+<li>修改昵称和头像的获取：<code>{var r=n.name,a=n.imgurl</code>改成<code>{var r=n.data.nick,a=n.data.avatar</code>。</li>
+</ul>
+<p>解决方案2：后台提供中转服务</p>
+<p>通过自己的服务器封装中转接口，避免密钥暴露，接口可以完全丢给AI实现，但需要额外的服务维护成本。</p>
+<h2 id="评论数据迁移问题">评论数据迁移问题</h2>
+<p>如果 URL 发生变化，评论数据需要迁移。Valine 的数据存储在 LeanCloud 中，可以通过脚本或手动修改数据的 URL。当然评论较少时，其实手动修改也是可以的。</p>
+<h2 id="总结与展望">总结与展望</h2>
+<p>在从 Jekyll 迁移到 Hugo 的过程中，Valine 评论系统的配置和使用遇到了一些问题，但通过调整配置文件、修改模板文件和优化代码，基本解决了这些问题。然而，Valine 作为一个没有完全开源的服务，存在一定的局限性。在考虑未来的评论系统选择时，Waline似乎是一个更好的选择。Waline 不仅功能更完善，还提供了更好的国内访问体验和开源支持。唯一的缺点就是需要后台服务（这一点严格来说也不能算缺点）。</p>
+]]></description></item><item><title>继续折腾Rime：iOS版仓输入法及多端数据同步流程</title><link>https://plutotree.me/2024/07/introduction-to-hamster-and-multi-device-data-synchronization/</link><pubDate>Tue, 02 Jul 2024 00:31:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/07/introduction-to-hamster-and-multi-device-data-synchronization/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/08/5fef0a.jpg" referrerpolicy="no-referrer">
+            </div><h2 id="初见仓输入法">初见“仓输入法”</h2>
+<p>在 windows 和 mac 使用了 Rime 输入法已经有一段时间了，但是手机上的<a href="https://apps.apple.com/cn/app/id1142623977" target="_blank" rel="noopener noreffer ">iRime</a>并不完善，更新也不频繁。iOS 系统关闭了网络权限，在输入法隐私上这点是有保障的。直到最近接触到<a href="https://apps.apple.com/cn/app/id6446617683" target="_blank" rel="noopener noreffer ">仓输入法</a>，发现功能已经做得很完善了。它不仅内置了雾凇拼音等优秀输入方案，还提供了数据同步和词表更新的完善解决方案。这促使我下定决心，完成全平台输入法 RIME 统一化的最后一环。</p>
+<h2 id="上手仓输入法">上手“仓输入法”</h2>
+<p>对于不想深入研究配置细节的用户，仓输入法的新手友好度相当高。我选择保留 26 键布局，以无缝迁移电脑端配置，避免重新适应 9 键布局。习惯了从 Nokia 时代的 T9 输入法，我能够实现高速单手盲打，但现在是时候转变了。仓输入法的上下左右划动设定，极大地扩展了单键输入内容的可能性，使得快捷输入变得异常方便。。我们可以很方便在一个 26 键字母键盘上加上数字，及大量的标点符号。快捷输入（手机号、邮箱地址、车牌号等等）真的很方便，相比起电脑上之前的 v 模式，这个下划真的就是那么一下就搞定了。此外，我们还可以增加很多系统命令，复制、粘贴、剪切等，以及输入法的方案切换等等。</p>
+<p></p>
+<p>键盘配置方面，官方文档尚需完善。注意区分字符（symbols）和符号（characters），只有符号才支持 Rime 处理。此外，确保勾选了“经过 Rime 处理”选项。</p>
+<p></p>
+<p>除了键盘配置之外，其他的配置和 PC 端是完全一致的，基本上可以直接复用 PC 端配置。将 PC 端配置打包发到手机后，导入到仓输入法基本就能生效了。</p>
+<h2 id="想念五笔输入">想念“五笔输入”</h2>
+<p>看群里还蛮多人钟情于五笔 86 的人，想起自己也算是最早一代使用五笔的人，直到后面拼音输入法联想功能的完善，尤其在引入在线提示词之后，常用语的打字速度上五笔已经处于劣势了，我才逐步切换到了搜狗拼音输入法。</p>
+<p>这么想起来有 8 年没有使用过五笔输入了，这似乎是有点遗憾。 我开始折腾起五笔输入法了，先拿五笔做了反差来用吧。首先想要找一份简体的五笔单字码表，有人推荐了<a href="https://github.com/aardio/wubi-lex" target="_blank" rel="noopener noreffer ">WubiLex</a>，还是相当好用的，自带大量的五笔词库。开始选择了微软五笔的单字，后面发现很多字都不支持，比如羴之类的。既然要作为反查词库，那么词库必须完整啊。后面用了 WubiLex 自带的五笔单字库，字库看起来还是比较完整的。现在五笔可以作为不认识字的反查，也可以想念的时候切换打打字。原以为五笔打字是刻在骨子里面的，不过竟然有点忘记最后一笔的规则了，看来时间还真是会让人忘却。</p>
+<h2 id="再聊聊双拼输入">再聊聊“双拼输入”</h2>
+<p>在研究五笔输入法的时候，同时也看看其他的形码输入法，目前比较多人推崇的是小鹤音形，不过现在对新的形码输入并没有啥兴趣了。不过在过程中看到有人在说，“双拼输入法是投入性价比最高的输入法了，花上几个小时就能熟悉，花上几天就能赶上原来的拼音输入速度了，而且是一辈子受益的”。理论上，双拼能显著降低击键次数和输入错误率。我是否应该花时间学习双拼输入呢？。推荐下这篇文章<a href="https://sspai.com/post/42667" target="_blank" rel="noopener noreffer ">让双拼不再是只属于少数人的输入方式</a>。</p>
+<p>双拼方案众多，主要区别在于是否使用<code>;</code>键。搜狗和微软双拼用了<code>;</code>做<code>ing</code>的输入，而自然码和小鹤并没有去用<code>;</code>。我更喜欢后者，小鹤算是在自然码上做了一些改进，尽管这个改进有很多作者自己的因素在里面。花了十几分钟去做打字练习，发现完全没有记住，不过我下载了一张键位图放在桌面了，以后还是会试一试的。顺便推荐一个这个<a href="https://api.ihint.me/shuang/" target="_blank" rel="noopener noreffer ">双拼在线练习</a>的网站，提供了各种不同的双拼方案的在线练习，另外还有提供小程序。</p>
+<p><figure><a href="https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/65c521.png" title="image-20240702224244991" >
+        
+    </a><figcaption class="image-caption">双拼在线练习</figcaption>
+    </figure></p>
+<p>另我还发现了<a href="https://macroxue.github.io/shuangpin/eval.html" target="_blank" rel="noopener noreffer ">双拼方案评测</a>工具，它根据击键手指、位置和过程预估打字时间，评估分数，并提供优化方案。理论上，我们可以根据数据设计出最高效的双拼输入法。 <figure><a href="https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/5f4c51.png" title="image-20240702225206097" >
+        
+    </a><figcaption class="image-caption">双拼方案评测工具</figcaption>
+    </figure></p>
+<p>在对不同双拼方案进行比较后，发现主流方案之间的差异不大，从 114.9 到 123.6，差异在 10%不到，简单看数据，相比全拼输入法大概能有 20%-30%的速度提升吧。但是“飞猫”和“乱序”从分数上看却是遥遥领先，这是为啥呢？</p>
+<table>
+  <thead>
+      <tr>
+          <th>双拼方案</th>
+          <th>分数</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>拼音加加</td>
+          <td>123.6</td>
+      </tr>
+      <tr>
+          <td>国标双拼</td>
+          <td>119.9</td>
+      </tr>
+      <tr>
+          <td>小鹤双拼</td>
+          <td>118.8</td>
+      </tr>
+      <tr>
+          <td>微软</td>
+          <td>117.9</td>
+      </tr>
+      <tr>
+          <td>自然码</td>
+          <td>116.6</td>
+      </tr>
+      <tr>
+          <td>紫光</td>
+          <td>126.5</td>
+      </tr>
+      <tr>
+          <td>智能 ABC</td>
+          <td>114.9</td>
+      </tr>
+      <tr>
+          <td>大牛</td>
+          <td>131</td>
+      </tr>
+      <tr>
+          <td>飞猫</td>
+          <td>174.5</td>
+      </tr>
+      <tr>
+          <td>全拼</td>
+          <td>93.3</td>
+      </tr>
+      <tr>
+          <td>乱序优化</td>
+          <td>182.2</td>
+      </tr>
+  </tbody>
+</table>
+<p>我们先来看下“飞猫”和“乱序优化”的键位图。有没有发现和其他双拼输入法很明显的差异，他们的声母是乱序的，你不仅需要记住韵母，还得重新去记声母。通过这一点，能比其他双拼输入法的输入速度再继续提升 30%。而“飞猫”还有一个特点在于部分拼音是支持多个键的，就是所谓的“飞键”，比如<code>sh</code>既可以通过<code>N</code>也可以通过<code>A</code>进行输入，你哪个手指方便就用哪个手指去打印，有点像是按<code>Shift</code>键的感觉，你左手打字母那就右手按右边的<code>Shift</code>，反之亦然。不过我估计挺多人没有遵守这个基础打字规范，我个人大部分情况还是遵循了这一点的。</p>
+<p><figure><a href="https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/72561e.png" title="image-20240702230905969" >
+        
+    </a><figcaption class="image-caption">飞猫键位图</figcaption>
+    </figure></p>
+<p><figure><a href="https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/cd486b.png" title="image-20240702230921266" >
+        
+    </a><figcaption class="image-caption">乱序优化键位图</figcaption>
+    </figure></p>
+<p>网上关于“飞猫”的资料相当少，<a href="https://tieba.baidu.com/p/4676554242?pn=1" target="_blank" rel="noopener noreffer ">这一篇</a>算是作者在 2016 年发的原文，的确是通过程序计算出来的按键，可是后面就没啥新内容了。GitHub 上也没有其他资料，只有<a href="https://github.com/zebats/flying-cat-rime?tab=readme-ov-file" target="_blank" rel="noopener noreffer ">这一篇</a>写到在 Rime 中的飞猫配置。下面这些是作者文章中的截图。</p>
+<p></p>
+<p></p>
+<p></p>
+<h2 id="多端数据同步方案">多端数据同步方案</h2>
+<p>我们需要同步的数据，可以分为几类：</p>
+<ol>
+<li>配置类 yaml 文件；</li>
+<li>词库类 yaml 文件；</li>
+<li>用户输入词库，以 userdb 格式保存；</li>
+</ol>
+<p>我们先看前两类数据的同步方案，这里的数据源头是维护在 Git 仓库的。</p>
+<div class="mermaid" id="id-1"></div><p>在看用户词库的同步方案，这里的数据源头的话就是各个输入设备的本地数据，执行同步操作后会将自己设备的数据写入微云同步盘的指定目录，同时读取其他设备的用户词库进行合并处理。</p>
+<div class="mermaid" id="id-2"></div><p>这里相关的脚本操作在 Mac 和 Windows 上是在 uTools 的快捷命令插件中进行维护，开启了定时执行，手机端是通过 iPhone 的快捷指令进行定时执行。而源头的词库是通过 Github Workflow 进行定时更新的，这样整体流程都不需要人工干预了。</p>]]></description></item><item><title>从 Cronicle 到 n8n 实践自动化工作流</title><link>https://plutotree.me/2024/06/from-cronicle-to-n8n-as-workflow-solution/</link><pubDate>Sun, 16 Jun 2024 01:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/06/from-cronicle-to-n8n-as-workflow-solution/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/09/Zqor7I.jpg" referrerpolicy="no-referrer">
+            </div><p>最近又开始折腾起我的服务器了，重点关注数据更新流程中的一些不满意之处：</p>
+<ol>
+<li>Git仓库同步更新：广州和香港的服务器通过crontab任务每分钟执行git pull操作；</li>
+<li>博客同步更新：服务器上的crontab任务执行git fetch，对比差异后触发构建流程；</li>
+<li>Cronicle部署：广州服务器未部署cronicle，导致定时脚本依赖crontab，无法在页面查看执行状态</li>
+</ol>
+<h3 id="部署cronicle">部署cronicle</h3>
+<p>为了简化广州服务器上的定时任务管理，我部署了 <a href="https://cronicle.net/" target="_blank" rel="noopener noreffer ">Cronicle</a>。尽管步骤较多，但得益于之前的经验，十几分钟内便完成了：</p>
+<ol>
+<li>申请并配置域名，设置 CNAME 转发；</li>
+<li>配置 Nginx，申请 HTTPS 证书；</li>
+<li>安装Cronicle（未使用Docker，直接通过curl命令）；</li>
+<li>修改配置文件，参照香港服务器；</li>
+<li>启动Cronicle；</li>
+<li>在页面配置任务，如进程监控脚本等；</li>
+</ol>
+<p>部署过程中发现，Cronicle支持API远程访问，这正是我一直期望的功能。考虑到直接在机器上部署agent来转发命令存在安全隐患，且定制化配置页面需要额外维护，cronicle的API很好的满足了我。</p>
+<h3 id="部署n8n">部署n8n</h3>
+<p>有了Cronicle的API，我们具备了通过GitHub push webhook触发同步更新的基础。接下来，需要找到一个合适的服务接收webhook请求，并优雅地调用我们的API接口。这时，我想起了持续集成（CI）的概念。曾尝试使用集简云等服务，但它们通常按执行次数收费且价格不菲。经过一番搜索，我发现<a href="https://n8n.io/" target="_blank" rel="noopener noreffer ">n8n</a>受到了许多人的推荐。其插件生态完善，能方便地集成主流服务。</p>
+<p>部署n8n相对简单：</p>
+<ol>
+<li>申请域名，配置CNAME转发；</li>
+<li>配置Nginx，申请HTTPS证书；</li>
+<li>使用Docker部署n8n；</li>
+</ol>
+<h3 id="借助n8n实现git仓库的同步更新">借助n8n实现git仓库的同步更新</h3>
+<p>配置流水线花费了一些时间，没找到直接参考的例子，只能一步步琢探索。</p>
+<p>第一步：引入<code>GitHub Trigger</code>节点，配置了token之后，只看到一个<code>Test step</code>的按钮。点击之后，n8n能自动配置GitHub的Webhook的配置项。n8n区分了测试和正式的webhook地址，注意的是对于正式地址仍然需要手动在GitHub页面配置的。</p>
+<p>第二步：引入<code>HTTP request</code>节点，调用cronicle的API。</p>
+<p>简单测试了下发现流程就可以跑通了，但是这里的流水线没有对API执行的结果做回包解析。所以第三不便是需要引入<code>Code</code>节点，判断下下错误码，对于非0的情况直接抛异常了。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">code</span><span class="o">=</span><span class="nx">$input</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">json</span><span class="p">.</span><span class="nx">code</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nx">code</span> <span class="o">!==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="sb">`HTTP request failed with code {data[0].code}`</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">return</span> <span class="nx">$input</span><span class="p">.</span><span class="nx">item</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>整体流水线的配置，只包含三类节点</p>
+<p></p>
+<h3 id="实现博客的同步更新">实现博客的同步更新</h3>
+<p>有了git仓库同步的经验，要解决博客的同步更新其实就比较简单了。不过这里顺便提下n8n的消息通知并不优雅，没有地方统一配置成功和失败的消息发送。目前来看需要针对每一条流水线进行配置。</p>
+<p></p>
+<p>后续会将更多任务挪到n8n上面来，这只是一个起步。</p>]]></description></item><item><title>减肥数据可视化</title><link>https://plutotree.me/2024/06/lose-weight-data-visualization/</link><pubDate>Sun, 16 Jun 2024 00:31:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/06/lose-weight-data-visualization/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/09/j8rOLc.jpg" referrerpolicy="no-referrer">
+            </div><p>最近，我踏上了减肥的征程，并在过去一个月里取得了小小成果。不过这里重要不是减肥，而是我需要一种方式来直观展示我的减肥进展，其实最主要的也就是体重数据的折线图。但市面上的多数健康追踪应用似乎都未能满足我的需要，它们提供的图表功能缺乏对时间选择的灵活性——大多数应用仅支持以自然日、周或月为单位的折线图展示，其实我需要的也就是我从减肥开始到现在一个区间段的数据变化而已。</p>
+<p>我决定自己动手制作图表。在众多图表库中，Echarts 以其美观和功能强大脱颖而出，经过一番尝试，我发现它几乎可以满足我所有的需求。</p>
+<p>我曾幻想能够直接在网页上读取我的 iPhone 健康数据，但苹果的 HealthKit 似乎并未对网页端开放，这让我不得不另辟蹊径。我选择了从手机导出所有健康数据，然后在电脑上进行处理，再将其导出为便于网页使用的格式。</p>
+<p>最初，我将数据以 HTML 的形式维护在 git 仓库中，每当有更新时，GitHub 的 workflow 会自动触发并部署更新。这种方法基本上能满足我的需求了。</p>
+<p>只是想到数据放在 HTML 中不是一个太好的解决方案，我就尝试将数据从 HTML 中独立出来，转而使用 JSON 格式存储。这样一来，每当需要更新数据时，我只需修改 JSON 文件，而无需触碰 HTML 代码，这并未将我的工作简化，但是听起来更合理不是？</p>
+<p>我很快意识到，即使是 JSON，也仍然需要通过 git 提交，这并不是我所追求的优雅解决方案。我希望能够在网页上直接编辑数据，于是开始探索不同的方案。最终，我发现了一个完美的解决方案——<a href="https://wujicode.cn" target="_blank" rel="noopener noreffer ">无极</a>。它不仅提供了一个可视化的表格数据编辑界面，还有数据拉取的 API 接口，而且是完全免费的。尽管我对其可能存在的使用限制尚不明确，但它已经很好地满足了我的需求。</p>
+<p>在部署过程中，我遇到了一个棘手的问题：无极提供的 API 接口存在跨域访问的问题。为了解决这个问题，我不得不设置了一个 nginx 服务器作为中转，虽然这增加了一些复杂性，但最终确保了数据的顺利传输和展示。</p>
+<p>这纯粹是一趟折腾之旅，不过好在不管是 GitHub 的流水线更新流程，还是 Nginx 服务器也都是现成的，所以工作量倒是不大。最后还是展现下我的趋势图吧，网址就先不贴了。</p>
+<p></p>]]></description></item><item><title>鼠须管 Squirrel 选项词横排配置调整</title><link>https://plutotree.me/2024/06/squirrel-skin-horizonetal-conf/</link><pubDate>Thu, 13 Jun 2024 00:30:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/06/squirrel-skin-horizonetal-conf/</guid><description><![CDATA[<p>最近鼠须管squirrel升级之后选项变成纵向排列了，本地没有改过配置，那应该就是新版本对<code>style/horizontal</code>参数不再兼容了，看了下 <code>Release notes</code> 果然如此，这里备注下这两个选项配置不同情况下的效果。一般只需要设置 <code>candidate_list_layout: linear</code> 即可。</p>
+<ul>
+<li>candidate_list_layout: linear</li>
+<li>text_orientation: vertical</li>
+</ul>
+<p></p>
+<ul>
+<li>candidate_list_layout: linear</li>
+<li>text_orientation: horizontal</li>
+</ul>
+<p></p>
+<ul>
+<li>candidate_list_layout: stacked</li>
+<li>text_orientation: horizontal</li>
+</ul>
+<p></p>
+<ul>
+<li>candidate_list_layout: stacked</li>
+<li>text_orientation: vertical</li>
+</ul>
+<p></p>
+]]></description></item><item><title>我的 RIME 词库说明</title><link>https://plutotree.me/2024/01/my-rime-dict/</link><pubDate>Tue, 23 Jan 2024 18:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/01/my-rime-dict/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/11/BfbxR8.jpg" referrerpolicy="no-referrer">
+            </div><p>最开始用的基础词库来源于<a href="https://github.com/ssnhd/rime" target="_blank" rel="noopener noreffer ">ssnhd/rime</a>，这是它的词表介绍</p>
+<p></p>
+<p>主要用了这几份词库：</p>
+<ul>
+<li><code>luna_pinyin.dict.yaml</code>：默认字库，有部分的词语，总计7万；</li>
+<li><code>luna_pinyin.sogou.dict.yaml</code>：来源于搜狗词库，总计105万；</li>
+<li><code>easy_en.dict.yaml</code>：英文词库，总计11万；</li>
+</ul>
+<p>此外还用了几份自己维护的词库：</p>
+<ul>
+<li>股票名称列表，使用<a href="https://tushare.pro/" target="_blank" rel="noopener noreffer ">Tushare</a> API拉取A股的股票名称列表生成词库，总计5千；</li>
+<li>我的搜狗自定义词库，从搜狗导出后经过手动删除，总计3千；</li>
+<li>我手动维护的词库，总计1百；</li>
+</ul>
+<p>但是这份词库存在几个问题：</p>
+<ol>
+<li>缺乏词库持续的更新维护；</li>
+<li>这份百万级的搜狗词库质量不高，并不是搜狗自带的词库；</li>
+<li>本身基于繁体，尽管这符合RIME的做法；</li>
+</ol>
+<p>最近发现两份还不错的简体词库，分别是<a href="https://github.com/fkxxyz/rime-cloverpinyin" target="_blank" rel="noopener noreffer ">四叶草拼音</a>和<a href="https://github.com/iDvel/rime-ice" target="_blank" rel="noopener noreffer ">雾凇拼音</a>。其中雾凇拼音有6K的star数量，并且更新还是比较及时的，提供的功能也比较完善，下面是一个功能介绍：</p>
+<p></p>
+<p>作者也明确说明了他会长期维护几份词库：</p>
+<ul>
+<li><code>8105</code> 字表。</li>
+<li><code>base</code> 基础词库。</li>
+<li><code>ext</code> 扩展词库，小词库。</li>
+<li><code>tencent</code> 扩展词库，大词库。</li>
+<li>Emoji</li>
+</ul>
+<p>雾凇拼音用了大量的<code>lua</code>脚本来实现功能，这里先不整体引用，打算只引用词库。但是在部署的时候却发现小狼毫会一直处于加载中，尝试后发现是在加载Tencent大词库的时候才出问题。搜索<a href="https://github.com/rime/weasel/issues/953" target="_blank" rel="noopener noreffer ">Github</a>发现可以关掉配置<code>use_preset_vocabulary</code>就可以解决问题。</p>
+<p>目前使用的外部词库保留了来源于雾凇拼音的四份中文词库</p>
+<ul>
+<li><code>cn_dicts/8105</code>     # 字表</li>
+<li><code>cn_dicts/base</code>     # 基础词库</li>
+<li><code>cn_dicts/ext</code>      # 扩展词库</li>
+<li><code>cn_dicts/tencent</code>  # 腾讯词向量</li>
+</ul>]]></description></item><item><title>修改 Typora 的字体</title><link>https://plutotree.me/2024/01/modify-typora-font/</link><pubDate>Mon, 22 Jan 2024 18:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/01/modify-typora-font/</guid><description><![CDATA[<p>从typora早起的beta版就开始在用，现在应该越来越多人认可其作为最佳Markdown编辑器。不过默认情况下，在windows展示的字体使用的是宋体，看起来其实不太美观，我们可以换成其它更好看得字体。微软雅黑我最不满意的是中文标点符号太丑，甚至不太容易分辨，我还是比较喜欢思源黑体。</p>
+<p></p>
+<p>在Typora的设置页中打开主题文件夹，然后新建一个 <code>xx.user.css</code> 文件（<code>xx</code>为你的主题名称），比如使用的主题为github，则新建一个 <code>github.user.css</code> 文件，里面的内容填写如下：</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-css">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-css" data-lang="css"><span class="line"><span class="cl"><span class="nt">body</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">font-family</span><span class="p">:</span> <span class="s2">&#34;Source Han Sans SC&#34;</span><span class="p">,</span> <span class="s2">&#34;Microsoft Yahei&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nt">header</span><span class="o">,</span> <span class="p">.</span><span class="nc">context-menu</span><span class="o">,</span> <span class="p">.</span><span class="nc">megamenu-content</span><span class="o">,</span> <span class="nt">footer</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">font-family</span><span class="p">:</span> <span class="s2">&#34;Source Han Sans SC&#34;</span><span class="p">,</span> <span class="s2">&#34;Microsoft Yahei&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">.</span><span class="nc">md-fences</span><span class="o">,</span> <span class="nt">tt</span><span class="o">,</span> <span class="nt">code</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">font-family</span><span class="p">:</span> <span class="n">Consolas</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里其实就是修改了字体为思源黑体、微软雅黑，以及代码字体为 <code>Consolas</code>。关于思源字体的介绍，可以参考之前发表的<a href="/2020-12-04/source-hans-font-intro.html" rel="">文章</a>。重新打开Typora，或者切换其它主题再切换回来就可以生效了。最近新装了Windows11， 把常用软件都切换成了深色界面了，Typora也换成了官方的Night主题。</p>
+<p>顺便补充一点，字体的英文名可以通过 <code>Exif</code> 查看工具（比如 <code>exif-tool</code> 命令行工具或者在线工具也行）获取真实的 <code>font-family</code>，在windows的字体设置中展示的是中文font-family，实测并不可用。</p>
+]]></description></item><item><title>Windows 包管理器 Scoop的使用经验</title><link>https://plutotree.me/2024/01/use-scoop-as-windows-package-manager-experience/</link><pubDate>Wed, 17 Jan 2024 18:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/01/use-scoop-as-windows-package-manager-experience/</guid><description><![CDATA[<p>如果有在 Mac 下用过<code>HomeBrew</code>的都知道，软件安装起来是多么方便。Windows 一直缺少这么方便的包管理工具。<code>Chocolatey</code>只能算是便捷的安装工具，和包管理工具差距还挺大的。<code>WinGet</code>可以算是一个包管理工具，只是目前支持的应用还比较少。以前有听说过<a href="https://scoop.sh" target="_blank" rel="noopener noreffer "><code>Scoop</code></a>，印象中说法是支持的软件数量较少。不过最近试了下，发现其支持的软件数量已经相当广泛。各类常见开发工具自然不必说了，主流的软件其中包括部分国内软件都能在官方的 bucket 中找到。官方不支持的软件，我们也能通过第三方的 bucket 进行安装。目前我有 59 个软件是通过 scoop 进行安装了。</p>
+<p></p>
+<h2 id="scoop-操作示例">Scoop 操作示例</h2>
+<ol>
+<li>
+<p>安装 scoop</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Set-ExecutionPolicy</span> <span class="n">-ExecutionPolicy</span> <span class="n">RemoteSigned</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">get</span><span class="p">.</span><span class="py">scoop</span><span class="p">.</span><span class="py">sh</span> <span class="p">|</span> <span class="nb">Invoke-Expression</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装<code>main</code>的软件</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">go</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">nodejs</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装<code>extra</code>的软件 （也是官方维护，要求比<code>main</code>宽松）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="n">extras</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">extras</span><span class="p">/</span><span class="n">apifox</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装第三方软件（这是我自己的 bucket 哈）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="n">plutotree</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">plutotree</span><span class="p">/</span><span class="nb">scoop-bucket</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">plutotree</span><span class="p">/</span><span class="n">qqmusic</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装字体</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="nb">nerd-font</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="nb">hack-nf</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>更新所有软件</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">update</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">update</span> <span class="p">*</span></span></span></code></pre></div></div>
+</li>
+</ol>
+<p>安装流程和 Mac 下的 Homebrew 相似，scoop 用 json 来维护软件信息，做法也是和老版本的 homebrew 一样。不过 scoop 有点优势在于，绝大部分软件都能支持自动更新，官方也提供了 Github Action 组件，定时检测发现有新版本的时候会自动更新描述文件。</p>
+<h2 id="scoop-使用说明">Scoop 使用说明</h2>
+<ol>
+<li>
+<p>使用自定义目录进行安装</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">[</span><span class="no">environment</span><span class="p">]::</span><span class="n">setEnvironmentVariable</span><span class="p">(</span><span class="s1">&#39;SCOOP&#39;</span><span class="p">,</span> <span class="s1">&#39;E:\Scoop&#39;</span><span class="p">,</span> <span class="s1">&#39;User&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$env:SCOOP</span><span class="p">=</span><span class="s1">&#39;E:\Scoop&#39;</span> <span class="c"># 如果不用这句话的话可以重开窗口也行</span>
+</span></span><span class="line"><span class="cl"><span class="nb">iex </span><span class="p">(</span><span class="nb">new-object</span> <span class="n">net</span><span class="p">.</span><span class="n">webclient</span><span class="p">).</span><span class="py">downloadstring</span><span class="p">(</span><span class="s1">&#39;https://get.scoop.sh&#39;</span><span class="p">)</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>增加常用的 bucket，可以参考官方介绍的<a href="https://github.com/ScoopInstaller/Scoop?tab=readme-ov-file#known-application-buckets" target="_blank" rel="noopener noreffer ">bucket 列表</a>（质量比较高），我目前只加了 extra 和 nerd-fonts</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="n">extra</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="nb">nerd-fonts</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装官方推荐的加速下载工具 aria2</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">aria2</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>从控制面版卸载不需要的程序，然后通过 scoop 进行安装和管理。</p>
+</li>
+</ol>
+<ul>
+<li>查找：<code>scoop search xx</code></li>
+<li>安装： <code>scoop install xx</code></li>
+<li>卸载：<code>scoop uninstall xx</code></li>
+<li>升级: <code>scoop update; scoop update xx</code></li>
+<li>查看缓存（下载的安装包）：<code>scoop cache</code></li>
+<li>删除缓存：<code>scoop cache rm xx</code> （*表示所有软件）</li>
+<li>查看已安装软件：<code>scoop list</code></li>
+<li>删除软件的旧版本：<code>scoop cleanup xx</code> （*表示所有软件）</li>
+<li>删除软件的旧版本同时清理缓存：<code>scoop cleanup -k xx</code>（*表示所有软件）</li>
+</ul>
+<h3 id="哪些软件不适合">哪些软件不适合</h3>
+<p>绿色软件是更适合的，而和系统关联性太强的软件是不适合的，尤其是需要管理员权限进行安装的。尽管 scoop 也支持使用管理权限进行安装，但是同样更新和卸载也许要管理权限，我觉得就没必要了而且维护起来会比较麻烦。</p>
+<p>目前就我电脑上的软件而言，没有使用 scoop 管理的主要是：</p>
+<ol>
+<li>系统驱动和厂商管理工具，比如 Nvidia、HP 等管理工具；</li>
+<li>微软的开发工具和环境依赖，比如<code>Microsoft Visual C++ xx Redistributables</code>、<code>Microsoft Windows Desktop Runtime</code>等；</li>
+<li>微软自带的部分商店应用，比如主题、微软 TODO 工具、画图工具、3D 查看器等；</li>
+<li>和系统关联系比较大，或者不方便迁移出来的，比如 Adobe 系列、Office 软件、iTunes、输入法等；</li>
+<li>平台类软件，需要使用其更新管理，比如 steam、Epic 等，后续需要研究下；</li>
+<li>专业软件，或者内部使用的软件；</li>
+<li>部分还没来得及迁移的软件，比如 TortoseSVN、QQ、微云等；</li>
+</ol>
+<h3 id="查找软件">查找软件</h3>
+<p>可以使用命令<code>scoop search</code>进行搜索，不过建议是在<a href="https://scoop.sh" target="_blank" rel="noopener noreffer ">官网</a>进行搜索，需要注意的是选项<code>Official bucket only</code>选项是否开启，一般情况下是建议安装官方包，以及可信赖的第三方。而我个人而言，第三方目前会控制在自己的 bucket 范围。</p>
+<p></p>
+<p>在官方查找不到的时候，可以扩展到第三方，找到之后可以修改后何如自己的 bucket 中。第三方的 bucket 其实质量并一定能保证，最后看下描述文件内容，以及是否从官网下载。还有部分维护破解软件的第三方 bucket，建议就不要使用了。还有就是关注下 bucket 的 star 数量，毕竟 star 多点还是稍微靠谱点。这个<a href="https://rasa.github.io/scoop-directory/by-stars" target="_blank" rel="noopener noreffer ">网站</a>提供按 star 数量排名的 bucket 列表，也可以参考下，蛮多是中国人维护的 bucket。</p>
+<p></p>
+<h2 id="维护自己的-bucket">维护自己的 bucket</h2>
+<ol>
+<li>创建一个自己的 bucket
+<ul>
+<li>在 GitHub 上直接通过<a href="https://github.com/ScoopInstaller/BucketTemplate" target="_blank" rel="noopener noreffer ">Bucket 模板</a>新建一个仓库；</li>
+<li>按照提示说明，修改仓库的设置，开启读写权限；</li>
+<li>修改几个文件的占位符，指定下仓库名信息；</li>
+</ul>
+</li>
+<li>维护自己软件的描述信息，
+<ul>
+<li>自己写应用描述信息，或者直接复用第三方，或者在其基础上修改；</li>
+</ul>
+</li>
+<li>增加自己的 bucket：<code>scoop bucket add BUCKET_NAME YOUR_BUCKET_GIT_ADDRESS</code></li>
+<li>安装自己的软件：<code>scoop install BUCKET_NAME/APP_NAME</code></li>
+</ol>
+<h2 id="应用描述信息">应用描述信息</h2>
+<p>这块算是 scoop 中最复杂的内容了，官方文档提供了基础的介绍，更有用的话应该需要多参考已有的描述。我们来看几个例子</p>
+<h3 id="cos-browser">Cos-Browser</h3>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;2.11.13&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;A visualization interface tool provided by Tencent Cloud COS, view, transfer, and manage COS resources easily&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;homepage&#34;</span><span class="p">:</span> <span class="s2">&#34;https://github.com/tencentyun/cosbrowser&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;license&#34;</span><span class="p">:</span> <span class="s2">&#34;Freeware&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://cos5.cloud.tencent.com/cosbrowser/cosbrowser-setup-2.11.13.exe#/dl.7z&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hash&#34;</span><span class="p">:</span> <span class="s2">&#34;sha512:0063411445cc4a2af098b71780525ec2e190f396934d1b910fbd62aea897ce99a0b2099a848d15df871e7f774aa7334be6acd2c4c4de2e9d0ae8cce05830940f&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;architecture&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;64bit&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Expand-7zipArchive \&#34;$dir\\`$PLUGINSDIR\\app-64.7z\&#34; \&#34;$dir\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;32bit&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Expand-7zipArchive \&#34;$dir\\`$PLUGINSDIR\\app-32.7z\&#34; \&#34;$dir\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;post_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Remove-Item \&#34;$dir\\`$*\&#34; -Force -Recurse&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;shortcuts&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="s2">&#34;cosbrowser.exe&#34;</span><span class="p">,</span> <span class="s2">&#34;COSBrowser&#34;</span><span class="p">,</span> <span class="s2">&#34;--user-data-dir=\&#34;$dir\\UserData\&#34;&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;persist&#34;</span><span class="p">:</span> <span class="s2">&#34;UserData&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;checkver&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://cos5.cloud.tencent.com/cosbrowser/latest.yml&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;regex&#34;</span><span class="p">:</span> <span class="s2">&#34;version: ([\\d.]+)&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;autoupdate&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://cos5.cloud.tencent.com/cosbrowser/cosbrowser-setup-$version.exe#/dl.7z&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;hash&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;$baseurl/latest.yml&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;regex&#34;</span><span class="p">:</span> <span class="s2">&#34;sha512: $base64&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>看下整体流程：</p>
+<ol>
+<li>下载指定 URL，下载后进行 Hash 校验；</li>
+<li>URL 后面有<code>#/dl.7z</code>，在校验成功后会直接使用 7zip 进行解压缩；</li>
+<li>调用<code>pre_install</code>脚本内容，这里使用了<code>Expand-7zipArchive</code>解压缩；</li>
+<li>调用<code>install</code>脚本内容，这个应用是空的；</li>
+<li>创建快捷方式，这里关注下有指定参数<code>--user-data-dir</code>，这样就不会使用系统的<code>AppData</code>目录了。猜测这个参数是 electron 开发的软件都会有的，其它框架开发的就不支持了。</li>
+<li>调用<code>post_install</code>脚本内容，这里主要就是删除一些无用的文件；</li>
+<li><code>persist</code>指定了需要持久化的目录，scoop 会帮忙创建一个链接，并且卸载的时候不会删除；</li>
+<li>checkver 是用来检测是否有新版本，autoupdate 是用来在有新版本的时候进行下载并且更新描述文件。这两块的细节内容会比较复杂点，可以参考<a href="https://github.com/ScoopInstaller/Scoop/wiki/App-Manifest-Autoupdate" target="_blank" rel="noopener noreffer ">官方文档</a>。</li>
+</ol>
+<h3 id="evernote">Evernote</h3>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;10.71.2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;[Evernote] Use it for note taking, project planning and organize everything&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;homepage&#34;</span><span class="p">:</span> <span class="s2">&#34;https://evernote.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;license&#34;</span><span class="p">:</span> <span class="s2">&#34;Freeware&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://win.desktop.evernote.com/builds/Evernote-latest.exe#/dl.zip&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hash&#34;</span><span class="p">:</span> <span class="s2">&#34;7e3b3565651b6ddeaa9dfb86502951917d996b09ebd32f2ce11509325d3bcce1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;architecture&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;64bit&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Expand-7zipArchive \&#34;$dir\\`$PLUGINSDIR\\app-64.7z\&#34; \&#34;$dir\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;32bit&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Expand-7zipArchive \&#34;$dir\\`$PLUGINSDIR\\app-32.7z\&#34; \&#34;$dir\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;post_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Remove-Item \&#34;$dir\\`$*\&#34; -Force -Recurse&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;shortcuts&#34;</span><span class="p">:</span> <span class="p">[[</span><span class="s2">&#34;Evernote.exe&#34;</span><span class="p">,</span> <span class="s2">&#34;Evernote&#34;</span><span class="p">]],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;checkver&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://evernote.com/release-notes&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;regex&#34;</span><span class="p">:</span> <span class="s2">&#34;Version.*?([\\d.]+)&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;autoupdate&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://win.desktop.evernote.com/builds/Evernote-latest.exe#/dl.zip&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>基本上和 Cos-Browser 的信息是类似的，但是 autoupdate 这里没有指定 Hash 获取方式，其实是官方没有提供，这种情况下的话就只能等文件下载完成之后再进行 hash 计算了，理论上来说是存在文件下载异常描述信息有问题的，这种的话就只能等发现之后手动修复了。</p>
+<h3 id="qq-音乐">QQ 音乐</h3>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;##&#34;</span><span class="p">:</span> <span class="s2">&#34;QQ音乐&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;20.05.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;[QQ音乐] 千万正版音乐海量无损曲库新歌热歌天天畅听的高品质音乐平台&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;homepage&#34;</span><span class="p">:</span> <span class="s2">&#34;https://y.qq.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;license&#34;</span><span class="p">:</span> <span class="s2">&#34;Freeware&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://dldir1.qq.com/music/clntupate/QQMusic_YQQWinPCDL.exe#/dl.7z&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hash&#34;</span><span class="p">:</span> <span class="s2">&#34;4c35742f11a011e8aff31987966e29b014fcdabfd6f50240125c8252f86188b2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;post_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Copy-Item \&#34;$dir\\QQMusic.tpc\&#34; \&#34;$dir\\instok\&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;checkver&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://y.qq.com/download/download.html&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;regex&#34;</span><span class="p">:</span> <span class="s2">&#34;Windows PC.*\\:([\\d.]+)&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;shortcuts&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="s2">&#34;QQMusic.exe&#34;</span><span class="p">,</span> <span class="s2">&#34;QQ音乐&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="s2">&#34;QQMusic.exe&#34;</span><span class="p">,</span> <span class="s2">&#34;QQ Music&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;autoupdate&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://dldir1.qq.com/music/clntupate/QQMusic_YQQWinPCDL.exe#/dl.7z&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里我们创建了两个快捷方式，分别是 QQ 音乐和<code>QQ Music</code>，这样不管输入的是哪个都能启动了。同样 QQ 音乐也没提供 hash 获取方式，只能下载后本地计算。</p>
+<h3 id="补充说明">补充说明</h3>
+<p>腾讯会议比较奇怪，不能直接在<code>current</code>目录启动，而必须在版本目录启动，所以就不能用自带的快捷方式，而需要手动创建了。</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Rename-Item \&#34;$dir\\`$_*_\&#34; \&#34;$dir\\$version\&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Remove-Item \&#34;$dir\\`$*\&#34;,\&#34;$dir\\wemeetapp_new.exe\&#34; -Recurse -Force&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;startmenu_shortcut -target $(Get-Item \&#34;$dir\\wemeetapp.exe\&#34;) -shortcutName \&#34;Tencent Meeting\&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;startmenu_shortcut -target $(Get-Item \&#34;$dir\\wemeetapp.exe\&#34;) -shortcutName \&#34;腾讯会议\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;pre_uninstall&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;if (Get-Process -Name \&#34;wemeetapp\&#34; -Erroraction SilentlyContinue) {Stop-Process -Name \&#34;wemeetapp\&#34;}&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;if (Test-Path \&#34;$(shortcut_folder)\\Tencent Meeting.lnk\&#34;){Remove-Item \&#34;$(shortcut_folder)\\Tencent Meeting.lnk\&#34; -Force}&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;if (Test-Path \&#34;$(shortcut_folder)\\腾讯会议.lnk\&#34;){Remove-Item \&#34;$(shortcut_folder)\\腾讯会议.lnk\&#34; -Force}&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>有些软件是不能直接解压缩的，而是通过 Inno 方式进行安装，这种的话 scoop 也有自带提供支持，可以参考其它软件，等我遇到的时候再补充。</p>
+<h2 id="问题记录">问题记录</h2>
+<h3 id="github-访问-401-问题">GitHub 访问 401 问题</h3>
+<p>遇上 GitHub API 访问受限导致的 401 问题，可以设置环境变量<code>SCOOP_GH_TOKEN</code>，使用自己的 Access Token 即可。创建 Access Token 的时候不需要指定任何特别的权限，使用默认权限即可。</p>
+<h3 id="应用打开网址无法拉起-chrome-浏览器">应用打开网址无法拉起 Chrome 浏览器</h3>
+<p>尝试过多种方法但是仍然有不低的概率遇上，最后只能放弃使用 scoop 来维护 Chrome，换成 chrome 默认安装之后问题就不再出现了。</p>
+<h3 id="everything-开机启动无效">everything 开机启动无效</h3>
+<p>这里主要在使用 uTools 调用 everything 搜索的时候，每次开机启动需要重新进行索引，按照 uTools 的说法，如果使用的是安装版并且开机启动的前提下，是不会触发使用内置的绿色版 everything 而导致重新索引的问题的。最后也放弃使用 scoop 维护 everything，而使用官方的安装版本进行安装。不过这个问题也可能通过修改 everything 的配置项能解决。</p>
+<h3 id="hash-校验不一致导致无法安装">hash 校验不一致导致无法安装</h3>
+<p>有一种可能是更换了安装包但是没有更换版本号，也有可能是计算 hash 的时候遇到了一些bug。在执行 <code>scoop install</code> 的时候只要增加 <code>-s</code> 参数即可跳过 hash 校验。</p>
+]]></description></item><item><title>使用富途 API 实现 Google 表格的股票数据在线更新</title><link>https://plutotree.me/2023/04/futu-update-stock-data-with-futuapi-and-google-sheets/</link><pubDate>Fri, 14 Apr 2023 19:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2023/04/futu-update-stock-data-with-futuapi-and-google-sheets/</guid><description><![CDATA[<p>对于查看和分析股票的基础数据，在线表格其实是很不错的分析工具，筛选、排序、数据透视图等操作简直太方便了。</p>
+<p>Google文档提供了很强的函数<a href="https://support.google.com/docs/answer/3093281?hl=zh-Hans" target="_blank" rel="noopener noreffer "><code>GOOGLEFINANCE</code></a>，能获取比较丰富的股票数据，通过<code>GOOGLEFINANCE(&quot;SHE:001309&quot;,&quot;price&quot;)</code>就能获取最新价格，但是不支持上证只支持深证股票，无奈只能放弃。腾讯文档提供了比较基础的<code>STOCK</code>，能获取比较基础的股票数据。那么我们如何才能实现复杂的股票数据处理呢？Google文档提供了API进行相关的数据操作，而富途API也提供了完整的股票数据获取，结合两者，我们就可以实现完整的流程了。</p>
+<div class="mermaid" id="id-1"></div><p>来直接看下效果：</p>
+<ul>
+<li>
+<p>这是现在Google表格的数据内容，只有股票代号，没有其余信息</p>
+<p></p>
+</li>
+<li>
+<p>这是执行脚本后的效果，自动填充了所有内容（这里表格的列是可以动态调整的）</p>
+<p></p>
+</li>
+</ul>
+<p>下面简单描述下技术细节：</p>
+<h2 id="通过google-api读取及更新表格内容">通过Google API读取及更新表格内容</h2>
+<p>Google官方提供了非常详细的<a href="https://developers.google.com/sheets/api/guides/values?hl=zh-cn#read_multiple_ranges" target="_blank" rel="noopener noreffer ">示例</a>，直接参考应该就可以操作了。注意一点，好像是只支持OAuth方式进行操作，这点还是稍有些不方便。仅做了层简单的封装，暴露外部的接口如下：</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sheets</span> <span class="o">=</span> <span class="n">GoogleSheets</span><span class="p">(</span><span class="n">token_file</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">except</span> <span class="n">InvalidCrendentialException</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DoAuth</span><span class="p">(</span><span class="n">token_file</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sheets</span> <span class="o">=</span> <span class="n">GoogleSheets</span><span class="p">(</span><span class="n">token_file</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 读取单个范围数据</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">sheets</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">,</span> <span class="s1">&#39;A2:C3&#39;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 同时读取多个范围数据</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">sheets</span><span class="o">.</span><span class="n">BatchGetValue</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;A2:B4&#39;</span><span class="p">,</span> <span class="s1">&#39;C2:D4&#39;</span><span class="p">]))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 更新多个范围数据</span>
+</span></span><span class="line"><span class="cl"><span class="n">range_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;B3:C4&#39;</span><span class="p">,</span> <span class="s1">&#39;E3:F4&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">values_list</span> <span class="o">=</span> <span class="p">[[[</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="s1">&#39;x4&#39;</span><span class="p">]],</span> <span class="p">[[</span><span class="s1">&#39;x5&#39;</span><span class="p">,</span> <span class="s1">&#39;x6&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;x7&#39;</span><span class="p">,</span> <span class="s1">&#39;x8&#39;</span><span class="p">]]]</span>
+</span></span><span class="line"><span class="cl"><span class="n">sheets</span><span class="o">.</span><span class="n">BatchUpdateValue</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">,</span> <span class="n">range_list</span><span class="p">,</span> <span class="n">values_list</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 更新单个范围数据</span>
+</span></span><span class="line"><span class="cl"><span class="n">sheets</span><span class="o">.</span><span class="n">UpdateValue</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">,</span> <span class="s1">&#39;A15:B16&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="s1">&#39;xx&#39;</span><span class="p">,</span> <span class="s1">&#39;yy&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;zz&#39;</span><span class="p">,</span> <span class="s1">&#39;hh&#39;</span><span class="p">]])</span></span></span></code></pre></div></div>
+<h2 id="通过富途api读取股票基础行情">通过富途API读取股票基础行情</h2>
+<p>这里也制作了一层简单的封装，具体可以参考富途官方的说明。我们需要在机器上先安装FutuOpenD，可以在服务器上安装，并监听<code>0.0.0.0</code>，这样可以在各个客户端直接调用了。</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">FutuHelper</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">quote_ctx</span> <span class="o">=</span> <span class="n">OpenQuoteContext</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">quote_ctx</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">GetMarketState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code_list</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;&#34;&#34;获取指定标的的市场状态
+</span></span></span><span class="line"><span class="cl"><span class="s2">        获取stock_name(股票名称)、market_state(交易情况)
+</span></span></span><span class="line"><span class="cl"><span class="s2">        参考：https://openapi.futunn.com/futu-api-doc/quote/get-market-state.html
+</span></span></span><span class="line"><span class="cl"><span class="s2">        &#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quote_ctx</span><span class="o">.</span><span class="n">get_market_state</span><span class="p">(</span><span class="n">code_list</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">GetMarketSnapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code_list</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;&#34;&#34;获取快照
+</span></span></span><span class="line"><span class="cl"><span class="s2">        获取各类价格信息，包含最新价、开盘、最高、最低、最新、均价、历史高价、历史低价等，以及
+</span></span></span><span class="line"><span class="cl"><span class="s2">        财务信息，包含市盈率、总市值、流通市值、资产净值、净利润、每股盈利、股本数量等
+</span></span></span><span class="line"><span class="cl"><span class="s2">        参考：https://openapi.futunn.com/futu-api-doc/quote/get-market-snapshot.html
+</span></span></span><span class="line"><span class="cl"><span class="s2">        &#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quote_ctx</span><span class="o">.</span><span class="n">get_market_snapshot</span><span class="p">(</span><span class="n">code_list</span><span class="p">)</span></span></span></code></pre></div></div>
+<h2 id="处理股票行情数据">处理股票行情数据</h2>
+<p>为了方便表的列名使用中文描述，做一层简单的转换，同时增加一些自定义的字段。比如富途本身不支持涨跌幅，我们可以拿最新价和昨日收盘价计算即可。还有一些用来方便查看的数据，比如高点对比、低点对比等。</p>
+<p></p>
+<p>处理流程相对比较简单，主要的数据通过<a href="https://openapi.futunn.com/futu-api-doc/quote/get-market-snapshot.html" target="_blank" rel="noopener noreffer "><code>get_market_snapshot</code></a>获取即可。这里扩展的话，我们可以增加一些历史K线数据字段，比如3日最高价、3日均线等等。</p>
+<h2 id="扩展下">扩展下</h2>
+<p>有这个流程了之后，还可以做更多事情：</p>
+<ul>
+<li>
+<p>同步自选股：从google文档读取自选股列表，通过富途API同步自选股。这样的话可以用Google文档作为源数据进行维护，可惜同花顺没有API进行自选股同步；</p>
+</li>
+<li>
+<p>批量更新到价提醒：从google文档读取特定股票列表，通过富途API批量增加到价提醒；</p>
+</li>
+</ul>
+]]></description></item><item><title>使用 Stable Diffusion 生成美女图</title><link>https://plutotree.me/2023/03/using-stable-diffusion-web-to-generate-ai-girl/</link><pubDate>Tue, 14 Mar 2023 20:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2023/03/using-stable-diffusion-web-to-generate-ai-girl/</guid><description><![CDATA[<p>最近 Stable Diffusion 都大火，小红书上也是各种 AI 美女图，我也来凑一把热闹。</p>
+<h2 id="安装stable-diffusion-web-ui">安装Stable Diffusion web UI</h2>
+<p>需要先安装好<code>python 3.10</code>和<code>git</code>（对于程序员的机器来说应该都是必备的了），直接两步执行就好了：</p>
+<ol>
+<li>导出git仓库：<code>git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git</code></li>
+<li>运行脚本：<code>webui-user.bat</code>，这一步下载<code>pytorch</code>可能耗时较长，耐心等待即可；</li>
+<li>执行完成之后，会提示访问<a href="http://127.0.0.1:7860/" target="_blank" rel="noopener noreffer ">http://127.0.0.1:7860/</a>即可体验了；</li>
+<li>可以输入一些简单的标签体验下效果，多个标签用<code>,</code>分割，只支持英文；对于不熟悉的标签可以参考<a href="https://tags.novelai.dev/" target="_blank" rel="noopener noreffer ">网站</a>；</li>
+</ol>
+<p>这时候会发现效果没想象的那么好，尤其是生成的“美女”图，可能千奇百怪。</p>
+<h2 id="使用chilloutmix模型">使用ChilloutMix模型</h2>
+<ol>
+<li>
+<p>在<a href="https://civitai.com/models/6424" target="_blank" rel="noopener noreffer ">civitai</a>上下载ChilloutMix模型，模型较大，耐心等待；</p>
+</li>
+<li>
+<p>下载完成后放入目录<code>stable-diffusion-webui\models\Stable-diffusion</code>；</p>
+</li>
+<li>
+<p>重新刷新页面就可以看到左上角可以选择模型了；</p>
+<p></p>
+</li>
+</ol>
+<h2 id="使用lora插件">使用Lora插件</h2>
+<ol>
+<li>
+<p>在<a href="https://civitai.com/models/4503/amber-genshin-impact-lora" target="_blank" rel="noopener noreffer ">civirtai</a>上下载lora插件；</p>
+</li>
+<li>
+<p>下载完成后放入目录<code>stable-diffusion-webui\extensions\sd-webui-additional-networks\models\lora</code>；</p>
+</li>
+<li>
+<p>切换到<code>Extensions</code>，选择<code>Load From</code>，搜索<code>Kohya-ss Additional Networks</code>，点击<code>Install</code></p>
+</li>
+<li>
+<p>切换<code>Settings</code>，选择<code>Reload UI</code></p>
+</li>
+</ol>
+<h2 id="开始玩耍">开始玩耍</h2>
+<ol>
+<li>
+<p>在<a href="https://civitai.com/models/6424/chilloutmix" target="_blank" rel="noopener noreffer ">ChilloutMix</a>中选择你喜欢的图片，比如<a href="https://civitai.com/gallery/249318?reviewId=41236" target="_blank" rel="noopener noreffer ">这张</a>，拷贝右侧的标签信息；</p>
+</li>
+<li>
+<p>看看生成的效果</p>
+<p></p>
+</li>
+</ol>
+<p>仔细看能发现一个比较大的问题，就是手指还是会有各种奇怪的现象</p>
+]]></description></item></channel></rss>
