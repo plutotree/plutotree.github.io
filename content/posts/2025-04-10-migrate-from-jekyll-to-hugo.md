@@ -7,7 +7,7 @@ slug: migrate-from-jekyll-to-hugo
 ---
 
 
-最近在将博客从 Jekyll 迁移到 Hugo 的过程中，遇到了一些关于 Valine 评论系统的问题。虽然 Valine 在 Hugo 中可以直接通过配置文件 `hugo.toml` 进行设置，但在实际使用中发现了一些问题。以下是我整理的解决方案和经验总结。
+最近将博客从 Jekyll 迁移到 Hugo 了，虽然 Valine 评论系统在 Hugo 中可以直接通过配置文件 `hugo.toml` 进行设置，但在实际使用中发现了一些坑，以下是整理的解决方案。
 
 ## 1. 配置 `requiredFields` 无效问题
 
@@ -15,7 +15,7 @@ slug: migrate-from-jekyll-to-hugo
 
 ### 问题原因
 
-经过研究，发现 Hugo 的 `layouts/partials/comment.html` 文件中只针对部分字段进行了处理，而没有对 `requiredFields` 进行正确处理。
+Hugo 主题下文件 `layouts/partials/comment.html` 文件中只针对部分字段进行了处理，而没有对 `requiredFields` 进行正确处理。
 
 ### 解决方法
 
@@ -27,11 +27,9 @@ slug: migrate-from-jekyll-to-hugo
 {{- end -}}
 ```
 
-运行后，评论功能恢复正常，但头像显示出现问题。
-
 ## 2. Gravatar 头像显示问题
 
-在配置头像时发现，随机头像无法正常显示，例如以下头像地址，如果将域名替换为 [www.gravatar.com](https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?d=wavatar&v=1.5.2) 则可以正常显示。  
+在配置头像时发现，随机头像无法正常显示，例如以下头像地址。但是将域名替换为 [www.gravatar.com](https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?d=wavatar&v=1.5.2) 则可以正常显示。  
 <https://gravatar.loli.net/avatar/d41d8cd98f00b204e9800998ecf8427e?d=wavatar&v=1.5.2>
 
 ### 问题原因
@@ -40,7 +38,7 @@ Gravatar的中转服务，gravatar.loli.net 存在处理上的问题，导致随
 
 ### 解决方法
 
-由于 Gravatar 的官网在国内访问存在较多问题，建议更换为另一个Gravatar的中转服务 cn.gravatar.com。这里也有同样的问题，在配置文件中增加avatar_cdn之后，发现这个配置不生效。需要增加类似的处理逻辑，修改 `comment.html` 文件：
+由于 Gravatar 的官网在国内访问存在较多问题，更换了另一个 Gravatar 的中转服务： cn.gravatar.com。在配置文件中增加avatar_cdn之后，发现这个配置不生效。需要增加类似的处理逻辑，修改 `comment.html` 文件：
 
 ```html
 {{- with $valine.avatar_cdn -}}
@@ -54,7 +52,7 @@ Gravatar的中转服务，gravatar.loli.net 存在处理上的问题，导致随
 
 ### 问题原因
 
-Valine 在邮箱为空时不管昵称是什么，都是直接根据空邮箱去生成MD5，这就导致无法随机生成头像。
+Valine 在邮箱为空时不管昵称是什么，都是直接根据空邮箱去生成 MD5，这导致生成的其实是固定头像。
 
 ### 解决方法
 
