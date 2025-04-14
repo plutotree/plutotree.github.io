@@ -41,8 +41,8 @@ jobs:
 
       - name: Push Index to Algolia
         env:
-          ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
-          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+          ALGOLIA_TEST_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+          ALGOLIA_TEST_API_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
         run: algolia import -n index -s public/index.json
 
       - name: Pushover Notification
