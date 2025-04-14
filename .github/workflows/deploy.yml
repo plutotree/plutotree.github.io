@@ -27,6 +27,27 @@ jobs:
           publish_dir: ./public
           cname: plutotree.me
           force_orphan: true
+		
+      - name: Upload Artifactia
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: algolia-index
+          path: public/index.json
+
+      # 使用 Algolia CLI 上传
+      - name: Install Algolia CLI
+        run: npm install -g @algolia/cli
+
+      - name: Push Index to Algolia
+        env:
+          ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+        run: |
+          algolia objects import \
+            --index-name index \
+            --file public/index.json
+
       - name: Pushover Notification
         uses: umahmood/pushover-actions@v1.1.0
         env:
