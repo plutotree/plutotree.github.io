@@ -27,7 +27,7 @@ jobs:
           publish_dir: ./public
           cname: plutotree.me
           force_orphan: true
-		
+
       - name: Upload Artifactia
         uses: actions/upload-artifact@v4
         if: always()
