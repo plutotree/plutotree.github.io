@@ -40,10 +40,8 @@ jobs:
         run: npm install -g @algolia/cli
 
       - name: Push Index to Algolia
-        env:
-          ALGOLIA_TEST_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
-          ALGOLIA_TEST_API_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
-        run: algolia import -n index -s public/index.json
+        run: algolia import -n index -s public/index.json -a ${{ secrets.ALGOLIA_APP_ID }} -k ${{ secrets.ALGOLIA_ADMIN_KEY }}
+
 
       - name: Pushover Notification
         uses: umahmood/pushover-actions@v1.1.0
