@@ -40,7 +40,7 @@ jobs:
         run: npm install -g @algolia/cli
 
       - name: Push Index to Algolia
-        run: algolia import -n index -s public/index.json -a ${{ secrets.ALGOLIA_APP_ID }} -k ${{ secrets.ALGOLIA_ADMIN_KEY }} -b 10
+        run: algolia import -n index -s public/index.json -a ${{ secrets.ALGOLIA_APP_ID }} -k ${{ secrets.ALGOLIA_WRITE_KEY }} -b 10
 
 
       - name: Pushover Notification
