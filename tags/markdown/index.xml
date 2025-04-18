@@ -1,0 +1,509 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Markdown - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/markdown/</link><description>Markdown - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Tue, 02 Nov 2021 19:58:28 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/markdown/" rel="self" type="application/rss+xml"/><item><title>markdown图床实践：Typora+PicGo-core+腾讯云cos</title><link>https://plutotree.me/2021/11/using-picgo-as-image-uploader-bed/</link><pubDate>Tue, 02 Nov 2021 19:58:28 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2021/11/using-picgo-as-image-uploader-bed/</guid><description><![CDATA[<h2 id="前言">前言</h2>
+<p>Markdown 已然成为事实上的技术文档编写标准，作为 markdown 编辑器，typora 也收到越来越多人的推荐和喜爱。在 markdown 中我们经常需要插入图片，而 markdown 只是普通文本文件，因此图片只能作为外部链接而存在。这里的链接可以使用本地的相对路径，也可以使用网络 url。当使用网络 url 的时候，我们需要一个地方去维护和存储图片，这就是我们所谓的“图床”。</p>
+<p>而我之前一直没有考虑使用图床，图片都是和 markdown 文件一起在 git 里面维护，主要的考虑点有：</p>
+<ol>
+<li>markdown 文件以及图片是作为一个整体，可以理解成是一个项目，那么项目内容本身就是密不可分的；</li>
+<li>图片的访问权限可以跟随 markdown 文件，需要时可以有统一的访问鉴权策略；</li>
+<li>方便管理一篇文章的所有图片，对于无用的图片可以直接删除；</li>
+</ol>
+<p>在使用过程中遇到了越来越多的不便之处：</p>
+<ol>
+<li>github 网站在国内访问速度较慢，文字影响不大，大量的图片下载耗时很影响体验；</li>
+<li>不方便直接分享给他人 markdown 文件，需要导出 pdf 或者打包进行分享；</li>
+<li>在 github 仓库中，大量的图片也影响了 git 仓库的导出速度；</li>
+<li>本地存储图片时，图片存储路径在不同场景有差异，不方便统一管理；</li>
+<li>不能方便地进行图片的动态缩放；</li>
+</ol>
+<p>权衡之后决定还是决定拥抱“图床”。typora 自带支持 iPic、uPic、PicGo 等图片上传工具，我选择国人开发的 PicGo。另外因为一直在用腾讯云服务器，自然选择了腾讯云 cos 作为图床的云存储。</p>
+<h2 id="腾讯云">腾讯云</h2>
+<h3 id="对象存储">对象存储</h3>
+<ol>
+<li>
+<p>在<a href="https://console.cloud.tencent.com/cos5/bucket" target="_blank" rel="noopener noreffer ">对象存储控制台</a>创建一个存储桶，选择所属地域，填写桶名称，访问权限选择“公有读私有写”</p>
+<p></p>
+</li>
+<li>
+<p>点击桶名称进入管理页面，在左侧“域名与传输管理”中打开默认 CDN 加速域名，这里需要理解下 CDN 和源站的概念</p>
+<p></p>
+</li>
+<li>
+<p>回到文件列表页，可以在页面进行上传测试，点击“详情”可以查看文件的具体信息，这里对象有两个访问地址，一个是源站域名，一个是加速域名，我们一般都会选择加速域名。</p>
+<p></p>
+</li>
+</ol>
+<h3 id="数据万象">数据万象</h3>
+<p>使用图床还有一点很重要的作用是能实现动态的图片处理，简单的比如缩放、裁剪，复杂的比如高斯模糊、水印等等，这里需要用到腾讯的<a href="https://console.cloud.tencent.com/ci" target="_blank" rel="noopener noreffer ">数据万象</a>。在数据万象的存储通管理中，选择绑定存储桶即可。</p>
+<p></p>
+<p>点击存储通名称进入管理页面，发现这里也有个域名管理，通过这个域名访问才会支持图片的在线处理功能，这个域名本身也是支持 cdn 加速的，我们会统一采用这个域名来提供用户访问。</p>
+<p></p>
+<h3 id="访问授权">访问授权</h3>
+<p>在<a href="https://console.cloud.tencent.com/cam/user/userType" target="_blank" rel="noopener noreffer ">腾讯云控制台的访问管理</a>中新建用户，可以直接使用&quot;快速创建&quot;。这里访问方式修改为“编程访问”，用户权限清空，可接受消息类型清空，用户名称可以用比较清晰明了的，比如<code>picgo-upload</code>。创建成功之后能看到子账号的账号 ID，还有 SecretId 和 SecretKey，把这些信息记录下来，我们后续需要用到。</p>
+<p></p>
+<p>回到<a href="https://console.cloud.tencent.com/cos5/bucket" target="_blank" rel="noopener noreffer ">对象存储控制台</a>，选择“授权管理”，勾选存储桶后修改“用户权限”，增加子账号的权限，权限内容可以勾选数据读取和数据写入。</p>
+<p></p>
+<p>到此，腾讯云上的工作做完了。其实有一点没有谈的是费用问题，这个的话还是有必要了解的，只是这篇文章略过了。</p>
+<h2 id="picgo">Picgo</h2>
+<p><a href="https://github.com/Molunerfinn/PicGo" target="_blank" rel="noopener noreffer ">PicGo</a>是一款开源跨平台的图片上传工具，能方便地上传至各种图床和云存储服务器上。可以使用带图片 GUI 的应用，也可以直接使用其核心部分基于命令行的<a href="https://picgo.github.io/PicGo-Core-Doc/" target="_blank" rel="noopener noreffer ">PicGo-Core</a>。我推荐直接使用 PicGo-Core，再加上<a href="https://github.com/PicGo/Awesome-PicGo" target="_blank" rel="noopener noreffer ">插件能力</a>足够满足我们的需求了。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 如果没有npm的话需要先安装</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># brew install npm</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 安装picgo</span>
+</span></span><span class="line"><span class="cl">npm install picgo -g
+</span></span><span class="line"><span class="cl"><span class="c1"># 安装picgo插件</span>
+</span></span><span class="line"><span class="cl">picgo install autocopy
+</span></span><span class="line"><span class="cl">picgo install rename-file</span></span></code></pre></div></div>
+<p>安装完 picgo 和插件之后需要进行相关配置，同样有两种方式，一种是<a href="https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html#%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90" target="_blank" rel="noopener noreffer ">基于命令行的交互输入</a>，而另一种是推荐的直接修改配置文件。配置文件在 Windows 下路径为 <code>%HOMEPATH%\.picgo\config.json</code>，Mac 下路径为<code>~/.picgo/config.json</code>。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;picBed&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;current&#34;</span><span class="p">:</span> <span class="s2">&#34;tcyun&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;tcyun&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;secretId&#34;</span><span class="p">:</span> <span class="s2">&#34;子账号的SecretId&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;secretKey&#34;</span><span class="p">:</span> <span class="s2">&#34;子账号的SecretKey&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;bucket&#34;</span><span class="p">:</span> <span class="s2">&#34;Bucket名称&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;appId&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;area&#34;</span><span class="p">:</span> <span class="s2">&#34;COS区域，类似ap-shanghai&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;customUrl&#34;</span><span class="p">:</span> <span class="s2">&#34;数据万象url&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;v5&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;uploader&#34;</span><span class="p">:</span> <span class="s2">&#34;tcyun&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;transformer&#34;</span><span class="p">:</span> <span class="s2">&#34;path&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;picgoPlugins&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;picgo-plugin-rename-file&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;picgo-plugin-autocopy&#34;</span><span class="p">:</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;picgo-plugin-rename-file&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;format&#34;</span><span class="p">:</span> <span class="s2">&#34;pic/{y}/{m}/{d}/{rand:6}&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>根据上面的注释进行字段的编辑，重命名插件的具体参数可以参考<a href="https://github.com/liuwave/picgo-plugin-rename-file" target="_blank" rel="noopener noreffer ">这里</a>。配置完成之后可以通过执行<code>picgo upload xxx.png</code>来验证图片上传及插件配置是否生效。这里 xxx.png 可以支持本地也可以支持网络的 url。如果上传成功之后能看到完整的 url，同时也会将 url 写入剪切板，可以直接在浏览器中进行访问验证。</p>
+<p></p>
+<p>比如这个地址<a href="https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/80da56.png%ef%bc%8c" target="_blank" rel="noopener noreffer ">https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/80da56.png，</a>，可以查看其链接规则是符合 rename-file 插件的配置的。</p>
+<h2 id="typora">Typora</h2>
+<p>打开偏好设置，按需要勾选之后点击“验证图片上传选项”确认上传是否正常。</p>
+<p></p>
+<p>这里要注意下 mac 系统的<code>PicGo-Core</code>选项并不可用，需要选择<code>Custom Commeand</code>，手动输入命令。另外命令还需要输入完整地址（我尝试了三遍才知道）。我配置的命令内容如下：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">/opt/homebrew/bin/node /opt/homebrew/bin/picgo upload</span></span></code></pre></div></div>
+<p></p>
+<p>好了，到这里就可以在文章中很方便的插入图片了。使用过程中，可以发现本地图片转化为网络图片是需要一些时间，在上传成功之后才会替换掉本地 url。如果在中途不小心修改或者删除了相关内容，会导致后续替换 url 失败。好在我们是用了 autocopy 的插件，正确地址已经写入剪切板了，只要 ctrl+v 就可以了啦。</p>
+<h2 id="将历史文章中的本地图片批量上传">将历史文章中的本地图片批量上传</h2>
+<p>不想旧文章使用本地图片，而新文章才使用网络图片，这些批量化的工作当然得交给程序。用 node 或许是比较理想的方式，可以直接以 API 形式调用 picgo。但这是在我用 python 写到最后才想起的点。不多说，直接给代码，直接保存运行就好了：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">re</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">pyperclip</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">Upload</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># 使用picgo上传，需要安装插件autocopy</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pyperclip</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ret</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;picgo upload ./</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;图片[</span><span class="si">{}</span><span class="s1">]上传失败&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">img</span>
+</span></span><span class="line"><span class="cl">    <span class="n">new_img</span> <span class="o">=</span> <span class="n">pyperclip</span><span class="o">.</span><span class="n">paste</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="ow">not</span> <span class="n">new_img</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;图片[</span><span class="si">{}</span><span class="s1">]似乎上传失败&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">img</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;图片[</span><span class="si">{}</span><span class="s1">]上传成功 -&gt;[</span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">new_img</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">new_img</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">Process</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">content</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;process file:</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">inf</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">inf</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">        <span class="n">result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="s1">&#39;!\[([^]]*)\]\(([^)]*)\)&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">update</span> <span class="o">=</span> <span class="kc">False</span>
+</span></span><span class="line"><span class="cl">        <span class="n">new_line</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">last_pos</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">img</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http://&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">img</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">)):</span>
+</span></span><span class="line"><span class="cl">                <span class="n">update</span> <span class="o">=</span> <span class="kc">True</span>
+</span></span><span class="line"><span class="cl">                <span class="n">new_line</span> <span class="o">+=</span> <span class="n">line</span><span class="p">[</span><span class="n">last_pos</span> <span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl">                <span class="n">last_pos</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">end</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">new_line</span> <span class="o">+=</span> <span class="n">Upload</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">new_line</span> <span class="o">+=</span> <span class="n">line</span><span class="p">[</span><span class="n">last_pos</span><span class="p">:]</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">update</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">content</span> <span class="o">+=</span> <span class="n">new_line</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">content</span> <span class="o">+=</span> <span class="n">line</span>
+</span></span><span class="line"><span class="cl">    <span class="n">inf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">outf</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">outf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">outf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="s1">&#39;./_posts/&#39;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&#34;.md&#34;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&#34;.markdown&#34;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Process</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></span></span></code></pre></div></div>
+]]></description></item><item><title>Markdown 语法详解</title><link>https://plutotree.me/2019/01/markdown-intro/</link><pubDate>Tue, 29 Jan 2019 12:03:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2019/01/markdown-intro/</guid><description><![CDATA[<h2 id="markdown-简介">Markdown 简介</h2>
+<p><strong>Markdown</strong>是一种轻量级标记语言，旨在通过易读易写的纯文本格式来编辑文档，并可转换生成格式化的文档。</p>
+<p>Markdown 最早由 John Gruber 于 2004 年创立。2014 年发布的 CommonMark 是第一套严谨的规范。2017 年，GitHub 发布了基于 CommonMark 的 GitHub Flavored Markdown（GFM）的正式规范。</p>
+<p>尽管基础的 Markdown 语法简单直观，但不同解析器在实现上多少还是存在差异，特别是对于扩展的 Markdown 语法的支持上。</p>
+<ul>
+<li><a href="https://github.github.com/gfm/" target="_blank" rel="noopener noreffer ">GFM</a>：目前最流行的 Mermaidarkdown 扩展规范了；</li>
+<li><a href="https://typora.io/" target="_blank" rel="noopener noreffer ">Typora</a>：个人认为最好的 Markdown 编辑器和查看器，支持<code>windows</code>和<code>mac</code>，在 GFM 基础上，它还支持很多额外的扩展语法；</li>
+<li><a href="https://kramdown.gettalong.org/index.html" target="_blank" rel="noopener noreffer ">kramdown</a>：作为<code>jekyll</code>的默认 Markdown 解析器，现在也是 github pages 默认的 markdown 解析器；</li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint" target="_blank" rel="noopener noreffer ">markdownlint</a>: VSCode 的 Markdown Lint 插件，可以检查语法是否规范；</li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced" target="_blank" rel="noopener noreffer ">Markdown Preview Enhanced</a>: VSCode 的 Markdown 查看插件，近 700 万的下载次数就能说明其受欢迎程度了；</li>
+</ul>
+<p>本文打算以 GFM 和 Typora 为主，来介绍 Markdown 的基础和扩展语法格式规范，以及不同语法在不同解析器下的支持情况，另外还会增加一些<a href="https://github.com/DavidAnson/markdownlint" target="_blank" rel="noopener noreffer ">markdownlint</a>的规范描述。</p>
+<h2 id="基础语法">基础语法</h2>
+<h3 id="标题">标题</h3>
+<p>使用<code>#</code>指定标题，1-6 个<code>#</code>，分别对应 1-6 级标题。顾名思义，<code>#</code>数目越少，标题级别就越高。按照语法规范，建议<code>#</code>和标题名之间保留一个空格，标题行的前后需要保留一行空行。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-markdown">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># 一级标题
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 二级标题
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">### 三级标题
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">###### 六级标题</span></span></code></pre></div></div>
+<p>在生成<code>html</code>时，会对应到<code>&lt;h1&gt;</code>、<code>&lt;h2&gt;</code>、<code>&lt;h3&gt;</code>和<code>&lt;h6&gt;</code></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-html">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>一级标题<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>二级标题<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;</span>三级标题<span class="p">&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">h6</span><span class="p">&gt;</span>六级标题<span class="p">&lt;/</span><span class="nt">h6</span><span class="p">&gt;</span></span></span></code></pre></div></div>
+<h3 id="正文段落">正文段落</h3>
+<p>普通文本直接输入就好，但是文本中的换行是不生效的，即使在编辑器中能看到有换行效果，但是导出生成HTML仍然是不生效的。如果要实现换行的话，需要在行尾加上两个空格。直接用<code>&lt;br/&gt;</code>的html标签的话，也是能实现换行，不过这就不算是markdown语法了。</p>
+<p>如果中间有一行空行的话，则会产生是一个新的段落。换行对应到 html 的<code>&lt;br/&gt;</code>，段落对应到 html<code>&lt;p&gt; &lt;/p&gt;</code>。</p>
+<p>对于下述的Markdown 文本：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-markdown">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">这是第一段的第一行（结尾加两个空格）  
+</span></span><span class="line"><span class="cl">这是第二行
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">这是第二段的第一行（结尾没有空格）
+</span></span><span class="line"><span class="cl">这仍然是第二段的第一行</span></span></code></pre></div></div>
+<p>使用Typora生成的HTML如下：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-html">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;</span>这是第一段的第一行（结尾加两个空格）<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="p">&lt;</span><span class="nt">br</span><span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;</span>这是第二行<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;</span>这是第二段的第一行（结尾没有空格）<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;</span>这仍然是第二段的第一行<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span></span></span></code></pre></div></div>
+<p>对于行首和行尾的单个空格常见的渲染处理是会被直接忽略。段落之间多行空行也没有意义，保留一行空行即可。</p>
+<h3 id="字体样式">字体样式</h3>
+<table>
+  <thead>
+      <tr>
+          <th>字体样式</th>
+          <th>语法</th>
+          <th>例子</th>
+          <th>html</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>粗体(Bold)</td>
+          <td><code>** **</code> 或<code>__ __</code></td>
+          <td><strong>这是粗体</strong></td>
+          <td><code>&lt;strong&gt;&lt;/strong&gt;</code></td>
+      </tr>
+      <tr>
+          <td>斜体(Italic)</td>
+          <td><code>* *</code> 或<code>_ _</code></td>
+          <td><em>这是斜体</em></td>
+          <td><code>&lt;em&gt;&lt;/em&gt;</code></td>
+      </tr>
+      <tr>
+          <td>粗斜体(Bold and Italic)</td>
+          <td><code>*** ***</code> 或<code>___ ___</code></td>
+          <td><strong><em>这是粗斜体</em></strong></td>
+          <td><code>&lt;strong&gt;&lt;em&gt;&lt;/em&gt;&lt;/strong&gt;</code></td>
+      </tr>
+      <tr>
+          <td>删除线(Strikethrough)</td>
+          <td><code>~~ ~~</code></td>
+          <td><del>这是删除线</del></td>
+          <td><code>&lt;del&gt;&lt;/del&gt;</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>删除线不属于标准的 markdown 规范，但是一般的解析器都会支持。至于使用*还是使用_则看个人习惯，使用*的人更多一些。</p>
+<h3 id="引用">引用</h3>
+<p>使用<code>&gt;</code>即可进行引用，对应 html 的<code>&lt;blockquote&gt;&lt;/blockquote&gt;</code>，如果引用需要分多段的的话，可以在中间加一个仅包含<code>&gt;</code>的一行即可。如果中间是一个空行的情况，大部分解析器会将其认为是 2 个引用块，也有部分会将其认为是 1 个引用块，使用中最好尽量避免中间有空行的情况出现。</p>
+<p>李白曾经写过</p>
+<blockquote>
+<p>君不见，黄河之水天上来，奔流到海不复回。君不见，高堂明镜悲白发，朝如青丝暮成雪。</p>
+<p>人生得意须尽欢，莫使金樽空对月。天生我材必有用，千金散尽还复来。</p></blockquote>
+<h3 id="列表">列表</h3>
+<p>使用<code>*</code>、<code>-</code>或<code>+</code>产生无序列表，使用数字加<code>.</code>产生有序列表，有序列表的数字不一定需要有序，但是需要从 1 开始，也可以所有都是 1。</p>
+<p>无序列表：</p>
+<ul>
+<li>Java</li>
+<li>C/C++</li>
+<li>Python</li>
+</ul>
+<p>有序列表：</p>
+<ol>
+<li>Java</li>
+<li>C/C++</li>
+<li>Python</li>
+<li>Go</li>
+<li>PHP</li>
+</ol>
+<p>无序列表产生的 html 如下<code>&lt;ul&gt;&lt;li&gt;&lt;/li&gt;&lt;li&gt;&lt;/li&gt;&lt;/ul&gt;</code>，有序列表产生的 html 如下<code>&lt;ol&gt;&lt;li&gt;&lt;/li&gt;&lt;li&gt;&lt;/li&gt;&lt;/ol&gt;</code></p>
+<p>对于多级列表，需要确保子列表与上一级列表的内容对齐，对于有序列表的二级列表缩进 3 个空格（数字+<code>.</code>+空格），对于无序列表的二级列表缩进 2 个空格（<code>-</code>+空格）。对于 list 内部包含段落、引用、代码块、表格等情况，建议和上述规则保持一致。对于上述情况在二级列表或者段落前后包含一个空行。</p>
+<p>不同的 markdown 解析器对于列表内包含段落的情况处理的并不一致，所以存在着各种写法，比如段落前用 4 个空格、在上一行末尾加入 2 个空格（软换行）等等，建议保持标准的写法兼容尽量多的解析器。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-markdown">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="k">1.</span> Java
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   Java 连续霸榜 TIBOE 编程语言排行榜，已然成为业界最受欢迎的变成语言。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> C/C++
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> C
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> C++
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> Python
+</span></span><span class="line"><span class="cl"><span class="k">4.</span> PHP
+</span></span><span class="line"><span class="cl"><span class="k">
+</span></span></span><span class="line"><span class="cl"><span class="k">   &gt; </span><span class="ge">曾经有人说 PHP 是世界上最好的语言
+</span></span></span><span class="line"><span class="cl"><span class="ge"></span>
+</span></span><span class="line"><span class="cl">   LAMP 曾经是标配，如今已经不再那么流行……</span></span></code></pre></div></div>
+<ol>
+<li>
+<p>Java</p>
+<p>Java 连续霸榜 TIBOE 编程语言排行榜，已然成为业界最受欢迎的变成语言。</p>
+</li>
+<li>
+<p>C/C++</p>
+<ul>
+<li>C</li>
+<li>C++</li>
+</ul>
+</li>
+<li>
+<p>Python</p>
+</li>
+<li>
+<p>PHP</p>
+<blockquote>
+<p>曾经有人说 PHP 是世界上最好的语言</p></blockquote>
+<p>LAMP 曾经是标配，如今已经不再那么流行……</p>
+</li>
+</ol>
+<h3 id="链接">链接</h3>
+<p>链接写法 <code>[展现名](链接地址 &quot;标题&quot;)</code>，比如<a href="https://www.qq.com" target="_blank" rel="noopener noreffer ">腾讯网</a>，其中的<code>&quot;标题&quot;</code>可以省略，链接地址可以使用绝对路径也可以使用相对路径，或者指向本地/本网站的其他文件。更进一步，也可以指向本文件的其他锚点（书签），比如<a href="#%e5%bc%95%e7%94%a8" rel="">跳转引用</a>。</p>
+<p>展现的名字和链接地址一致的时候会显得有些冗余，比如<code>[https://www.qq.com](https://www.qq.com)</code>，有更简洁的写法，直接用<code>&lt;https://www.qq.com&gt;</code>生成<a href="https://www.qq.com" target="_blank" rel="noopener noreffer ">https://www.qq.com</a>。</p>
+<p>如果多处需要链接相同的地址，我们也可以采用引用的方式，使用<code>[展现名][链接名]</code>，然后在任意地方定义链接名的具体地址 <code>[链接名]: 链接地址</code>，比如<a href="https://www.qq.com" title="腾讯网" target="_blank" rel="noopener noreffer ">腾讯</a>，这样子还有个好处是方便管理。</p>
+<h3 id="图片">图片</h3>
+<p>和链接的语法类似，图片需要在前面加上<code>!</code>，常见的写法<code>![展现名][图片地址]</code>，如果需要图片本身也是链接的话，在外层加上链接地址：<code>[![展现名][图片地址]](链接地址)</code></p>
+<p><a href="https://www.qq.com" target="_blank" rel="noopener noreffer "></a></p>
+<h3 id="表格">表格</h3>
+<p>表格不是标准的 markdown，但是常见的解析器会支持，写法如下，完整的情况会在第一列前面和最后列后面加上<code>|</code>，表头和内容中间需要一行分隔符，这里建议保持和列数一致，某些解析器也会支持最简单的写法<code>---|---</code>（不管多少列的情况下），但是很多解析器并不支持，这里可以通过<code>:</code>来指定表格的对齐方向，左对齐、右对齐还是居中。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-html">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">表头1|表头2|表头3 :---|:---:|---: 内容|内容|内容 内容|内容|内容</span></span></code></pre></div></div>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">国家</th>
+          <th style="text-align: center">面积</th>
+          <th style="text-align: right">人口</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">中国</td>
+          <td style="text-align: center">960 万平方公里</td>
+          <td style="text-align: right">14 亿</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">美国</td>
+          <td style="text-align: center">936 万平方公里</td>
+          <td style="text-align: right">3 亿</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">俄罗斯</td>
+          <td style="text-align: center">1709 万平方公里</td>
+          <td style="text-align: right">1.4 亿</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="分隔符">分隔符</h3>
+<p>使用<code>---</code>或者<code>***</code>作为分隔符</p>
+<hr>
+<h3 id="转义字符">转义字符</h3>
+<p>由于一些符号在 markdown 中有了特殊含义，比如我们就是要输入<code>*abc*</code>，并不希望出现斜体的 abc，那么可以使用<code>\</code>作为转衣符，输入<code>\*abc\*</code>，结果为*abc*。</p>
+<h2 id="扩展语法">扩展语法</h2>
+<h3 id="代码">代码</h3>
+<p>行内使用`作为起始和终止符，比如<code>printf</code>，代码块使用位于独立行的```作为起始和终止</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;hello world!&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<h3 id="任务列表">任务列表</h3>
+<p>任务列表（Task List）在 github 中使用非常广泛，语法格式如下，使用<code>x</code>标识为已完成，未完成的情况中间需要包含空格。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-markdown">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="k">- [x]</span> 银行存款超过 1000 万
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 当上总经理
+</span></span><span class="line"><span class="cl">- [ ] 赢取白富美</span></span></code></pre></div></div>
+<ul>
+<li><i class="far fa-check-square fa-fw" aria-hidden="true"></i> 银行存款超过 1000 万</li>
+<li><i class="far fa-square fa-fw" aria-hidden="true"></i> 当上总经理</li>
+<li><i class="far fa-square fa-fw" aria-hidden="true"></i> 赢取白富美</li>
+</ul>
+<h3 id="数学公式">数学公式</h3>
+<p>数学公式块，使用位于独立行的<code>$$</code>作为起始和终止，比如：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-markdown">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">$$
+</span></span><span class="line"><span class="cl">f(x)=\sum^{\infty}_{n=0}\frac{f^{(n)}(a)}{n!}(x-a)^n
+</span></span><span class="line"><span class="cl">$$</span></span></code></pre></div></div>
+<p>$$
+f(x)=\sum^{\infty}_{n=0}\frac{f^{(n)}(a)}{n!}(x-a)^n
+$$</p>
+<p>行内数学公式，直接使用<code>$</code>作为起始和终止：$\delta=b^2-4ac$（有些解析器需要使用<code>$$</code>作为起始和终止）。</p>
+<h3 id="html-标签">html 标签</h3>
+<p>可以使用 html 标签实现 markdown 不支持的功能，正常情况下尽量避免使用 html 标签。</p>
+<ol>
+<li>在表格内部需要换行的时候，可以加上<code>&lt;br/&gt;</code>标签；</li>
+<li>需要指定样式的时候，可以加上类似<code>&lt;span style=&quot;color:red&quot;&gt; &lt;/span&gt;</code>标签，比如：<span style="color:red">我是红色</span>；</li>
+<li>指定下划线，使用<code>&lt;u&gt; &lt;/u&gt;</code>，比如：<u>我是下划线</u>；</li>
+</ol>
+<h3 id="非通用语法">非通用语法</h3>
+<h3 id="内容目录">内容目录</h3>
+<p>使用<code>[TOC]</code>生成自动目录。Typora 支持该语法，GFM 不支持该语法。</p>
+<h3 id="时序图">时序图</h3>
+<p>使用<a href="https://bramp.github.io/js-sequence-diagrams/" target="_blank" rel="noopener noreffer ">js-sequence</a>渲染</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-markdown">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="s">```sequence
+</span></span></span><span class="line"><span class="cl"><span class="s"></span>罗密欧-&gt;朱丽叶: 哈喽
+</span></span><span class="line"><span class="cl">朱丽叶--&gt;罗密欧: 我想你了
+</span></span><span class="line"><span class="cl">罗密欧-&gt;&gt;朱丽叶: 我也想你了
+</span></span><span class="line"><span class="cl"><span class="s">```</span></span></span></code></pre></div></div>
+
+<p></p>
+<p>gfm 不支持时序图，Typora 支持。</p>
+<h3 id="流程图">流程图</h3>
+<p>使用<a href="http://flowchart.js.org/" target="_blank" rel="noopener noreffer ">flowchart.js</a>渲染</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-markdown">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="s">```flow
+</span></span></span><span class="line"><span class="cl"><span class="s"></span>st=&gt;start: 开始
+</span></span><span class="line"><span class="cl">cond=&gt;condition: 有房有车
+</span></span><span class="line"><span class="cl">op1=&gt;operation: 赢取白富美
+</span></span><span class="line"><span class="cl">op2=&gt;operation: 走向人生巅峰
+</span></span><span class="line"><span class="cl">e=&gt;end: 结束
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">st-&gt;cond
+</span></span><span class="line"><span class="cl">cond(yes)-&gt;op1-&gt;op2-&gt;e
+</span></span><span class="line"><span class="cl">cond(no)-&gt;e
+</span></span><span class="line"><span class="cl"><span class="s">```</span></span></span></code></pre></div></div>
+
+<p></p>
+<p>gfm 不支持流程图，Typora 支持。</p>
+<h3 id="mermaid-图">mermaid 图</h3>
+<p><a href="https://mermaidjs.github.io/" target="_blank" rel="noopener noreffer "><code>mermaid</code></a>相比时序图和流程图来说，功能会更强大，支持时序图、流程图、UML 图、状态图、甘特图等，Typora 支持但是 GFM 不支持。目前来看，使用算是比较广泛了。官网提供了较丰富的例子，<a href="https://mermaidjs.github.io/mermaid-live-editor/" target="_blank" rel="noopener noreffer ">Mermaid Live Editor</a>提供了在线编辑以及导出 SVG。</p>
+<p>看下用<code>mermaid</code>来画时序图的例子：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-markdown">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="s">```mermaid
+</span></span></span><span class="line"><span class="cl"><span class="s"></span>sequenceDiagram
+</span></span><span class="line"><span class="cl">罗密欧-&gt;&gt;朱丽叶: 哈喽
+</span></span><span class="line"><span class="cl">朱丽叶--&gt;&gt;罗密欧: 我想你了
+</span></span><span class="line"><span class="cl">罗密欧-&gt;&gt;朱丽叶: 我也想你了
+</span></span><span class="line"><span class="cl"><span class="s">```</span></span></span></code></pre></div></div>
+
+<p></p>
+<h3 id="脚标和上下标">脚标和上下标</h3>
+<p>可以使用语法 ​<code>[^脚标A]: 这是脚标A</code>来创建角标（需要使用代码块模式），在需要引用的地方使用<code>[^脚标A]</code>进行引用<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。Typora 支持该语法，GFM 不支持该语法。</p>
+<p>上标和下标没有一致的标准，在 Typora 中使用<code>^文字^</code>表示上标，使用<code>~文字~</code>表示下标，但我看并没有得到广泛支持。建议在 markdown 中尽量避免使用上下标，如果要保持兼容性的话采用 HTML 的<code>&lt;sup&gt;文字&lt;/sup&gt;</code>展示上标，使用<code>&lt;sub&gt;文字&lt;/sub&gt;</code>的方式展示下标。</p>
+<h3 id="yaml-头信息">YAML 头信息</h3>
+<p>在文件的头部使用使用独立行的<code>---</code>作为开始和终止，其中间部分会作为 metadata，并不会生成可视内容，这本来是<a href="https://jekyllrb.com/docs/front-matter/" target="_blank" rel="noopener noreffer ">jekyll</a>的特殊格式，现在 Typora 也支持该语法（尽管不一定会生成 html 里面的 metadata）。</p>
+<h3 id="github-emoji">Github emoji</h3>
+<p>按文本形式输入类似<code>:smile:</code>，常见的可以直接输入，完整的可以参考<a href="https://gist.github.com/rxaviers/7360908" target="_blank" rel="noopener noreffer ">列表</a>。Typora 和 github 都支持，vscode 的相关插件不支持。</p>
+<ul>
+<li>人：&#x1f466;&#x1f467;&#x1f468;&#x1f469;&#x1f476;&#x1f475;&#x1f474;&#x1f478;&#x1f46e;&#x1f47c;&#x1f46b;&#x1f6b6;&#x1f3c3;&#x1f46f;</li>
+<li>动物：&#x1f431;&#x1f436;&#x1f437;&#x1f438;&#x1f42e;&#x1f434;&#x1f40d;&#x1f426;&#x1f42d;&#x1f43a;&#x1f412;&#x1f42b;</li>
+<li>表情：&#x1f604;&#x1f622;&#x1f615;&#x1f62d;&#x1f602;&#x1f637;&#x1f61f;&#x1f609;&#x263a;&#xfe0f;&#x1f601;&#x1f617;&#x1f62e;&#x1f60d;</li>
+</ul>
+<h2 id="参考资料">参考资料</h2>
+<ol>
+<li><a href="https://help.github.com/articles/basic-writing-and-formatting-syntax/" target="_blank" rel="noopener noreffer ">Writing on GitHub/Basic writing and formatting syntax</a></li>
+<li><a href="https://github.github.com/gfm/" target="_blank" rel="noopener noreffer ">GitHub Flavored Markdown Spec</a></li>
+<li><a href="https://www.markdownguide.org/" target="_blank" rel="noopener noreffer ">Markdown Guide</a></li>
+<li><a href="https://commonmark.org/help/" target="_blank" rel="noopener noreffer ">Markdown Tutorial</a></li>
+</ol>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>这是脚标 A&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+]]></description></item></channel></rss>

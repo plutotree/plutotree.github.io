@@ -1,0 +1,70 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Ssl - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/ssl/</link><description>Ssl - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Wed, 01 Feb 2023 12:30:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/ssl/" rel="self" type="application/rss+xml"/><item><title>记录一个 curl 访问的 https 证书问题</title><link>https://plutotree.me/2023/02/fix-curl-certificate-problem/</link><pubDate>Wed, 01 Feb 2023 12:30:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2023/02/fix-curl-certificate-problem/</guid><description><![CDATA[<h2 id="问题描述">问题描述</h2>
+<p>前段时间证书更新后，发现在 linux 服务器上使用 curl 命令访问会提示<code>curl: (60) Peer's Certificate issuer is not recognized.</code></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">[</span>root@centos<span class="o">]</span><span class="c1"># curl &#34;https://www.plutotree.cn&#34;</span>
+</span></span><span class="line"><span class="cl">curl: <span class="o">(</span>60<span class="o">)</span> Peer<span class="s1">&#39;s Certificate issuer is not recognized.
+</span></span></span><span class="line"><span class="cl"><span class="s1">More details here: http://curl.haxx.se/docs/sslcerts.html
+</span></span></span><span class="line"><span class="cl"><span class="s1">
+</span></span></span><span class="line"><span class="cl"><span class="s1">curl performs SSL certificate verification by default, using a &#34;bundle&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s1"> of Certificate Authority (CA) public keys (CA certs). If the default
+</span></span></span><span class="line"><span class="cl"><span class="s1"> bundle file isn&#39;</span>t adequate, you can specify an alternate file
+</span></span><span class="line"><span class="cl"> using the --cacert option.
+</span></span><span class="line"><span class="cl">If this HTTPS server uses a certificate signed by a CA represented in
+</span></span><span class="line"><span class="cl"> the bundle, the certificate verification probably failed due to a
+</span></span><span class="line"><span class="cl"> problem with the certificate <span class="o">(</span>it might be expired, or the name might
+</span></span><span class="line"><span class="cl"> not match the domain name in the URL<span class="o">)</span>.
+</span></span><span class="line"><span class="cl">If you<span class="s1">&#39;d like to turn off curl&#39;</span>s verification of the certificate, use
+</span></span><span class="line"><span class="cl"> the -k <span class="o">(</span>or --insecure<span class="o">)</span> option.</span></span></code></pre></div></div>
+<p>增加<code>--verbose</code>参数可以得到更详细的信息</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">* Initializing NSS with certpath: sql:/etc/pki/nssdb
+</span></span><span class="line"><span class="cl">*   CAfile: /etc/pki/tls/certs/ca-bundle.crt
+</span></span><span class="line"><span class="cl">  CApath: none
+</span></span><span class="line"><span class="cl">* Server certificate:
+</span></span><span class="line"><span class="cl">*       subject: <span class="nv">CN</span><span class="o">=</span>plutotree.cn
+</span></span><span class="line"><span class="cl">*       start date: Feb <span class="m">01</span> 09:09:40 <span class="m">2023</span> GMT
+</span></span><span class="line"><span class="cl">*       expire date: May <span class="m">02</span> 09:09:39 <span class="m">2023</span> GMT
+</span></span><span class="line"><span class="cl">*       common name: plutotree.cn
+</span></span><span class="line"><span class="cl">*       issuer: <span class="nv">CN</span><span class="o">=</span>R3,O<span class="o">=</span>Let<span class="s1">&#39;s Encrypt,C=US
+</span></span></span><span class="line"><span class="cl"><span class="s1">* NSS error -8179 (SEC_ERROR_UNKNOWN_ISSUER)
+</span></span></span><span class="line"><span class="cl"><span class="s1">* Peer&#39;</span>s Certificate issuer is not recognized.
+</span></span><span class="line"><span class="cl">* Closing connection <span class="m">0</span></span></span></code></pre></div></div>
+<p>使用浏览器访问的时候是正常的，不管是 chrome 还是 Safari。</p>
+<h2 id="问题定位及解决">问题定位及解决</h2>
+<h3 id="尝试更新根证书无效">尝试更新根证书无效</h3>
+<p>首先怀疑的是根证书问题，搜索之后最常见的解决方案是更新根证书，在<code>centos</code>下执行下述命令：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">yum install ca-certificates
+</span></span><span class="line"><span class="cl">update-ca-trust force-enable
+</span></span><span class="line"><span class="cl">update-ca-trust extract</span></span></code></pre></div></div>
+<h3 id="尝试手动更新证书">尝试手动更新证书</h3>
+<p>另外的思路就是手动将网站证书添加，但这个终归不是一个好办法，简单尝试了（发现仍然无效）下就放弃了（估计是哪一步操作不对）。</p>
+<h3 id="从-zerossl-更换回-lets-encrypt">从 zerossl 更换回 Let&rsquo;s Encrypt</h3>
+<p>这次使用<code>acme.sh</code>更新证书的时候，是有提示默认服务切换至 zerossl，怀疑是不是 zerossl 颁发的证书导致无法正确识别，所以切换回去使用 Let&rsquo;s Encrypt 了，结果当然是仍然无效。</p>
+<h3 id="发现一段重要说明">发现一段重要说明</h3>
+<p>在 acme.sh 发现一段重要说明：</p>
+<blockquote>
+<p>Nginx 的配置<code>ssl_certificate</code>使用<code>/etc/nginx/ssl/fullchain.cer</code>，而非<code>/etc/nginx/ssl/&lt;domain&gt;.cer</code> ，否则<code>SSL Labs</code>的测试会报<code>Chain issues Incomplete</code>错误。</p></blockquote>
+<p>立刻尝试手动拷贝文件并且修改了下 nginx 配置，问题直接就解决了。</p>
+<p>之前的证书安装命令压根就没有指定<code>--fullchain-file</code>，而只是指定了<code>--key-file</code>和<code>--cert-file</code>，而在 nginx 下<code>--cert-file</code>是不需要的，<code>--fullchain-file</code>确实必须的。之前看文档的时候就错看了这一点结果悲剧了。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">acme.sh --install-cert -d plutotree.cn --cert-file /etc/nginx/conf.d/plutotree.cn.cer  --key-file /etc/nginx/conf.d/plutotree.cn.key --fullchain-file /etc/nginx/conf.d/fullchain.cer --reloadcmd <span class="s2">&#34;systemctl force-reload nginx&#34;</span></span></span></code></pre></div></div>
+<h2 id="总结教训">总结教训</h2>
+<p>搜索引擎不是万能的！还是要先多看看文档！</p>
+]]></description></item></channel></rss>

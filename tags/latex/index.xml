@@ -1,0 +1,166 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Latex - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/latex/</link><description>Latex - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Mon, 22 Nov 2021 12:30:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/latex/" rel="self" type="application/rss+xml"/><item><title>latex中文书籍模板</title><link>https://plutotree.me/2021/11/latex-chinese-book-simple-template/</link><pubDate>Mon, 22 Nov 2021 12:30:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2021/11/latex-chinese-book-simple-template/</guid><description><![CDATA[<p>使用<code>ctexbook</code>的一个最简单的模板</p>
+<ul>
+<li>标题页无页码；</li>
+<li>目录页无页码；</li>
+<li>正文页页码重新计数；</li>
+<li>设置好字体后可以直接在<a href="https://www.overleaf.com/" target="_blank" rel="noopener noreffer ">overleaf</a>上面运行；</li>
+</ul>
+<p>代码如下：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-latex">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-latex" data-lang="latex"><span class="line"><span class="cl"><span class="k">\documentclass</span><span class="nb">{</span>ctexbook<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">% 设置页边距
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="k">\usepackage</span><span class="na">[margin=3.18cm,a4paper]</span><span class="nb">{</span>geometry<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">% 在OverLeaf上可以使用指定字体
+</span></span></span><span class="line"><span class="cl"><span class="c">% \setmainfont{Caladea}
+</span></span></span><span class="line"><span class="cl"><span class="c"></span>
+</span></span><span class="line"><span class="cl"><span class="k">\pagestyle</span><span class="nb">{</span>headings<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">\title</span><span class="nb">{</span>三国演义<span class="nb">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">\author</span><span class="nb">{</span>罗贯中<span class="nb">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">\date</span><span class="nb">{}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">\begin</span><span class="nb">{</span>document<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">% 标题页不需要页码
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="k">\maketitle</span>
+</span></span><span class="line"><span class="cl"><span class="k">\thispagestyle</span><span class="nb">{</span>empty<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">% 目录页不需要页码
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="k">\tableofcontents</span>
+</span></span><span class="line"><span class="cl"><span class="k">\thispagestyle</span><span class="nb">{</span>empty<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">% 页码重新计数
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="k">\setcounter</span><span class="nb">{</span>page<span class="nb">}{</span>0<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">\chapter</span><span class="nb">{</span>宴桃园豪杰三结义<span class="k">\ </span>斩黄巾英雄首立功<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">\noindent</span> 滚滚长江东逝水，浪花淘尽英雄。<span class="k">\\</span>
+</span></span><span class="line"><span class="cl">是非成败转头空。<span class="k">\\</span>
+</span></span><span class="line"><span class="cl">青山依旧在，几度夕阳红。<span class="k">\\</span>
+</span></span><span class="line"><span class="cl">白发渔樵江渚上，惯看秋月春风。<span class="k">\\</span>
+</span></span><span class="line"><span class="cl">一壶浊酒喜相逢。<span class="k">\\</span>
+</span></span><span class="line"><span class="cl">古今多少事，都付笑谈中。<span class="k">\\</span>
+</span></span><span class="line"><span class="cl">------调寄《临江仙》
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">话说天下大势，分久必合，合久必分。周末七国分争，并入于秦。及秦灭之后，楚、汉分争，又并入于汉。汉朝自高祖斩白蛇而起义，一统天下，后来光武中兴，传至献帝，遂分为三国。推其致乱之由，殆始于桓、灵二帝。桓帝禁锢善类，崇信宦官。及桓帝崩，灵帝即位，大将军窦武、太傅陈蕃共相辅佐。时有宦官曹节等弄权，窦武、陈蕃谋诛之，机事不密，反为所害，中涓自此愈横。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">\chapter</span><span class="nb">{</span>张翼德怒鞭督邮<span class="k">\ </span>何国舅谋诛宦竖<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">且说董卓字仲颖，陇西临洮人也，官拜河东太守，自来骄傲。当日怠慢了玄德，张飞性发，便欲杀之。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">\end</span><span class="nb">{</span>document<span class="nb">}</span></span></span></code></pre></div></div>
+]]></description></item><item><title>在Visual Studio Code中使用LaTeX</title><link>https://plutotree.me/2020/12/using-latex-in-visual-studio-code/</link><pubDate>Thu, 03 Dec 2020 18:30:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2020/12/using-latex-in-visual-studio-code/</guid><description><![CDATA[<h2 id="关于-latex">关于 LaTex</h2>
+<p><a href="https://zh.wikipedia.org/wiki/LaTeX" target="_blank" rel="noopener noreffer "><code>LaTeX</code></a>是一种基于 TeX 的排版系统，而 TeX 是<a href="https://zh.wikipedia.org/wiki/%E9%AB%98%E5%BE%B7%E7%BA%B3" target="_blank" rel="noopener noreffer ">高德纳</a>在发表《计算机程序艺术》的时候，因为当时的排版软件无法达到他的要求，自己编写的（牛人就是这么牛）。<code>LaTeX</code>非常适用于生成高质量的科技文章，在学术界用的较多，期刊杂志都会提供<code>LaTex</code>的模板，对于工科研究生来说算是必备的技能了。<code>LaTeX</code>作为一种标记语言，遵循的一个基本理念就是呈现和内容分离，和现在的 markdown 有点类似。</p>
+<p>下面看看一个示例效果吧</p>
+<p></p>
+<p>对应的代码如下（看着也还好对吧？）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-latex">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-latex" data-lang="latex"><span class="line"><span class="cl"><span class="k">\documentclass</span><span class="nb">{</span>article<span class="nb">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">\usepackage</span><span class="na">[UTF8]</span><span class="nb">{</span>ctex<span class="nb">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">\usepackage</span><span class="nb">{</span>amsfonts<span class="nb">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">\usepackage</span><span class="nb">{</span>pgfplots<span class="nb">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">\pgfplotsset</span><span class="nb">{</span>compat=1.14<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">\begin</span><span class="nb">{</span>document<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">\title</span><span class="nb">{</span>在Visual Studio Code中使用LaTeX<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">\author</span><span class="nb">{</span>PlutoTree<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">\maketitle</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    来个公式：
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="sb">$$</span><span class="nb"> </span><span class="nv">\int</span><span class="nb"> x^{</span><span class="nv">\mu</span><span class="nb">}</span><span class="nv">\mathrm</span><span class="nb">{d}x</span><span class="o">=</span><span class="nv">\frac</span><span class="nb">{x^{</span><span class="nv">\mu</span><span class="nb"> </span><span class="o">+</span><span class="m">1</span><span class="nb">}}{</span><span class="nv">\mu</span><span class="nb"> </span><span class="o">+</span><span class="m">1</span><span class="nb">}</span><span class="o">+</span><span class="nb">C, </span><span class="nv">\left</span><span class="o">(</span><span class="nb">{</span><span class="nv">\mu</span><span class="nb"> </span><span class="nv">\neq</span><span class="nb"> </span><span class="o">-</span><span class="m">1</span><span class="nb">}</span><span class="nv">\right</span><span class="o">)</span><span class="nb"> </span><span class="s">$$</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    来个函数图：
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">\begin</span><span class="nb">{</span>center<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">\begin</span><span class="nb">{</span>tikzpicture<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">\begin</span><span class="nb">{</span>axis<span class="nb">}</span>[xlabel=<span class="s">$</span><span class="nb">x</span><span class="s">$</span>,ylabel=<span class="nb">{</span><span class="s">$</span><span class="nb">f</span><span class="o">(</span><span class="nb">x</span><span class="o">)</span><span class="s">$</span><span class="nb">}</span>,legend pos=outer north east,axis lines=left]
+</span></span><span class="line"><span class="cl">                <span class="k">\addplot</span><span class="na">[color=red,domain=-3:3,samples=100]</span><span class="nb">{</span>exp(-x<span class="nb">^</span>2/2)<span class="nb">}</span>;
+</span></span><span class="line"><span class="cl">                <span class="k">\addplot</span><span class="na">[color=blue,domain=-3:3,samples=100]</span><span class="nb">{</span>exp(-x<span class="nb">^</span>2/3)<span class="nb">}</span>;
+</span></span><span class="line"><span class="cl">                <span class="k">\addplot</span><span class="na">[color=orange,domain=-3:3,samples=100]</span><span class="nb">{</span>exp(-x<span class="nb">^</span>2/4)<span class="nb">}</span>;
+</span></span><span class="line"><span class="cl">                <span class="k">\legend</span><span class="nb">{</span><span class="s">$</span><span class="nv">\exp</span><span class="o">(-</span><span class="nb">x^</span><span class="m">2</span><span class="o">/</span><span class="m">2</span><span class="o">)</span><span class="s">$</span>,<span class="s">$</span><span class="nv">\exp</span><span class="o">(-</span><span class="nb">x^</span><span class="m">2</span><span class="o">/</span><span class="m">3</span><span class="o">)</span><span class="s">$</span>,<span class="s">$</span><span class="nv">\exp</span><span class="o">(-</span><span class="nb">x^</span><span class="m">2</span><span class="o">/</span><span class="m">4</span><span class="o">)</span><span class="s">$</span><span class="nb">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">\end</span><span class="nb">{</span>axis<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">\end</span><span class="nb">{</span>tikzpicture<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">\end</span><span class="nb">{</span>center<span class="nb">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">\end</span><span class="nb">{</span>document<span class="nb">}</span></span></span></code></pre></div></div>
+<p>对<code>LaTeX</code>感兴趣的话，可以参考相关资料，这里还是先回归正题，有空的话我也会写写<code>LaTeX</code>的使用文章。</p>
+<h2 id="安装-texlive">安装 TexLive</h2>
+<p>目前最新的是<code>TexLive 2020</code>，可以在<a href="https://www.tug.org/texlive/" target="_blank" rel="noopener noreffer ">官网</a>下载在线安装包，不过更建议直接下载完整的 ios 安装包。可以直接点击<a href="http://mirror.ctan.org/systems/texlive/Images/texlive2020.iso" target="_blank" rel="noopener noreffer ">链接</a>下载，这个地址会自动选择合适的镜像地址。如果发现下载速度很慢，也可以在下述地址中手动选择，或者使用迅雷之类的工具进行下载：</p>
+<ul>
+<li>清华大学（北京）：<a href="https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso" target="_blank" rel="noopener noreffer ">https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso</a></li>
+<li>北京交通大学（北京）：<a href="https://mirror.bjtu.edu.cn/ctan/systems/texlive/Images/texlive2020.iso" target="_blank" rel="noopener noreffer ">https://mirror.bjtu.edu.cn/ctan/systems/texlive/Images/texlive2020.iso</a></li>
+<li>上海交通大学（上海）：<a href="https://mirrors.sjtug.sjtu.edu.cn/ctan/systems/texlive/Images/texlive2020.iso" target="_blank" rel="noopener noreffer ">https://mirrors.sjtug.sjtu.edu.cn/ctan/systems/texlive/Images/texlive2020.iso</a></li>
+<li>中国科技大学（合肥）：<a href="https://mirrors.ustc.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso" target="_blank" rel="noopener noreffer ">https://mirrors.ustc.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso</a></li>
+<li>重庆大学（重庆）：<a href="https://mirrors.cqu.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso" target="_blank" rel="noopener noreffer ">https://mirrors.cqu.edu.cn/CTAN/systems/texlive/Images/texlive2020.iso</a></li>
+<li>腾讯云：<a href="https://mirrors.cloud.tencent.com/CTAN/systems/texlive/Images/texlive2020.iso" target="_blank" rel="noopener noreffer ">https://mirrors.cloud.tencent.com/CTAN/systems/texlive/Images/texlive2020.iso</a></li>
+</ul>
+<p>下载完之后可以直接用资源管理器打开可以直接加载（Windows10 支持，使用虚拟光驱），或者也可以使用压缩工具打开后直接解压缩。不管使用哪种方式，iso 文件或者解压后的文件需要保留，以方便后续安装宏包。</p>
+<p>双击运行<code>install-tl-windows.bat</code></p>
+<p></p>
+<p>点击<code>Advanced</code>，修改默认的安装路径，然后点击安装</p>
+<p></p>
+<p>安装包较大，耐心等待</p>
+<p></p>
+<p>安装完成之后可以直接打开<code>TeXworks editor</code>进行编辑<code>tex</code>文件，以及编译生成<code>pdf</code>。如果能接受<code>TeXworks</code>的丑陋界面，其实可以不用往后看了哈。除了<code>Visual Studio Code</code>之外，也可以选择自己喜欢的任意文本编辑器来使用，包括<code>vim</code>、<code>emacs</code>、<code>notepad++</code>，配置好相关的语法提示，以及快捷命令之后也都可以正常使用。</p>
+<p></p>
+<h2 id="配置-visual-studio-code">配置 Visual Studio Code</h2>
+<p><code>Visual Studio Code</code>的安装就不介绍了，直接安装插件<code>LaTeX Workshop</code>和<code>LaTeX Utilities</code></p>
+<p></p>
+<p>安装完成之后点击<code>LaTex Workshop</code>插件的配置选项</p>
+<p></p>
+<p>搜索<code>tools</code>，然后选择在<code>settings.json</code>中编辑（这时候会将默认的配置插入）</p>
+<p></p>
+<p>在前面加上下述参数，不要忘记末尾的逗号</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;xelatex&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;xelatex&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;args&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;-synctex=1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;-interaction=nonstopmode&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;-file-line-error&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;-output-directory=%OUTDIR%&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;%DOCFILE%&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">],</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;env&#34;</span><span class="p">:</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span><span class="err">,</span></span></span></code></pre></div></div>
+<p></p>
+<p>回到插件的配置页面，在上面有<code>Recipes</code>的配置说明，同样点击在<code>settings.json</code>中编辑（这时候会将默认的配置插入），在前面加上下述参数，同样不要忘记末尾的逗号</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;xelatex&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;tools&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;xelatex&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span><span class="err">,</span></span></span></code></pre></div></div>
+<p></p>
+<h2 id="使用说明">使用说明</h2>
+<p>打开一个文件夹，新建一个 tex 文件，把前面那段代码拷贝进去，点击右上方的箭头进行编译，或者使用快捷键<code>Ctrl+Alt+B</code>，成功之后可以点击左边的<code>View Latex PDF</code>，默认会启动浏览器进行查看。</p>
+<p></p>
+<p>这时候也可以直接查看文件所在目录，会发现除了生成的<code>pdf</code>文件之外，还有一些其他文件。</p>
+<p></p>
+<h2 id="参考资料">参考资料</h2>
+<ol>
+<li><a href="https://liam.page/texlive/" target="_blank" rel="noopener noreffer ">TeX Live 下载及安装说明</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/38178015" target="_blank" rel="noopener noreffer ">使用 VSCode 编写 LaTeX</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/58811994" target="_blank" rel="noopener noreffer ">2020 搭建 Latex 环境</a></li>
+</ol>
+]]></description></item></channel></rss>

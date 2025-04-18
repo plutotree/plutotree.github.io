@@ -1,0 +1,326 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Ai - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/ai/</link><description>Ai - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Fri, 18 Apr 2025 12:00:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/ai/" rel="self" type="application/rss+xml"/><item><title>MCP 实践例子分享</title><link>https://plutotree.me/2025/04/practical-examples-of-mcp-applications./</link><pubDate>Fri, 18 Apr 2025 12:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2025/04/practical-examples-of-mcp-applications./</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/18/29ueFR.jpg" referrerpolicy="no-referrer">
+            </div><h2 id="任务1-整理全国各大旅游城市近期天气情况">任务1: 整理全国各大旅游城市近期天气情况</h2>
+<p>传统方案可能需要花费1个小时以上，还容易出错</p>
+<ol>
+<li>百度上搜索全国下有哪些旅游城市；</li>
+<li>在天气网站上搜索每个城市的天气信息，然后手动拷贝数据；</li>
+<li>将上述数据整理成表格或者ppt；</li>
+</ol>
+<p>当然，如果如果会写代码，第2步就可以通过程序来解决。不管是直接解析页面还是通过API获取都能确保不出错。不过如果是一次性的工作，可能写代码及调试的时间消耗也不一定能节省多少。</p>
+<p>对于有使用kimi、豆包、元宝等AI大模型的人来说，肯定也会直接尝试用AI来解决问题。我们尝试把问题直接丢给元宝【整理下全国各大旅游城市近期天气情况，以表格形式返回】，元宝会有模有样给你搜索及整理一番，只是最后的天气你都不知道是哪一天的。<a href="https://yuanbao.tencent.com/bot/app/share/chat/ntQkP3iMLbBN" target="_blank" rel="noopener noreffer ">访问</a>或者测试下是不是这样。</p>
+<p>这时候你可能会想，如果AI能写代码访问API接口就好了，考虑到任务五花八门，接口千变万化，这里如果能有一套统一标准那就好了。没错，MCP就是来解决这个事情的。</p>
+<p>我们先直接看下效果，对于集成了具备天气查询MCP能力的AI大模型，我们只要提出问题就可以了。</p>
+<p>问题：整理全国主要旅游城市最近的天气情况，以表格形式返回，一个城市一行数据
+回答：（表格数据有删减）</p>
+<table>
+  <thead>
+      <tr>
+          <th>城市</th>
+          <th>日期</th>
+          <th>白天天气</th>
+          <th>夜间天气</th>
+          <th>白天温度</th>
+          <th>夜间温度</th>
+          <th>白天风向</th>
+          <th>夜间风向</th>
+          <th>白天风力</th>
+          <th>夜间风力</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>北京市</td>
+          <td>2025-04-18</td>
+          <td>中雨</td>
+          <td>小雨</td>
+          <td>19℃</td>
+          <td>8℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>北京市</td>
+          <td>2025-04-19</td>
+          <td>多云</td>
+          <td>晴</td>
+          <td>21℃</td>
+          <td>11℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>上海市</td>
+          <td>2025-04-18</td>
+          <td>阴</td>
+          <td>阴</td>
+          <td>31℃</td>
+          <td>18℃</td>
+          <td>东南</td>
+          <td>东南</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>上海市</td>
+          <td>2025-04-19</td>
+          <td>小雨</td>
+          <td>小雨</td>
+          <td>28℃</td>
+          <td>17℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>广州市</td>
+          <td>2025-04-18</td>
+          <td>阵雨</td>
+          <td>阵雨</td>
+          <td>28℃</td>
+          <td>22℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>广州市</td>
+          <td>2025-04-19</td>
+          <td>阵雨</td>
+          <td>多云</td>
+          <td>28℃</td>
+          <td>23℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>深圳市</td>
+          <td>2025-04-18</td>
+          <td>阴</td>
+          <td>阴</td>
+          <td>30℃</td>
+          <td>24℃</td>
+          <td>东南</td>
+          <td>东南</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>深圳市</td>
+          <td>2025-04-19</td>
+          <td>阴</td>
+          <td>阴</td>
+          <td>30℃</td>
+          <td>24℃</td>
+          <td>西南</td>
+          <td>西南</td>
+          <td>4级</td>
+          <td>4级</td>
+      </tr>
+      <tr>
+          <td>成都市</td>
+          <td>2025-04-18</td>
+          <td>多云</td>
+          <td>小雨</td>
+          <td>33℃</td>
+          <td>17℃</td>
+          <td>北</td>
+          <td>北</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>成都市</td>
+          <td>2025-04-19</td>
+          <td>阴</td>
+          <td>阴</td>
+          <td>35℃</td>
+          <td>17℃</td>
+          <td>北</td>
+          <td>北</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>杭州市</td>
+          <td>2025-04-18</td>
+          <td>晴</td>
+          <td>小雨</td>
+          <td>32℃</td>
+          <td>21℃</td>
+          <td>东</td>
+          <td>东</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>杭州市</td>
+          <td>2025-04-19</td>
+          <td>小雨</td>
+          <td>多云</td>
+          <td>29℃</td>
+          <td>21℃</td>
+          <td>西南</td>
+          <td>西南</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>西安区</td>
+          <td>2025-04-18</td>
+          <td>阵雨</td>
+          <td>多云</td>
+          <td>13℃</td>
+          <td>3℃</td>
+          <td>西南</td>
+          <td>西南</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>西安区</td>
+          <td>2025-04-19</td>
+          <td>多云</td>
+          <td>晴</td>
+          <td>17℃</td>
+          <td>3℃</td>
+          <td>西南</td>
+          <td>西南</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>重庆市</td>
+          <td>2025-04-18</td>
+          <td>晴</td>
+          <td>多云</td>
+          <td>34℃</td>
+          <td>21℃</td>
+          <td>东</td>
+          <td>东</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>重庆市</td>
+          <td>2025-04-19</td>
+          <td>多云</td>
+          <td>多云</td>
+          <td>33℃</td>
+          <td>21℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>武汉市</td>
+          <td>2025-04-18</td>
+          <td>多云</td>
+          <td>小雨</td>
+          <td>34℃</td>
+          <td>19℃</td>
+          <td>北</td>
+          <td>北</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>武汉市</td>
+          <td>2025-04-19</td>
+          <td>阴</td>
+          <td>多云</td>
+          <td>30℃</td>
+          <td>20℃</td>
+          <td>北</td>
+          <td>北</td>
+          <td>1-3级</td>
+          <td>1-3级</td>
+      </tr>
+      <tr>
+          <td>南京市</td>
+          <td>2025-04-18</td>
+          <td>晴</td>
+          <td>阴</td>
+          <td>31℃</td>
+          <td>20℃</td>
+          <td>东南</td>
+          <td>东南</td>
+          <td>4级</td>
+          <td>4级</td>
+      </tr>
+      <tr>
+          <td>南京市</td>
+          <td>2025-04-19</td>
+          <td>阴</td>
+          <td>多云</td>
+          <td>32℃</td>
+          <td>17℃</td>
+          <td>北</td>
+          <td>北</td>
+          <td>4级</td>
+          <td>4级</td>
+      </tr>
+  </tbody>
+</table>
+<p>而在这个过程中，大模型是通过调用具备查询天气情况的MCP服务来实现，而这个MCP服务我现在用的是高德地图MCP，天气查询其实只是他的众多能力之一。</p>
+<p></p>
+<h2 id="待补充">待补充</h2>
+]]></description></item><item><title>使用 Stable Diffusion 生成美女图</title><link>https://plutotree.me/2023/03/using-stable-diffusion-web-to-generate-ai-girl/</link><pubDate>Tue, 14 Mar 2023 20:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2023/03/using-stable-diffusion-web-to-generate-ai-girl/</guid><description><![CDATA[<p>最近 Stable Diffusion 都大火，小红书上也是各种 AI 美女图，我也来凑一把热闹。</p>
+<h2 id="安装stable-diffusion-web-ui">安装Stable Diffusion web UI</h2>
+<p>需要先安装好<code>python 3.10</code>和<code>git</code>（对于程序员的机器来说应该都是必备的了），直接两步执行就好了：</p>
+<ol>
+<li>导出git仓库：<code>git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git</code></li>
+<li>运行脚本：<code>webui-user.bat</code>，这一步下载<code>pytorch</code>可能耗时较长，耐心等待即可；</li>
+<li>执行完成之后，会提示访问<a href="http://127.0.0.1:7860/" target="_blank" rel="noopener noreffer ">http://127.0.0.1:7860/</a>即可体验了；</li>
+<li>可以输入一些简单的标签体验下效果，多个标签用<code>,</code>分割，只支持英文；对于不熟悉的标签可以参考<a href="https://tags.novelai.dev/" target="_blank" rel="noopener noreffer ">网站</a>；</li>
+</ol>
+<p>这时候会发现效果没想象的那么好，尤其是生成的“美女”图，可能千奇百怪。</p>
+<h2 id="使用chilloutmix模型">使用ChilloutMix模型</h2>
+<ol>
+<li>
+<p>在<a href="https://civitai.com/models/6424" target="_blank" rel="noopener noreffer ">civitai</a>上下载ChilloutMix模型，模型较大，耐心等待；</p>
+</li>
+<li>
+<p>下载完成后放入目录<code>stable-diffusion-webui\models\Stable-diffusion</code>；</p>
+</li>
+<li>
+<p>重新刷新页面就可以看到左上角可以选择模型了；</p>
+<p></p>
+</li>
+</ol>
+<h2 id="使用lora插件">使用Lora插件</h2>
+<ol>
+<li>
+<p>在<a href="https://civitai.com/models/4503/amber-genshin-impact-lora" target="_blank" rel="noopener noreffer ">civirtai</a>上下载lora插件；</p>
+</li>
+<li>
+<p>下载完成后放入目录<code>stable-diffusion-webui\extensions\sd-webui-additional-networks\models\lora</code>；</p>
+</li>
+<li>
+<p>切换到<code>Extensions</code>，选择<code>Load From</code>，搜索<code>Kohya-ss Additional Networks</code>，点击<code>Install</code></p>
+</li>
+<li>
+<p>切换<code>Settings</code>，选择<code>Reload UI</code></p>
+</li>
+</ol>
+<h2 id="开始玩耍">开始玩耍</h2>
+<ol>
+<li>
+<p>在<a href="https://civitai.com/models/6424/chilloutmix" target="_blank" rel="noopener noreffer ">ChilloutMix</a>中选择你喜欢的图片，比如<a href="https://civitai.com/gallery/249318?reviewId=41236" target="_blank" rel="noopener noreffer ">这张</a>，拷贝右侧的标签信息；</p>
+</li>
+<li>
+<p>看看生成的效果</p>
+<p></p>
+</li>
+</ol>
+<p>仔细看能发现一个比较大的问题，就是手指还是会有各种奇怪的现象</p>
+]]></description></item></channel></rss>

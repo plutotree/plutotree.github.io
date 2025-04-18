@@ -1,0 +1,43 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Bandizip - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/bandizip/</link><description>Bandizip - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Thu, 02 Mar 2023 12:20:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/bandizip/" rel="self" type="application/rss+xml"/><item><title>Windows 下使用 Bandizip 替换 7zip</title><link>https://plutotree.me/2023/03/bandizip-as-zip-app-on-windows/</link><pubDate>Thu, 02 Mar 2023 12:20:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2023/03/bandizip-as-zip-app-on-windows/</guid><description><![CDATA[<p>Windows 下一直在使用 7zip 作为唯一的压缩解压缩工具，不过解压缩的手有个一直困扰的问题：如果直接解压缩到当前目录，可能会出现一堆散乱的文件；如果解压缩到同名的目录，可能会导致多一层无用目录。原因就是因为有些压缩文件里面有根目录，而有些又没有。实际上一般会选择第二种方案，毕竟多一层目录结构总好于散乱的文件还要花时间清理。其实要解决这个问题很简单，提供一个所谓的“智能解压缩”就够了，实现起来可能也没几行代码，不知道 7zip 为啥一直没有支持。</p>
+<p>今天看到一篇吐槽 bandzip 国内代理不退款的<a href="https://www.v2ex.com/t/866229?p=2" target="_blank" rel="noopener noreffer ">帖子</a>，想着换个能支持“智能解压缩“的工具，参考了下<a href="https://www.v2ex.com/t/862733" target="_blank" rel="noopener noreffer ">windows 上最好的压缩软件是哪个</a>，推荐最多的依次是 7zip (18 票)、WinRar（16 票）、Bandizip（16 票）、360 压缩（8 票）。对 WinRar 历史上一直没有好感，果断还是选择 Bandzip 了。</p>
+<p>直接列举下 Bandzip 的优点：</p>
+<ol>
+<li>
+<p>最重要的一点支持智能压缩，并且可以选择右键一级菜单、二级菜单或者双击直接执行；智能压缩后还支持直接打开压缩后的目录，删除压缩文件</p>
+<p></p>
+</li>
+<li>
+<p>支持右键直接预览文件，这点也很实用，不过我还是把它折叠到了二级菜单里面。</p>
+<p></p>
+</li>
+<li>
+<p>提供了完善的选项设置，比如压缩文件名可以支持自定义，删除压缩文件可以选择是否放回收站，右键是否展示图标 icon，<strong>支持配置备份和导入</strong>等等；</p>
+</li>
+<li>
+<p>还有个很重要的点，Bandizip 不属于开源软件，部分功能需要付费才能使用。不过好在不是坑爹的订阅制，一次性付费 30 美元或 199 人民币就可以解锁专业版功能，包括广告去除、包内图片预览、压缩包修复等，还有密码器管理、恶意文件扫描等。后面两项功能其实算是和压缩工具不那么搭边，也可以认为作者比较善良，附赠了一些能力吧哈哈，只是我目前还没需求购买专业版，用一段时间再看看吧。</p>
+<p></p>
+</li>
+</ol>
+<p>顺便研究了付费的这几个功能点</p>
+<ol>
+<li>
+<p>密码管理器：密码记录在注册表，如果设置了主密码那么存放的就是加密后的串，如果忘记了主密码重置的时候只能清空所有密码信息。这项功能其实和所谓的密码管理器差距还挺大的，注册表毕竟也不是那么可靠，官网也说明了不要完全依赖密码管理器。</p>
+</li>
+<li>
+<p>压缩包内恶意软件扫描：开始我以为它自己做了一套安全扫描工具，还在想代价会不会太大了。看了文档才知道，windows 提供了反恶意软件扫描接口 (AMSI) 的通用接口标准，可以将杀毒软件的能力继承在其他产品中。不仅仅是自带的<code>Windows Defender</code>支持<code>AMSI</code>，还有<code>Kapersky</code>、<code>MCAfee</code>等等，不过看到描述的腾讯电脑管家不支持<code>AMSI</code>，还是有点感叹，国内的产品太没有开放意识了。</p>
+</li>
+</ol>
+<p></p>
+<ol>
+<li>密码修复：其实就是提供了一个暴力破解的方式，官网也很友好的给出了预估时间</li>
+</ol>
+<p></p>
+<ol>
+<li>
+<p>压缩包内图片预览：这个对于有需求的人来说还是挺实用性的，我个人好像没啥需求；</p>
+</li>
+<li>
+<p>压缩包修复：没有太明确的说明，我猜测有可能只是基于文件标准格式的简单处理，毕竟也不会保证修复的成功率；</p>
+</li>
+</ol>
+]]></description></item></channel></rss>
