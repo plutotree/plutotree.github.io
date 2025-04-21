@@ -4,7 +4,7 @@ date: 2025-04-18T12:00:00+08:00
 tags: [mcp, ai]
 categories: [ai]
 featuredImage: https://pic-1251468582.file.myqcloud.com/pic/2025/04/18/29ueFR.jpg
-slug: practical-examples-of-mcp-applications.
+slug: practical-examples-of-mcp-applications
 ---
 
 
