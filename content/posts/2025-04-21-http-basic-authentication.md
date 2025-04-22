@@ -17,7 +17,7 @@ HTTP 基本认证是一种非常简单的认证机制，广泛用于保护 Web �
 
 ## HTTP 基本认证的交互流程
 
-```mermaid
+{{< mermaid >}}
 sequenceDiagram
     participant Client as 客户端
     participant Server as 服务端
@@ -31,8 +31,7 @@ sequenceDiagram
     else 验证失败
         Server-->>Client: 返回 401 Unauthorized
     end
-
-```
+{{< /mermaid >}}
 
 1. 客户端请求资源：客户端向服务器发起请求，但未包含认证信息。
 2. 服务器返回 401 响应：服务器返回 401 Unauthorized 状态码，同时通过 WWW-Authenticate 头提示客户端需要提供凭证。
