@@ -9,22 +9,28 @@ slug: practical-examples-of-mcp-applications
 
 ## 获取各旅游城市近期天气情况
 
-传统方案可能需要花费 1 个小时以上，还容易出错
+### 传统方案的低效
 
-1. 百度上搜索全国下有哪些旅游城市；
-2. 在天气网站上搜索每个城市的天气信息，然后手动拷贝数据；
-3. 将上述数据整理成表格或者 ppt；
+传统方案不仅耗时费力（通常需要1小时以上），还存在较高的人为操作错误风险：
 
-当然，如果如果会写代码，第 2 步就可以通过程序来解决。不管是直接解析页面还是通过 API 获取都能确保不出错。不过如果是一次性的工作，可能写代码及调试的时间消耗也不一定能节省多少。
+1. ​城市列表收集​：通过百度搜索手动整理全国旅游城市名录
+2. ​数据采集阶段​：逐个访问天气网站，复制粘贴各城市气象数据
+3. 成果输出阶段​：将零散数据手工整理为结构化表格或PPT
 
-对于有使用 kimi、豆包、元宝等 AI 大模型的人来说，肯定也会直接尝试用 AI 来解决问题。我们尝试把问题直接丢给元宝【整理下全国各大旅游城市近期天气情况，以表格形式返回】，元宝会有模有样给你搜索及整理一番，只是最后的天气你都不知道是哪一天的。[访问](https://yuanbao.tencent.com/bot/app/share/chat/ntQkP3iMLbBN)或者测试下是不是这样。
+虽然开发人员可通过编写爬虫或调用API优化第2步，但面对一次性需求时，代码开发调试的时间成本往往难以覆盖收益。
 
-这时候你可能会想，如果 AI 能写代码访问 API 接口就好了，考虑到任务五花八门，接口千变万化，这里如果能有一套统一标准那就好了。没错，MCP 就是来解决这个事情的。
+### AI 工具的初步尝试
 
-我们先直接看下效果，对于集成了具备天气查询 MCP 能力的 AI 大模型，我们只要提出问题就可以了。
+使用kimi、豆包、元宝等AI大模型时，直接提问【整理全国各大旅游城市近期天气情况，以表格形式返回】看似可行。但[实际测试](https://yuanbao.tencent.com/bot/app/share/chat/ntQkP3iMLbBN)，模型可能返回格式正确但数据时效存疑的结果——例如天气日期信息缺失或不明确。
 
-问题：整理全国主要旅游城市最近的天气情况，以表格形式返回，一个城市一行数据
-回答：（表格数据有删减）
+### MCP 标准化解决方案
+
+MCP（模型控制协议）通过统一接口标准，完美解决了API多样性和任务复杂性的矛盾。集成天气查询MCP能力的AI大模型，只需自然语言指令即可完成精准调用：
+
+提问​：
+整理全国主要旅游城市最近的天气情况，以表格形式返回，一个城市一行数据
+
+​响应结果​（数据已精简）：
 
 | 城市   | 日期       | 白天天气 | 夜间天气 | 白天温度 | 夜间温度 | 白天风向 | 夜间风向 | 白天风力 | 夜间风力 |
 | ------ | ---------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- |
@@ -49,27 +55,29 @@ slug: practical-examples-of-mcp-applications
 | 南京市 | 2025-04-18 | 晴       | 阴       | 31℃      | 20℃      | 东南     | 东南     | 4 级     | 4 级     |
 | 南京市 | 2025-04-19 | 阴       | 多云     | 32℃      | 17℃      | 北       | 北       | 4 级     | 4 级     |
 
-而在这个过程中，大模型是通过调用具备查询天气情况的 MCP 服务来实现，而这个 MCP 服务用的是高德地图 MCP 服务，天气查询其实只是他的众多能力之一。
+查看执行的过程，我们能看到大模型自动发起了多次工具调用，用于查询天气信息。
 
 ![天气MCP调用](https://pic-1251468582.file.myqcloud.com/pic/2025/04/18/SSXGRw.png)
 
-在 Cherry-Studio 中我们很方便查看一个 MCP 服务具备的所有能力（工具列表）：
+通过Cherry-Studio可直观查看高德地图MCP服务的完整能力，天气查询仅是众多标准化接口之一，更主要的是提供路径规划和导航的能力。
 
 ![amap_tools_list](https://pic-1251468582.file.myqcloud.com/pic/2025/04/22/1FeKns.png)
 
-## 聚合 API 平台的新用处
+## API 聚合平台的 MCP 转型实践
 
-看完天气预报的例子，你可能会 MCP 有点像是大模型根据上下文来自动调用 API。而原来的一些 API 聚合平台提供了大量的 API 访问，我们是不是就能让大模型来帮我们自动调用了。
-
-这里以[ALApi](https://www.alapi.cn/)为例来展示下整体流程。
+看完前面的的例子，有了 MCP 就能自动调用各类 API，而其能力自然也取决于 API 本身。这时候原来的一些 API 聚合平台是不是就能大显身手了。 下面以[ALApi](https://www.alapi.cn/)为例来展示下整体流程。
 
 常用的 MCP 服务是用 node.js 和 python 服务为主，而事实上我们只要遵循一定标准就好，这个 ALApi 的[MCP 服务](https://github.com/ALAPI-SDK/mcp-alapi-cn)是用 go 实现的。
 
-1. 注册 [ALApi](https://www.alapi.cn/) 账号，申请 [token](https://www.alapi.cn/dashboard/data/token)，申请需要的[接口](https://www.alapi.cn/explore)。我申请了三个免费的接口：
+1. 账号及权限申请
+
+   注册 [ALApi](https://www.alapi.cn/) 账号，申请 [token](https://www.alapi.cn/dashboard/data/token)，申请需要的[接口](https://www.alapi.cn/explore)。
 
    ![alapi-api](https://pic-1251468582.file.myqcloud.com/pic/2025/04/22/AYOLAT.png)
 
-2. 编译MCP服务，编译成功后会生成`mcp-alapi-cn.exe`
+2. 服务部署
+
+   编译MCP服务，编译成功后会生成`mcp-alapi-cn.exe`
 
    ```bash
    git clone "https://github.com/ALAPI-SDK/mcp-alapi-cn.git"
@@ -77,7 +85,9 @@ slug: practical-examples-of-mcp-applications
    git build
    ```
 
-3. 在Cherry-Studio中配置MCP服务，名称任选，命令填写前面编译来的`mlp-alapi-cn.exe`全路径，环境变量配置申请的token即可。
+3. 系统集成
+
+   在Cherry-Studio中配置MCP服务，名称任选，命令填写前面编译来的`mlp-alapi-cn.exe`全路径，环境变量配置申请的token即可。
 
    ![alapi-setting](https://pic-1251468582.file.myqcloud.com/pic/2025/04/22/OUwAgO.png)
 
@@ -102,11 +112,13 @@ slug: practical-examples-of-mcp-applications
    }
    ```
 
-4. 配置完成后，Cherry-Studio中访问的时候勾选相应的MCP服务就可以正常访问了
+4. 启用MCP
+
+   配置完成后，Cherry-Studio 中访问的大模型的时候勾选相应的MCP服务就可以了
 
    ![cherry-studio-select-mcp](https://pic-1251468582.file.myqcloud.com/pic/2025/04/22/Hty52M.png)
 
-下面我们来看几个使用例子：
+### 应用场景展示
 
 1. 查询油价：执行了一次工具 (api/oil) 查询
 
@@ -124,9 +136,9 @@ slug: practical-examples-of-mcp-applications
 
 ![alapi-api-list](https://pic-1251468582.file.myqcloud.com/pic/2025/04/22/vtWj7W.png)
 
-我们再看下这背后是如何实现的：
+### 背后逻辑
 
-通过接口 `/api/user_apis` 获取所有有访问权限的API列表（名字、描述、参数列表等），然后将这些API依次进行注册。注册工具的代码如下：
+整个流程是如何实现的呢？我们看下代码，可以发现先通过接口 `/api/user_apis` 获取所有有访问权限的API列表（名字、描述、参数列表等），然后将这些API依次进行注册。核心注册工具的代码如下：
 
 ```golang
 func (s *Server) registerOpenAPITools(doc *openapi3.T) error {
@@ -162,3 +174,7 @@ func (s *Server) registerOpenAPITools(doc *openapi3.T) error {
     return nil
 }
 ```
+
+## 总结
+
+MCP最大的作用是实现了​标准化的接口层​，建立了统一的交互标准，并得到市场的认可。
