@@ -28,6 +28,16 @@ jobs:
           cname: plutotree.me
           force_orphan: true
 
+      - name: Deploy files using Rsync
+        uses: Burnett01/rsync-deployments@5.2
+        with:
+            switches: -avzr --delete
+            path: ./public/
+            remote_path: /plutotree.cn
+            remote_host: plutotree.cn
+            remote_user: update_web
+            remote_key: ${{ secrets.PLUTOTREE_CN_SSH_KEY }}
+
       - name: Upload Artifactia
         uses: actions/upload-artifact@v4
         if: always()
