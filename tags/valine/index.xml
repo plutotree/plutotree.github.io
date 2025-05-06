@@ -1,0 +1,73 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Valine - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/valine/</link><description>Valine - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Mon, 06 Sep 2021 17:30:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/valine/" rel="self" type="application/rss+xml"/><item><title>在jekyll中使用valine评论系统</title><link>https://plutotree.me/2021/09/add-valine-comment-system-in-jekyll/</link><pubDate>Mon, 06 Sep 2021 17:30:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2021/09/add-valine-comment-system-in-jekyll/</guid><description><![CDATA[<blockquote>
+<p>最近发现无法展示评论，提示找不到 AV 相关的定义，移除了<code>av-min.js</code>，以及<code>AV</code>的字段定义，似乎是新版本改了实现，会在内部引用<code>av-min.js</code>。</p></blockquote>
+<p>博客怎么能少了评论系统，但是一直没有找到满意的，各种国内被禁的，缺乏更新维护的，做得太复杂的等等之类的。今天看到一个感觉还不错的评论系统<a href="https://valine.js.org/" target="_blank" rel="noopener noreffer ">Valine</a>，一款快速、简洁且高效的无后端评论系统，存储基于 leancloud。作者的<a href="https://github.com/staticblog/staticblog.github.io" target="_blank" rel="noopener noreffer ">博客</a>提供了一个 jekyll 的示例，直接引入。</p>
+<p>先参考<a href="https://valine.js.org/quickstart.html#%E8%8E%B7%E5%8F%96APP-ID-%E5%92%8C-APP-Key" target="_blank" rel="noopener noreffer ">这里</a>的说明，注册 Leancloud 并创建新的应用，顺便提一下，现在监管严格，需要进行实名注册，最后还要支付宝扫描验证。</p>
+<p>接着直接修改 jekyll 的内容即可（下面的内容照抄作者博客，也可以按自己习惯定义变量）</p>
+<ol>
+<li>
+<p>修改<code>default.html</code>，在 footer.html 前面增加下面这段内容</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-html">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">{% if site.data.social.valine_comment.enable and page.comments == true %}
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;comments&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">{% endif %} {% include scripts.html %}</span></span></code></pre></div></div>
+</li>
+<li>
+<p>修改<code>_includes/head.html</code>，在合适的地方增加下面这段内容</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-html">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="c">&lt;!-- Valine Comment --&gt;</span>
+</span></span><span class="line"><span class="cl">{% if site.data.social.valine_comment.enable and page.comments == true %}
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;//unpkg.com/valine/dist/Valine.min.js&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">{% endif %}</span></span></code></pre></div></div>
+</li>
+<li>
+<p>在<code>_includes</code>下面增加新文件<code>valine_comments.html</code></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-html">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">new</span> <span class="nx">Valine</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">el</span><span class="o">:</span> <span class="s2">&#34;#comments&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">app_id</span><span class="o">:</span> <span class="s2">&#34;你的Leacloud Appid&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">app_key</span><span class="o">:</span> <span class="s2">&#34;你的Leancloud Appkey&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">placeholder</span><span class="o">:</span> <span class="s2">&#34;{{ site.data.social.valine_comment.placeholder }}&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>在<code>_includes</code>下面增加新文件<code>scripts.html</code>（需要手动在<code>{</code>后面及<code>}</code>前面增加<code>%</code>）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-html">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">{ if page.comments }{ include valine_comments.html }{ endif }</span></span></code></pre></div></div>
+</li>
+<li>
+<p>在<code>_data</code>下面增加新文件<code>social.yml</code></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">valine_comment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">leancloud_appid</span><span class="p">:</span><span class="w"> </span><span class="l">你的Leancloud Appid</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">leancloud_appkey</span><span class="p">:</span><span class="w"> </span><span class="l">你的Leancloud appkey</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">placeholder</span><span class="p">:</span><span class="w"> </span><span class="l">just go go</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>在你的文章头增加<code>comments: true</code></p>
+</li>
+</ol>
+<p>另外还看到一个基于 valine 的评论系统，叫做<a href="https://github.com/walinejs/waline" target="_blank" rel="noopener noreffer ">waline</a>，功能很齐全，有空可以再研究下。</p>
+]]></description></item></channel></rss>

@@ -1,0 +1,53 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Alfred - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/alfred/</link><description>Alfred - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Mon, 02 Mar 2020 00:10:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/alfred/" rel="self" type="application/rss+xml"/><item><title>使用alfred连接AirPods</title><link>https://plutotree.me/2020/03/connect-airpods-with-alfred/</link><pubDate>Mon, 02 Mar 2020 00:10:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2020/03/connect-airpods-with-alfred/</guid><description><![CDATA[<h2 id="操作步骤">操作步骤</h2>
+<ol>
+<li>
+<p>安装蓝牙客户端<a href="https://github.com/lapfelix/BluetoothConnector" target="_blank" rel="noopener noreffer ">BluetoothConnector</a>：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">brew install bluetoothconnector</span></span></code></pre></div></div>
+</li>
+<li>
+<p>查找 airpods 的蓝牙地址：按住<code>option</code>键，点击顶部蓝牙图标，找到 AirPods（前提需要先连接上），右侧会有地址信息（好像不能拷贝，手动记录下吧）</p>
+<p></p>
+</li>
+<li>
+<p>创建 alfred 工作流：</p>
+<ul>
+<li>
+<p>打开 alfred 设置页面，选择 workflow 选项，点击左侧底部的加号键，选择<code>Blank Workflow</code></p>
+<p></p>
+</li>
+<li>
+<p>选择名称、描述、分类，可以选择导入 AirPods 的图片（可以下载这个 AirPods<a href="https://www.apple.com/v/airpods/j/images/overview/airpods__dh7xkbort402_large_2x.jpg" target="_blank" rel="noopener noreffer ">大图</a>），选择<code>Save</code>保存</p>
+<p></p>
+</li>
+<li>
+<p>在新建的 Workflow 下方右键选择 Inputs - Keywords，输入关键字<code>airpods</code>，注意选择<code>No Argument</code>，点击<code>Save</code>保存</p>
+<p></p>
+<p></p>
+</li>
+<li>
+<p>拉动刚创建的触发器的右侧，选择<code>Actions</code> - <code>Run Script</code></p>
+<p></p>
+</li>
+<li>
+<p>输入脚本内容 <code>/usr/local/bin/BluetoothConnector XX-XX-XX-XX-XX --notify</code>，保存即可。顺便说下，这里用了完整路径，开始是直接指定命令字，但是 alfred 提示无法找到。应该是 PATH 环境变量的问题，不过在 alfred 日志里面并未看到<code>echo $PATH</code>的日志输出，有时间的时候再看下问题原因。</p>
+<p></p>
+</li>
+</ul>
+</li>
+<li>
+<p>触发 alred 之后，输入 airpods 即可连接，并会收到系统通知；</p>
+</li>
+<li>
+<p>如果已连接的状态下，再次输入 airpods 会触发会触发断开连接，并会收到系统通知；</p>
+</li>
+</ol>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a href="https://gary.mcad.am/easily-connect-your-airpods-to-your-mac-with-alfred-workflows-feea1b2fce78" target="_blank" rel="noopener noreffer ">Easily connect your AirPods to your Mac with Alfred Workflows</a></li>
+</ul>
+]]></description></item></channel></rss>

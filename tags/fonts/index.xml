@@ -1,0 +1,53 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Fonts - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/fonts/</link><description>Fonts - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Fri, 04 Dec 2020 18:30:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/fonts/" rel="self" type="application/rss+xml"/><item><title>思源字体介绍</title><link>https://plutotree.me/2020/12/source-hans-font-intro/</link><pubDate>Fri, 04 Dec 2020 18:30:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2020/12/source-hans-font-intro/</guid><description><![CDATA[<p>思源字体是 Adobe 和 Google 联合开发的开源字体，以 Apache 2.0 授权，可以免费商用。每套字体提供了 7 个尺寸，并且为中日韩，更具体的说大陆、香港、台湾、韩国、日本都进行了针对化的设计，包括<a href="https://github.com/adobe-fonts/source-han-serif" target="_blank" rel="noopener noreffer ">思源宋体</a>、<a href="https://github.com/adobe-fonts/source-han-sans" target="_blank" rel="noopener noreffer ">思源黑体</a>和<a href="https://github.com/adobe-fonts/source-han-mono" target="_blank" rel="noopener noreffer ">思源等宽</a>三类字体。</p>
+<p></p>
+<p><a href="https://github.com/adobe-fonts" target="_blank" rel="noopener noreffer ">Adobe</a>和<a href="https://www.google.com/get/noto/help/cjk/" target="_blank" rel="noopener noreffer ">Google</a>采用了不同的命名方式，这里我更喜欢 Adobe 的命名方式。这里的安装方式比较复杂，有多种字体格式：OTF、OTC、Super OTC 和 Subset OTF，还要区分多个区域，可以参考 github 上的<a href="https://github.com/adobe-fonts/source-han-sans/raw/release/SourceHanSansReadMe.pdf" target="_blank" rel="noopener noreffer ">文档</a>。Super OTC 包含的种类是最全的，但是一般来说我们只需要<code>SC</code>后缀的版本就够了，在显示简繁体中文、日文、韩文的时候其实都不会缺字。而有这么多复杂的版本原因是不同区域对于同一个字的写法是有差异的。不仅是台湾、香港，日本还有所谓的和制汉字。</p>
+<ul>
+<li><a href="https://github.com/adobe-fonts/source-han-serif/releases/download/2.002R/09_SourceHanSerifSC.zip" target="_blank" rel="noopener noreffer ">思源宋体简体中文下载</a></li>
+<li><a href="https://github.com/adobe-fonts/source-han-sans/releases/download/2.004R/SourceHanSansSC.zip" target="_blank" rel="noopener noreffer ">思源黑体简体中文下载</a></li>
+<li><a href="https://github.com/adobe-fonts/source-han-mono/releases/download/1.002/SourceHanMono.ttc" target="_blank" rel="noopener noreffer ">思源等宽</a></li>
+</ul>
+<p>最方便的安装办法是使用scoop，只要执行：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="nb">nerd-fonts</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="nb">nerd-fonts</span><span class="p">/</span><span class="nb">Source-Han</span><span class="n">-Serif-SC</span>   
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="nb">nerd-fonts</span><span class="p">/</span><span class="nb">Source-Han</span><span class="n">-Sans-SC</span>   
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="nb">nerd-fonts</span><span class="p">/</span><span class="nb">Source-Han</span><span class="n">-Mono-SC</span>  </span></span></code></pre></div></div>
+<table>
+  <thead>
+      <tr>
+          <th>字体中文名</th>
+          <th>adobe 字体英文名</th>
+          <th>google 字体英文名</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>思源宋体</td>
+          <td>Source Han Serif</td>
+          <td>Noto Serif CJK</td>
+      </tr>
+      <tr>
+          <td>思源黑体</td>
+          <td>Source Han Sans</td>
+          <td>Noto Sans CJK</td>
+      </tr>
+      <tr>
+          <td>思源等宽</td>
+          <td>Source Han Mono</td>
+          <td>Noto Sans Mono CJK</td>
+      </tr>
+  </tbody>
+</table>
+<p>在使用字体的时候需要注意的是引用的字体名是<strong>Source Han Sans SC</strong>（<strong>SC</strong>为简体中文缩写，对应大陆常见写法）。 如果使用的是<strong>Source Han Sans</strong>，那会使用日文的字体，包含的文字可能不全，另外部分子写法和我们正常的写法也会不一致。</p>
+<ul>
+<li><strong>SC</strong>：Simplified Chinese (China)</li>
+<li><strong>TC</strong>：Traditional Chinese (Taiwan)</li>
+<li><strong>HC</strong>：Traditional Chinese (Hong Kong)</li>
+<li><strong>无</strong>：Japan</li>
+<li><strong>K</strong>=Korean</li>
+</ul>
+]]></description></item></channel></rss>

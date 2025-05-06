@@ -1,0 +1,112 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Http - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/http/</link><description>Http - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Mon, 21 Apr 2025 21:00:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/http/" rel="self" type="application/rss+xml"/><item><title>HTTP Basic Authentication (HTTP 基本认证)</title><link>https://plutotree.me/2025/04/http-basic-authentication/</link><pubDate>Mon, 21 Apr 2025 21:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2025/04/http-basic-authentication/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/21/kWEQqa.png" referrerpolicy="no-referrer">
+            </div><h2 id="什么是-http-基本认证">什么是 HTTP 基本认证</h2>
+<p>对于部署的一些纯前端系统，本身并没有内置用户校验。但是我们又不希望其他用户能无限制使用，所以希望能有简单的用户校验流程。这就需要用到 HTTP Basic Authentication (HTTP 基本认证) 。</p>
+<p>HTTP 基本认证是一种非常简单的认证机制，广泛用于保护 Web 应用的资源。它通过 HTTP Header 传递用户名和密码，并通过 Base64 编码对其进行简单的编码（注意：不是加密）。实际应用中需要配合 HTTPS 使用，以防止明文凭据在网络中被拦截。</p>
+<h2 id="http-基本认证的交互流程">HTTP 基本认证的交互流程</h2>
+<div class="mermaid" id="id-1"></div>
+<ol>
+<li>客户端请求资源：客户端向服务器发起请求，但未包含认证信息。</li>
+<li>服务器返回 401 响应：服务器返回 401 Unauthorized 状态码，同时通过 WWW-Authenticate 头提示客户端需要提供凭证。</li>
+<li>客户端提示输入凭证：客户端向用户请求输入用户名和密码。</li>
+<li>客户端发送认证信息：客户端将用户名和密码通过 Base64 编码后，添加到 HTTP Header 的 Authorization</li>
+<li>服务器验证凭证：服务器解码并验证用户名和密码的正确性。</li>
+<li>服务器返回响应：
+<ul>
+<li>如果验证成功，返回 200 OK 和资源。</li>
+<li>如果验证失败，返回 401 Unauthorized 并要求重新认证。</li>
+</ul>
+</li>
+</ol>
+<p>下面我们用 curl 命令的交互来看下整个流程能更加清晰，可以使用参数<code>-u</code> 来指定用户名和密码，而实际处理中会对用户名和密码计算 MD5，并填充到 Authorization 的 Header 中。</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl --verbose <span class="s2">&#34;https://some.examples.com&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">&gt; GET / HTTP/1.1
+</span></span><span class="line"><span class="cl">&gt; Accept: */*
+</span></span><span class="line"><span class="cl">&gt;
+</span></span><span class="line"><span class="cl">&lt; HTTP/1.1 <span class="m">401</span> Unauthorized
+</span></span><span class="line"><span class="cl">&lt; WWW-Authenticate: Basic <span class="nv">realm</span><span class="o">=</span><span class="s2">&#34;Need Authorization&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">curl -u user:pwd --verbose <span class="s2">&#34;https://some.examples.com&#34;</span>
+</span></span><span class="line"><span class="cl">&gt; GET / HTTP/1.1
+</span></span><span class="line"><span class="cl">&gt; Authorization: Basic Base64ByUserAndPwd
+</span></span><span class="line"><span class="cl">&gt; Accept: */*
+</span></span><span class="line"><span class="cl">&gt;
+</span></span><span class="line"><span class="cl">&lt; HTTP/1.1 <span class="m">200</span> OK</span></span></code></pre></div></div>
+<p>我们再来看下浏览器中访问效果，对于返回需要校验的网站，浏览器会弹出一个弹框，要求输入用户名和密码：</p>
+<p></p>
+<h2 id="如何在-nginx-中配置-http-基本认证">如何在 Nginx 中配置 HTTP 基本认证</h2>
+<h3 id="创建用户凭据文件">创建用户凭据文件</h3>
+<ol>
+<li>
+<p>安装 <code>htpasswd</code> 工具：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">apt-get install apache2-utils</span></span></code></pre></div></div>
+</li>
+<li>
+<p>创建新用户，执行命令后输入密码</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> /etc/nginx/conf.d/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">htpasswd -c ./auth.htpasswd username</span></span></code></pre></div></div>
+</li>
+<li>
+<p>设置文件权限，设置文件所有者和nginx的执行用户一致</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">chmod <span class="m">600</span> auth.htpasswd
+</span></span><span class="line"><span class="cl">chown xx:xx auth.htpasswd</span></span></code></pre></div></div>
+</li>
+<li>
+<p>可以本地校验下</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">htpasswd -v ./auth.htpasswd username</span></span></code></pre></div></div>
+</li>
+</ol>
+<h3 id="配置nginx">配置nginx</h3>
+<p>配置较为简单，只要增加<code>auth_basic</code>和<code>auth_basic_user_file</code>就好了</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-conf">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code class="language-conf" data-lang="conf">location / {
+    auth_basic &#34;Need Authorization&#34;;  # 认证提示内容，显示取决于客户端实现
+    auth_basic_user_file /etc/nginx/conf.d/auth.htpasswd
+
+    # 其他的配置
+}</code></pre></div>
+<p>配置完成后，重新加载下nginx的配置</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">systemctl reload nginx</span></span></code></pre></div></div>
+<h3 id="测试访问">测试访问</h3>
+<p>可以在浏览器中输入网址，访问验证下是否有弹出一个认证窗口，提示用户输入用户名和密码。验证成功后，服务器将正常返回资源，否则会要求重新输入用户名和密码。如果浏览器关闭重新打开后，会要求重新输入。</p>
+<h2 id="如何无感登录">如何无感登录</h2>
+<p>增加了这一步骤的确是更安全了，但是每次打开页面需要输入一遍用户名和密码，这又带来了很大的不便。我们可以通过浏览器自带的密码保存，在下次要求认证的时候，直接按登录按钮就好了。</p>
+<p>有没有可能更进一步，连登录按钮也不用按，在可信任的电脑上默认帮我登录呢。<a href="https://bitwarden.com/help/basic-auth-autofill/" target="_blank" rel="noopener noreffer ">BitWarden</a> 还真提供了这样的功能，能隐藏式自动填充用户名和密码的功能，这样对使用者就完全无感了。理论上还有种方式可以通过浏览器的插件来直接设置Header。</p>
+<h2 id="总结">总结</h2>
+<p>HTTP 基本认证算是一种最简单有效的认证方式，如果需要更复杂的认证机制，可以考虑其他方式，如 OAuth、JWT 或基于 Session 的认证。</p>]]></description></item></channel></rss>

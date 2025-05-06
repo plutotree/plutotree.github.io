@@ -1,0 +1,84 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Stock - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/stock/</link><description>Stock - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Fri, 14 Apr 2023 19:00:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/stock/" rel="self" type="application/rss+xml"/><item><title>使用富途 API 实现 Google 表格的股票数据在线更新</title><link>https://plutotree.me/2023/04/futu-update-stock-data-with-futuapi-and-google-sheets/</link><pubDate>Fri, 14 Apr 2023 19:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2023/04/futu-update-stock-data-with-futuapi-and-google-sheets/</guid><description><![CDATA[<p>对于查看和分析股票的基础数据，在线表格其实是很不错的分析工具，筛选、排序、数据透视图等操作简直太方便了。</p>
+<p>Google文档提供了很强的函数<a href="https://support.google.com/docs/answer/3093281?hl=zh-Hans" target="_blank" rel="noopener noreffer "><code>GOOGLEFINANCE</code></a>，能获取比较丰富的股票数据，通过<code>GOOGLEFINANCE(&quot;SHE:001309&quot;,&quot;price&quot;)</code>就能获取最新价格，但是不支持上证只支持深证股票，无奈只能放弃。腾讯文档提供了比较基础的<code>STOCK</code>，能获取比较基础的股票数据。那么我们如何才能实现复杂的股票数据处理呢？Google文档提供了API进行相关的数据操作，而富途API也提供了完整的股票数据获取，结合两者，我们就可以实现完整的流程了。</p>
+<div class="mermaid" id="id-1"></div><p>来直接看下效果：</p>
+<ul>
+<li>
+<p>这是现在Google表格的数据内容，只有股票代号，没有其余信息</p>
+<p></p>
+</li>
+<li>
+<p>这是执行脚本后的效果，自动填充了所有内容（这里表格的列是可以动态调整的）</p>
+<p></p>
+</li>
+</ul>
+<p>下面简单描述下技术细节：</p>
+<h2 id="通过google-api读取及更新表格内容">通过Google API读取及更新表格内容</h2>
+<p>Google官方提供了非常详细的<a href="https://developers.google.com/sheets/api/guides/values?hl=zh-cn#read_multiple_ranges" target="_blank" rel="noopener noreffer ">示例</a>，直接参考应该就可以操作了。注意一点，好像是只支持OAuth方式进行操作，这点还是稍有些不方便。仅做了层简单的封装，暴露外部的接口如下：</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sheets</span> <span class="o">=</span> <span class="n">GoogleSheets</span><span class="p">(</span><span class="n">token_file</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">except</span> <span class="n">InvalidCrendentialException</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DoAuth</span><span class="p">(</span><span class="n">token_file</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sheets</span> <span class="o">=</span> <span class="n">GoogleSheets</span><span class="p">(</span><span class="n">token_file</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 读取单个范围数据</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">sheets</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">,</span> <span class="s1">&#39;A2:C3&#39;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 同时读取多个范围数据</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">sheets</span><span class="o">.</span><span class="n">BatchGetValue</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;A2:B4&#39;</span><span class="p">,</span> <span class="s1">&#39;C2:D4&#39;</span><span class="p">]))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 更新多个范围数据</span>
+</span></span><span class="line"><span class="cl"><span class="n">range_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;B3:C4&#39;</span><span class="p">,</span> <span class="s1">&#39;E3:F4&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">values_list</span> <span class="o">=</span> <span class="p">[[[</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="s1">&#39;x4&#39;</span><span class="p">]],</span> <span class="p">[[</span><span class="s1">&#39;x5&#39;</span><span class="p">,</span> <span class="s1">&#39;x6&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;x7&#39;</span><span class="p">,</span> <span class="s1">&#39;x8&#39;</span><span class="p">]]]</span>
+</span></span><span class="line"><span class="cl"><span class="n">sheets</span><span class="o">.</span><span class="n">BatchUpdateValue</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">,</span> <span class="n">range_list</span><span class="p">,</span> <span class="n">values_list</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 更新单个范围数据</span>
+</span></span><span class="line"><span class="cl"><span class="n">sheets</span><span class="o">.</span><span class="n">UpdateValue</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">,</span> <span class="s1">&#39;A15:B16&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="s1">&#39;xx&#39;</span><span class="p">,</span> <span class="s1">&#39;yy&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;zz&#39;</span><span class="p">,</span> <span class="s1">&#39;hh&#39;</span><span class="p">]])</span></span></span></code></pre></div></div>
+<h2 id="通过富途api读取股票基础行情">通过富途API读取股票基础行情</h2>
+<p>这里也制作了一层简单的封装，具体可以参考富途官方的说明。我们需要在机器上先安装FutuOpenD，可以在服务器上安装，并监听<code>0.0.0.0</code>，这样可以在各个客户端直接调用了。</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">FutuHelper</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">quote_ctx</span> <span class="o">=</span> <span class="n">OpenQuoteContext</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">quote_ctx</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">GetMarketState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code_list</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;&#34;&#34;获取指定标的的市场状态
+</span></span></span><span class="line"><span class="cl"><span class="s2">        获取stock_name(股票名称)、market_state(交易情况)
+</span></span></span><span class="line"><span class="cl"><span class="s2">        参考：https://openapi.futunn.com/futu-api-doc/quote/get-market-state.html
+</span></span></span><span class="line"><span class="cl"><span class="s2">        &#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quote_ctx</span><span class="o">.</span><span class="n">get_market_state</span><span class="p">(</span><span class="n">code_list</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">GetMarketSnapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code_list</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;&#34;&#34;获取快照
+</span></span></span><span class="line"><span class="cl"><span class="s2">        获取各类价格信息，包含最新价、开盘、最高、最低、最新、均价、历史高价、历史低价等，以及
+</span></span></span><span class="line"><span class="cl"><span class="s2">        财务信息，包含市盈率、总市值、流通市值、资产净值、净利润、每股盈利、股本数量等
+</span></span></span><span class="line"><span class="cl"><span class="s2">        参考：https://openapi.futunn.com/futu-api-doc/quote/get-market-snapshot.html
+</span></span></span><span class="line"><span class="cl"><span class="s2">        &#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quote_ctx</span><span class="o">.</span><span class="n">get_market_snapshot</span><span class="p">(</span><span class="n">code_list</span><span class="p">)</span></span></span></code></pre></div></div>
+<h2 id="处理股票行情数据">处理股票行情数据</h2>
+<p>为了方便表的列名使用中文描述，做一层简单的转换，同时增加一些自定义的字段。比如富途本身不支持涨跌幅，我们可以拿最新价和昨日收盘价计算即可。还有一些用来方便查看的数据，比如高点对比、低点对比等。</p>
+<p></p>
+<p>处理流程相对比较简单，主要的数据通过<a href="https://openapi.futunn.com/futu-api-doc/quote/get-market-snapshot.html" target="_blank" rel="noopener noreffer "><code>get_market_snapshot</code></a>获取即可。这里扩展的话，我们可以增加一些历史K线数据字段，比如3日最高价、3日均线等等。</p>
+<h2 id="扩展下">扩展下</h2>
+<p>有这个流程了之后，还可以做更多事情：</p>
+<ul>
+<li>
+<p>同步自选股：从google文档读取自选股列表，通过富途API同步自选股。这样的话可以用Google文档作为源数据进行维护，可惜同花顺没有API进行自选股同步；</p>
+</li>
+<li>
+<p>批量更新到价提醒：从google文档读取特定股票列表，通过富途API批量增加到价提醒；</p>
+</li>
+</ul>
+]]></description></item></channel></rss>

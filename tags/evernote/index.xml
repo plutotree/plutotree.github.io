@@ -1,0 +1,9 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Evernote - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/evernote/</link><description>Evernote - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Wed, 03 Nov 2021 11:32:25 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/evernote/" rel="self" type="application/rss+xml"/><item><title>使用autohotkey实现evernote的多级标题</title><link>https://plutotree.me/2021/11/use-autohotkey-to-implement-evernote-multi-level-title/</link><pubDate>Wed, 03 Nov 2021 11:32:25 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2021/11/use-autohotkey-to-implement-evernote-multi-level-title/</guid><description><![CDATA[<p>一直没想明白 evernote 国际版为啥一直不支持多级标题，这几乎是一个基础特性的缺失。网上的资料大多是用<code>autohotkey</code>来实现的，基本处理函数如下：</p>
+<p></p>
+<p>这里没有好的设置行间距的方式，样式比较丑，今天发现有直接对剪切板操作的<a href="https://www.autohotkey.com/boards/viewtopic.php?t=80706" target="_blank" rel="noopener noreffer ">脚本</a>，转而一想我们可以通过直接插入<code>&lt;h1&gt;&lt;/h1&gt;</code>等 html 标签的方式来实现标题的设置，因为 evernote 本身是支持这些标签的。</p>
+<p>这里直接给 AutoHotkey 的代码：</p>
+<p></p>
+<p>有一点的问题在于<code>ClipWait</code>看着并不生效，没有后续的<code>Sleep</code>是会有概率粘贴失败的。所以这个方案也并不完美，只是勉强可用，需要的可以<a href="https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/20dd72.ahk" target="_blank" rel="noopener noreffer ">点击下载</a>。</p>
+<p>实现效果就是这样子（这里的序号手动加的）：</p>
+<p></p>
+]]></description></item></channel></rss>

@@ -1,0 +1,299 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Rime - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/rime/</link><description>Rime - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Tue, 02 Jul 2024 00:31:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/rime/" rel="self" type="application/rss+xml"/><item><title>继续折腾Rime：iOS版仓输入法及多端数据同步流程</title><link>https://plutotree.me/2024/07/introduction-to-hamster-and-multi-device-data-synchronization/</link><pubDate>Tue, 02 Jul 2024 00:31:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/07/introduction-to-hamster-and-multi-device-data-synchronization/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/08/5fef0a.jpg" referrerpolicy="no-referrer">
+            </div><h2 id="初见仓输入法">初见“仓输入法”</h2>
+<p>在 windows 和 mac 使用了 Rime 输入法已经有一段时间了，但是手机上的<a href="https://apps.apple.com/cn/app/id1142623977" target="_blank" rel="noopener noreffer ">iRime</a>并不完善，更新也不频繁。iOS 系统关闭了网络权限，在输入法隐私上这点是有保障的。直到最近接触到<a href="https://apps.apple.com/cn/app/id6446617683" target="_blank" rel="noopener noreffer ">仓输入法</a>，发现功能已经做得很完善了。它不仅内置了雾凇拼音等优秀输入方案，还提供了数据同步和词表更新的完善解决方案。这促使我下定决心，完成全平台输入法 RIME 统一化的最后一环。</p>
+<h2 id="上手仓输入法">上手“仓输入法”</h2>
+<p>对于不想深入研究配置细节的用户，仓输入法的新手友好度相当高。我选择保留 26 键布局，以无缝迁移电脑端配置，避免重新适应 9 键布局。习惯了从 Nokia 时代的 T9 输入法，我能够实现高速单手盲打，但现在是时候转变了。仓输入法的上下左右划动设定，极大地扩展了单键输入内容的可能性，使得快捷输入变得异常方便。。我们可以很方便在一个 26 键字母键盘上加上数字，及大量的标点符号。快捷输入（手机号、邮箱地址、车牌号等等）真的很方便，相比起电脑上之前的 v 模式，这个下划真的就是那么一下就搞定了。此外，我们还可以增加很多系统命令，复制、粘贴、剪切等，以及输入法的方案切换等等。</p>
+<p></p>
+<p>键盘配置方面，官方文档尚需完善。注意区分字符（symbols）和符号（characters），只有符号才支持 Rime 处理。此外，确保勾选了“经过 Rime 处理”选项。</p>
+<p></p>
+<p>除了键盘配置之外，其他的配置和 PC 端是完全一致的，基本上可以直接复用 PC 端配置。将 PC 端配置打包发到手机后，导入到仓输入法基本就能生效了。</p>
+<h2 id="想念五笔输入">想念“五笔输入”</h2>
+<p>看群里还蛮多人钟情于五笔 86 的人，想起自己也算是最早一代使用五笔的人，直到后面拼音输入法联想功能的完善，尤其在引入在线提示词之后，常用语的打字速度上五笔已经处于劣势了，我才逐步切换到了搜狗拼音输入法。</p>
+<p>这么想起来有 8 年没有使用过五笔输入了，这似乎是有点遗憾。 我开始折腾起五笔输入法了，先拿五笔做了反差来用吧。首先想要找一份简体的五笔单字码表，有人推荐了<a href="https://github.com/aardio/wubi-lex" target="_blank" rel="noopener noreffer ">WubiLex</a>，还是相当好用的，自带大量的五笔词库。开始选择了微软五笔的单字，后面发现很多字都不支持，比如羴之类的。既然要作为反查词库，那么词库必须完整啊。后面用了 WubiLex 自带的五笔单字库，字库看起来还是比较完整的。现在五笔可以作为不认识字的反查，也可以想念的时候切换打打字。原以为五笔打字是刻在骨子里面的，不过竟然有点忘记最后一笔的规则了，看来时间还真是会让人忘却。</p>
+<h2 id="再聊聊双拼输入">再聊聊“双拼输入”</h2>
+<p>在研究五笔输入法的时候，同时也看看其他的形码输入法，目前比较多人推崇的是小鹤音形，不过现在对新的形码输入并没有啥兴趣了。不过在过程中看到有人在说，“双拼输入法是投入性价比最高的输入法了，花上几个小时就能熟悉，花上几天就能赶上原来的拼音输入速度了，而且是一辈子受益的”。理论上，双拼能显著降低击键次数和输入错误率。我是否应该花时间学习双拼输入呢？。推荐下这篇文章<a href="https://sspai.com/post/42667" target="_blank" rel="noopener noreffer ">让双拼不再是只属于少数人的输入方式</a>。</p>
+<p>双拼方案众多，主要区别在于是否使用<code>;</code>键。搜狗和微软双拼用了<code>;</code>做<code>ing</code>的输入，而自然码和小鹤并没有去用<code>;</code>。我更喜欢后者，小鹤算是在自然码上做了一些改进，尽管这个改进有很多作者自己的因素在里面。花了十几分钟去做打字练习，发现完全没有记住，不过我下载了一张键位图放在桌面了，以后还是会试一试的。顺便推荐一个这个<a href="https://api.ihint.me/shuang/" target="_blank" rel="noopener noreffer ">双拼在线练习</a>的网站，提供了各种不同的双拼方案的在线练习，另外还有提供小程序。</p>
+<p><figure><a href="https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/65c521.png" title="image-20240702224244991" >
+        
+    </a><figcaption class="image-caption">双拼在线练习</figcaption>
+    </figure></p>
+<p>另我还发现了<a href="https://macroxue.github.io/shuangpin/eval.html" target="_blank" rel="noopener noreffer ">双拼方案评测</a>工具，它根据击键手指、位置和过程预估打字时间，评估分数，并提供优化方案。理论上，我们可以根据数据设计出最高效的双拼输入法。 <figure><a href="https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/5f4c51.png" title="image-20240702225206097" >
+        
+    </a><figcaption class="image-caption">双拼方案评测工具</figcaption>
+    </figure></p>
+<p>在对不同双拼方案进行比较后，发现主流方案之间的差异不大，从 114.9 到 123.6，差异在 10%不到，简单看数据，相比全拼输入法大概能有 20%-30%的速度提升吧。但是“飞猫”和“乱序”从分数上看却是遥遥领先，这是为啥呢？</p>
+<table>
+  <thead>
+      <tr>
+          <th>双拼方案</th>
+          <th>分数</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>拼音加加</td>
+          <td>123.6</td>
+      </tr>
+      <tr>
+          <td>国标双拼</td>
+          <td>119.9</td>
+      </tr>
+      <tr>
+          <td>小鹤双拼</td>
+          <td>118.8</td>
+      </tr>
+      <tr>
+          <td>微软</td>
+          <td>117.9</td>
+      </tr>
+      <tr>
+          <td>自然码</td>
+          <td>116.6</td>
+      </tr>
+      <tr>
+          <td>紫光</td>
+          <td>126.5</td>
+      </tr>
+      <tr>
+          <td>智能 ABC</td>
+          <td>114.9</td>
+      </tr>
+      <tr>
+          <td>大牛</td>
+          <td>131</td>
+      </tr>
+      <tr>
+          <td>飞猫</td>
+          <td>174.5</td>
+      </tr>
+      <tr>
+          <td>全拼</td>
+          <td>93.3</td>
+      </tr>
+      <tr>
+          <td>乱序优化</td>
+          <td>182.2</td>
+      </tr>
+  </tbody>
+</table>
+<p>我们先来看下“飞猫”和“乱序优化”的键位图。有没有发现和其他双拼输入法很明显的差异，他们的声母是乱序的，你不仅需要记住韵母，还得重新去记声母。通过这一点，能比其他双拼输入法的输入速度再继续提升 30%。而“飞猫”还有一个特点在于部分拼音是支持多个键的，就是所谓的“飞键”，比如<code>sh</code>既可以通过<code>N</code>也可以通过<code>A</code>进行输入，你哪个手指方便就用哪个手指去打印，有点像是按<code>Shift</code>键的感觉，你左手打字母那就右手按右边的<code>Shift</code>，反之亦然。不过我估计挺多人没有遵守这个基础打字规范，我个人大部分情况还是遵循了这一点的。</p>
+<p><figure><a href="https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/72561e.png" title="image-20240702230905969" >
+        
+    </a><figcaption class="image-caption">飞猫键位图</figcaption>
+    </figure></p>
+<p><figure><a href="https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/cd486b.png" title="image-20240702230921266" >
+        
+    </a><figcaption class="image-caption">乱序优化键位图</figcaption>
+    </figure></p>
+<p>网上关于“飞猫”的资料相当少，<a href="https://tieba.baidu.com/p/4676554242?pn=1" target="_blank" rel="noopener noreffer ">这一篇</a>算是作者在 2016 年发的原文，的确是通过程序计算出来的按键，可是后面就没啥新内容了。GitHub 上也没有其他资料，只有<a href="https://github.com/zebats/flying-cat-rime?tab=readme-ov-file" target="_blank" rel="noopener noreffer ">这一篇</a>写到在 Rime 中的飞猫配置。下面这些是作者文章中的截图。</p>
+<p></p>
+<p></p>
+<p></p>
+<h2 id="多端数据同步方案">多端数据同步方案</h2>
+<p>我们需要同步的数据，可以分为几类：</p>
+<ol>
+<li>配置类 yaml 文件；</li>
+<li>词库类 yaml 文件；</li>
+<li>用户输入词库，以 userdb 格式保存；</li>
+</ol>
+<p>我们先看前两类数据的同步方案，这里的数据源头是维护在 Git 仓库的。</p>
+<div class="mermaid" id="id-1"></div><p>在看用户词库的同步方案，这里的数据源头的话就是各个输入设备的本地数据，执行同步操作后会将自己设备的数据写入微云同步盘的指定目录，同时读取其他设备的用户词库进行合并处理。</p>
+<div class="mermaid" id="id-2"></div><p>这里相关的脚本操作在 Mac 和 Windows 上是在 uTools 的快捷命令插件中进行维护，开启了定时执行，手机端是通过 iPhone 的快捷指令进行定时执行。而源头的词库是通过 Github Workflow 进行定时更新的，这样整体流程都不需要人工干预了。</p>]]></description></item><item><title>鼠须管 Squirrel 选项词横排配置调整</title><link>https://plutotree.me/2024/06/squirrel-skin-horizonetal-conf/</link><pubDate>Thu, 13 Jun 2024 00:30:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/06/squirrel-skin-horizonetal-conf/</guid><description><![CDATA[<p>最近鼠须管squirrel升级之后选项变成纵向排列了，本地没有改过配置，那应该就是新版本对<code>style/horizontal</code>参数不再兼容了，看了下 <code>Release notes</code> 果然如此，这里备注下这两个选项配置不同情况下的效果。一般只需要设置 <code>candidate_list_layout: linear</code> 即可。</p>
+<ul>
+<li>candidate_list_layout: linear</li>
+<li>text_orientation: vertical</li>
+</ul>
+<p></p>
+<ul>
+<li>candidate_list_layout: linear</li>
+<li>text_orientation: horizontal</li>
+</ul>
+<p></p>
+<ul>
+<li>candidate_list_layout: stacked</li>
+<li>text_orientation: horizontal</li>
+</ul>
+<p></p>
+<ul>
+<li>candidate_list_layout: stacked</li>
+<li>text_orientation: vertical</li>
+</ul>
+<p></p>
+]]></description></item><item><title>我的 RIME 词库说明</title><link>https://plutotree.me/2024/01/my-rime-dict/</link><pubDate>Tue, 23 Jan 2024 18:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/01/my-rime-dict/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/11/BfbxR8.jpg" referrerpolicy="no-referrer">
+            </div><p>最开始用的基础词库来源于<a href="https://github.com/ssnhd/rime" target="_blank" rel="noopener noreffer ">ssnhd/rime</a>，这是它的词表介绍</p>
+<p></p>
+<p>主要用了这几份词库：</p>
+<ul>
+<li><code>luna_pinyin.dict.yaml</code>：默认字库，有部分的词语，总计7万；</li>
+<li><code>luna_pinyin.sogou.dict.yaml</code>：来源于搜狗词库，总计105万；</li>
+<li><code>easy_en.dict.yaml</code>：英文词库，总计11万；</li>
+</ul>
+<p>此外还用了几份自己维护的词库：</p>
+<ul>
+<li>股票名称列表，使用<a href="https://tushare.pro/" target="_blank" rel="noopener noreffer ">Tushare</a> API拉取A股的股票名称列表生成词库，总计5千；</li>
+<li>我的搜狗自定义词库，从搜狗导出后经过手动删除，总计3千；</li>
+<li>我手动维护的词库，总计1百；</li>
+</ul>
+<p>但是这份词库存在几个问题：</p>
+<ol>
+<li>缺乏词库持续的更新维护；</li>
+<li>这份百万级的搜狗词库质量不高，并不是搜狗自带的词库；</li>
+<li>本身基于繁体，尽管这符合RIME的做法；</li>
+</ol>
+<p>最近发现两份还不错的简体词库，分别是<a href="https://github.com/fkxxyz/rime-cloverpinyin" target="_blank" rel="noopener noreffer ">四叶草拼音</a>和<a href="https://github.com/iDvel/rime-ice" target="_blank" rel="noopener noreffer ">雾凇拼音</a>。其中雾凇拼音有6K的star数量，并且更新还是比较及时的，提供的功能也比较完善，下面是一个功能介绍：</p>
+<p></p>
+<p>作者也明确说明了他会长期维护几份词库：</p>
+<ul>
+<li><code>8105</code> 字表。</li>
+<li><code>base</code> 基础词库。</li>
+<li><code>ext</code> 扩展词库，小词库。</li>
+<li><code>tencent</code> 扩展词库，大词库。</li>
+<li>Emoji</li>
+</ul>
+<p>雾凇拼音用了大量的<code>lua</code>脚本来实现功能，这里先不整体引用，打算只引用词库。但是在部署的时候却发现小狼毫会一直处于加载中，尝试后发现是在加载Tencent大词库的时候才出问题。搜索<a href="https://github.com/rime/weasel/issues/953" target="_blank" rel="noopener noreffer ">Github</a>发现可以关掉配置<code>use_preset_vocabulary</code>就可以解决问题。</p>
+<p>目前使用的外部词库保留了来源于雾凇拼音的四份中文词库</p>
+<ul>
+<li><code>cn_dicts/8105</code>     # 字表</li>
+<li><code>cn_dicts/base</code>     # 基础词库</li>
+<li><code>cn_dicts/ext</code>      # 扩展词库</li>
+<li><code>cn_dicts/tencent</code>  # 腾讯词向量</li>
+</ul>]]></description></item><item><title>小狼毫100%模仿微软输入法的皮肤</title><link>https://plutotree.me/2023/02/simulate-microsoft-input-method-skin-in-rime/</link><pubDate>Tue, 07 Feb 2023 17:30:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2023/02/simulate-microsoft-input-method-skin-in-rime/</guid><description><![CDATA[<p>对于输入法来说，皮肤可以说是非常重要，我们设置一款感觉舒适的，对于打字体验来说能提升不少。毕竟大家不是设计师，我们可以自己盗取成熟的输入法的皮肤效果就好了。这里我们参考的是微软拼音输入法，毕竟作为 windows 系统自带的，微软的设计师水准还是值得信赖的。</p>
+<h2 id="效果对比">效果对比</h2>
+<p>先看下效果，这个是 Windows 系统自带的微软拼音输入法</p>
+<p></p>
+<p>这个是小狼毫模拟的效果，应该做到了 99%的相似度吧。</p>
+<p></p>
+<h2 id="皮肤颜色设置">皮肤颜色设置</h2>
+<p><a href="https://github.com/rime/home/wiki/CustomizationGuide#%E4%B8%80%E4%BE%8B%E5%AE%9A%E8%A3%BD%E5%B0%8F%E7%8B%BC%E6%AF%AB%E9%85%8D%E8%89%B2%E6%96%B9%E6%A1%88" target="_blank" rel="noopener noreffer ">官网</a>给了比较清晰的颜色样式配置说明，另外也提供了一个方便的<a href="https://bennyyip.github.io/Rime-See-Me/" target="_blank" rel="noopener noreffer ">在线工具</a>用来生成配置。我们用取色工具获取微软拼音输入法的相关颜色填充即可（可以用系统自带的画图工具）。</p>
+<p></p>
+<p></p>
+<p>在配置文件<code>weasel.custom.yaml</code>里面将相关内容填写进入即可。</p>
+<h2 id="样式设置">样式设置</h2>
+<p>这块可能稍微复杂一些，这里不做具体介绍了。结合皮肤设置的内容，在<code>weasel.custom.yaml</code>的内容现在是这样：</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">patch</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">preset_color_schemes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">microsoft_sim</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">仿微软输入法</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">author</span><span class="p">:</span><span class="w"> </span><span class="l">plutotree</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">back_color</span><span class="p">:</span><span class="w"> </span><span class="l">0xF4F4F4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">border_color</span><span class="p">:</span><span class="w"> </span><span class="l">0xDCDCDC</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">text_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x000000</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_text_color</span><span class="p">:</span><span class="w"> </span><span class="l">0xF4F4F4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_back_color</span><span class="p">:</span><span class="w"> </span><span class="l">0xFFD8A6</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_candidate_text_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x000000</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_candidate_back_color</span><span class="p">:</span><span class="w"> </span><span class="l">0xFFD8A6</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">candidate_text_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x000000</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">comment_text_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x888888</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">style</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">color_scheme</span><span class="p">:</span><span class="w"> </span><span class="l">microsoft_sim</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">label_format</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;%s&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">font_face</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;微软雅黑&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">font_point</span><span class="p">:</span><span class="w"> </span><span class="m">14</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">horizontal</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">inline_preedit</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">layout</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">min_width</span><span class="p">:</span><span class="w"> </span><span class="m">160</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">min_height</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">border_width</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">border_height</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">margin_x</span><span class="p">:</span><span class="w"> </span><span class="m">12</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">margin_y</span><span class="p">:</span><span class="w"> </span><span class="m">12</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">spacing</span><span class="p">:</span><span class="w"> </span><span class="m">10</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">candidate_spacing</span><span class="p">:</span><span class="w"> </span><span class="m">24</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilite_spacing</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilite_padding</span><span class="p">:</span><span class="w"> </span><span class="m">12</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">round_corner</span><span class="p">:</span><span class="w"> </span><span class="m">0</span></span></span></code></pre></div></div>
+<p>此外，候选词的个数设置是在文件<code>default.custom.yaml</code>，如果有需要修改成和微软拼音输入法一样的 7 个，可以这样填写。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">patch</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">menu</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">page_size</span><span class="p">:</span><span class="w"> </span><span class="m">7</span></span></span></code></pre></div></div>
+<p>需要注意的一点是<code>patch</code>字段内容要和原来的合并，不能新增一个<code>patch</code>字段。</p>
+]]></description></item><item><title>使用RIME输入法</title><link>https://plutotree.me/2021/12/using-rime-on-pc/</link><pubDate>Wed, 15 Dec 2021 17:50:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2021/12/using-rime-on-pc/</guid><description><![CDATA[<h2 id="为啥需要更换输入法">为啥需要更换输入法？</h2>
+<p>互联网上的隐私泄漏问题一直是讨论的热点，比如姓名、电话、职业、学校等，更进一步还有家庭住址、家庭成员等。那么有没有想过，这么多互联网产品中，拥有你最多隐私的数据产品是什么？很多人会选择微信、微博、抖音等产品，因为它们有我们的关系链、兴趣爱好、LBS 信息、作息习惯等等。这些都没有问题，但是有没有想过我们常用的输入法所拥有的信息甚至比这些产品还要多。而目前大部分输入法都会将输入词传输到云端进行联想提示。想象下，如果将你这么多年的输入词完整分析一遍，能得到多少你个人信息，以及社交信息，甚至分析你的个人性格都不是啥问题。</p>
+<h2 id="选择一款开源的输入法">选择一款开源的输入法</h2>
+<p><a href="https://rime.im/" target="_blank" rel="noopener noreffer ">RIME</a>算是最好、最强大的开源输入法，甚至没有之一。它在一个统一的后端服务基础上，利用不同的前端来支持 Windows、MacOS、Android、Linux，实现跨操作系统和跨设备。在 Windows 下叫“小狼毫” (Weasel)，在 Mac 下是“鼠须管” (Squirrel)，在 Linux 下叫“中州韵” (ibus)。此外还有 Android 版本。这里只介绍 windows 和 mac 上的安装和使用方式，而 iOS 上输入法如果不打开联网权限安全和隐私保护是可靠的。</p>
+<h2 id="安装及基础使用">安装及基础使用</h2>
+<h3 id="windows-下小狼毫的安装">Windows 下小狼毫的安装</h3>
+<ol>
+<li>
+<p>在官网下载<a href="https://rime.im/download/" target="_blank" rel="noopener noreffer ">小狼毫</a>；</p>
+</li>
+<li>
+<p>安裝完成需要选择输入方案，可以只保留朙月输入法，在皮肤选择中可以选择自己喜欢的样式</p>
+<p></p>
+</li>
+<li>
+<p>这时候可以正常输入，但是展示的是繁体字，按 F4 选择简体；</p>
+<p></p>
+</li>
+<li>
+<p>默认的是纵向选择候选词，可能不符合一般的使用习惯，可以打开目录<code>%APPDATA%\Rime</code>中下的文件<code>weasel.custom.yaml</code>（如果不存在的话则新建即可），增加下述内容：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">patch</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">style</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">horizontal</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>在菜单中选择“重新部署”后，就可以看到效果了；</p>
+</li>
+</ol>
+<h3 id="mac-下鼠须管的安装">Mac 下鼠须管的安装</h3>
+<ol>
+<li>
+<p>安装 RIME，安装过程需要输入密码</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">brew install squirrel --cask</span></span></code></pre></div></div>
+</li>
+<li>
+<p>添加输入法，在输入法管理中添加“鼠须管”输入法</p>
+<p></p>
+</li>
+<li>
+<p>这时候就可以正常输入了，不过出来的是繁体字，需要调整为简体字。在输入状态下，按 F4 可以选择切换为简体。</p>
+<p></p>
+</li>
+<li>
+<p>默认的是纵向选择候选词，可能不符合一般的使用习惯，打开目录<code>~/Library/Rime</code>下的文件<code>squirrel.custom.yaml</code>（如果不存在则新建），内容如下：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">patch</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">style</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">horizontal</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>选择重新部署后，可以实现横向选择了</p>
+<p></p>
+</li>
+</ol>
+<h2 id="rime的相关参考资料">Rime的相关参考资料</h2>
+<ol>
+<li><a href="https://github.com/fkxxyz/rime-cloverpinyin" target="_blank" rel="noopener noreffer ">四叶草拼音输入方案，做最好用的基于rime开源的简体拼音输入方案！</a></li>
+<li><a href="https://github.com/iDvel/rime-ice" target="_blank" rel="noopener noreffer ">Rime 配置：雾凇拼音 | 长期维护的简体词库</a></li>
+<li><a href="https://github.com/ssnhd/rime" target="_blank" rel="noopener noreffer ">Rime Squirrel 鼠须管配置文件（朙月拼音、小鹤双拼、自然码双拼）</a></li>
+<li><a href="https://github.com/LufsX/rime" target="_blank" rel="noopener noreffer ">Rime（中州韵）全拼与双拼的自用配置方案</a></li>
+</ol>
+]]></description></item></channel></rss>

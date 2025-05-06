@@ -1,0 +1,50 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Cronicle - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/cronicle/</link><description>Cronicle - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Sun, 16 Jun 2024 01:00:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/cronicle/" rel="self" type="application/rss+xml"/><item><title>从 Cronicle 到 n8n 实践自动化工作流</title><link>https://plutotree.me/2024/06/from-cronicle-to-n8n-as-workflow-solution/</link><pubDate>Sun, 16 Jun 2024 01:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/06/from-cronicle-to-n8n-as-workflow-solution/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/09/Zqor7I.jpg" referrerpolicy="no-referrer">
+            </div><p>最近又开始折腾起我的服务器了，重点关注数据更新流程中的一些不满意之处：</p>
+<ol>
+<li>Git仓库同步更新：广州和香港的服务器通过crontab任务每分钟执行git pull操作；</li>
+<li>博客同步更新：服务器上的crontab任务执行git fetch，对比差异后触发构建流程；</li>
+<li>Cronicle部署：广州服务器未部署cronicle，导致定时脚本依赖crontab，无法在页面查看执行状态</li>
+</ol>
+<h3 id="部署cronicle">部署cronicle</h3>
+<p>为了简化广州服务器上的定时任务管理，我部署了 <a href="https://cronicle.net/" target="_blank" rel="noopener noreffer ">Cronicle</a>。尽管步骤较多，但得益于之前的经验，十几分钟内便完成了：</p>
+<ol>
+<li>申请并配置域名，设置 CNAME 转发；</li>
+<li>配置 Nginx，申请 HTTPS 证书；</li>
+<li>安装Cronicle（未使用Docker，直接通过curl命令）；</li>
+<li>修改配置文件，参照香港服务器；</li>
+<li>启动Cronicle；</li>
+<li>在页面配置任务，如进程监控脚本等；</li>
+</ol>
+<p>部署过程中发现，Cronicle支持API远程访问，这正是我一直期望的功能。考虑到直接在机器上部署agent来转发命令存在安全隐患，且定制化配置页面需要额外维护，cronicle的API很好的满足了我。</p>
+<h3 id="部署n8n">部署n8n</h3>
+<p>有了Cronicle的API，我们具备了通过GitHub push webhook触发同步更新的基础。接下来，需要找到一个合适的服务接收webhook请求，并优雅地调用我们的API接口。这时，我想起了持续集成（CI）的概念。曾尝试使用集简云等服务，但它们通常按执行次数收费且价格不菲。经过一番搜索，我发现<a href="https://n8n.io/" target="_blank" rel="noopener noreffer ">n8n</a>受到了许多人的推荐。其插件生态完善，能方便地集成主流服务。</p>
+<p>部署n8n相对简单：</p>
+<ol>
+<li>申请域名，配置CNAME转发；</li>
+<li>配置Nginx，申请HTTPS证书；</li>
+<li>使用Docker部署n8n；</li>
+</ol>
+<h3 id="借助n8n实现git仓库的同步更新">借助n8n实现git仓库的同步更新</h3>
+<p>配置流水线花费了一些时间，没找到直接参考的例子，只能一步步琢探索。</p>
+<p>第一步：引入<code>GitHub Trigger</code>节点，配置了token之后，只看到一个<code>Test step</code>的按钮。点击之后，n8n能自动配置GitHub的Webhook的配置项。n8n区分了测试和正式的webhook地址，注意的是对于正式地址仍然需要手动在GitHub页面配置的。</p>
+<p>第二步：引入<code>HTTP request</code>节点，调用cronicle的API。</p>
+<p>简单测试了下发现流程就可以跑通了，但是这里的流水线没有对API执行的结果做回包解析。所以第三不便是需要引入<code>Code</code>节点，判断下下错误码，对于非0的情况直接抛异常了。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">code</span><span class="o">=</span><span class="nx">$input</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">json</span><span class="p">.</span><span class="nx">code</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nx">code</span> <span class="o">!==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="sb">`HTTP request failed with code {data[0].code}`</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">return</span> <span class="nx">$input</span><span class="p">.</span><span class="nx">item</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>整体流水线的配置，只包含三类节点</p>
+<p></p>
+<h3 id="实现博客的同步更新">实现博客的同步更新</h3>
+<p>有了git仓库同步的经验，要解决博客的同步更新其实就比较简单了。不过这里顺便提下n8n的消息通知并不优雅，没有地方统一配置成功和失败的消息发送。目前来看需要针对每一条流水线进行配置。</p>
+<p></p>
+<p>后续会将更多任务挪到n8n上面来，这只是一个起步。</p>]]></description></item></channel></rss>

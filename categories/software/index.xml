@@ -1,0 +1,331 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Software - 分类 - PlutoTree's Blog</title><link>https://plutotree.me/categories/software/</link><description>Software - 分类 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Wed, 17 Jan 2024 18:00:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/categories/software/" rel="self" type="application/rss+xml"/><item><title>Windows 包管理器 Scoop的使用经验</title><link>https://plutotree.me/2024/01/use-scoop-as-windows-package-manager-experience/</link><pubDate>Wed, 17 Jan 2024 18:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/01/use-scoop-as-windows-package-manager-experience/</guid><description><![CDATA[<p>如果有在 Mac 下用过<code>HomeBrew</code>的都知道，软件安装起来是多么方便。Windows 一直缺少这么方便的包管理工具。<code>Chocolatey</code>只能算是便捷的安装工具，和包管理工具差距还挺大的。<code>WinGet</code>可以算是一个包管理工具，只是目前支持的应用还比较少。以前有听说过<a href="https://scoop.sh" target="_blank" rel="noopener noreffer "><code>Scoop</code></a>，印象中说法是支持的软件数量较少。不过最近试了下，发现其支持的软件数量已经相当广泛。各类常见开发工具自然不必说了，主流的软件其中包括部分国内软件都能在官方的 bucket 中找到。官方不支持的软件，我们也能通过第三方的 bucket 进行安装。目前我有 59 个软件是通过 scoop 进行安装了。</p>
+<p></p>
+<h2 id="scoop-操作示例">Scoop 操作示例</h2>
+<ol>
+<li>
+<p>安装 scoop</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Set-ExecutionPolicy</span> <span class="n">-ExecutionPolicy</span> <span class="n">RemoteSigned</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">get</span><span class="p">.</span><span class="py">scoop</span><span class="p">.</span><span class="py">sh</span> <span class="p">|</span> <span class="nb">Invoke-Expression</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装<code>main</code>的软件</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">go</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">nodejs</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装<code>extra</code>的软件 （也是官方维护，要求比<code>main</code>宽松）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="n">extras</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">extras</span><span class="p">/</span><span class="n">apifox</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装第三方软件（这是我自己的 bucket 哈）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="n">plutotree</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">plutotree</span><span class="p">/</span><span class="nb">scoop-bucket</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">plutotree</span><span class="p">/</span><span class="n">qqmusic</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装字体</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="nb">nerd-font</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="nb">hack-nf</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>更新所有软件</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">update</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">update</span> <span class="p">*</span></span></span></code></pre></div></div>
+</li>
+</ol>
+<p>安装流程和 Mac 下的 Homebrew 相似，scoop 用 json 来维护软件信息，做法也是和老版本的 homebrew 一样。不过 scoop 有点优势在于，绝大部分软件都能支持自动更新，官方也提供了 Github Action 组件，定时检测发现有新版本的时候会自动更新描述文件。</p>
+<h2 id="scoop-使用说明">Scoop 使用说明</h2>
+<ol>
+<li>
+<p>使用自定义目录进行安装</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">[</span><span class="no">environment</span><span class="p">]::</span><span class="n">setEnvironmentVariable</span><span class="p">(</span><span class="s1">&#39;SCOOP&#39;</span><span class="p">,</span> <span class="s1">&#39;E:\Scoop&#39;</span><span class="p">,</span> <span class="s1">&#39;User&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$env:SCOOP</span><span class="p">=</span><span class="s1">&#39;E:\Scoop&#39;</span> <span class="c"># 如果不用这句话的话可以重开窗口也行</span>
+</span></span><span class="line"><span class="cl"><span class="nb">iex </span><span class="p">(</span><span class="nb">new-object</span> <span class="n">net</span><span class="p">.</span><span class="n">webclient</span><span class="p">).</span><span class="py">downloadstring</span><span class="p">(</span><span class="s1">&#39;https://get.scoop.sh&#39;</span><span class="p">)</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>增加常用的 bucket，可以参考官方介绍的<a href="https://github.com/ScoopInstaller/Scoop?tab=readme-ov-file#known-application-buckets" target="_blank" rel="noopener noreffer ">bucket 列表</a>（质量比较高），我目前只加了 extra 和 nerd-fonts</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="n">extra</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="nb">nerd-fonts</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装官方推荐的加速下载工具 aria2</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">aria2</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>从控制面版卸载不需要的程序，然后通过 scoop 进行安装和管理。</p>
+</li>
+</ol>
+<ul>
+<li>查找：<code>scoop search xx</code></li>
+<li>安装： <code>scoop install xx</code></li>
+<li>卸载：<code>scoop uninstall xx</code></li>
+<li>升级: <code>scoop update; scoop update xx</code></li>
+<li>查看缓存（下载的安装包）：<code>scoop cache</code></li>
+<li>删除缓存：<code>scoop cache rm xx</code> （*表示所有软件）</li>
+<li>查看已安装软件：<code>scoop list</code></li>
+<li>删除软件的旧版本：<code>scoop cleanup xx</code> （*表示所有软件）</li>
+<li>删除软件的旧版本同时清理缓存：<code>scoop cleanup -k xx</code>（*表示所有软件）</li>
+</ul>
+<h3 id="哪些软件不适合">哪些软件不适合</h3>
+<p>绿色软件是更适合的，而和系统关联性太强的软件是不适合的，尤其是需要管理员权限进行安装的。尽管 scoop 也支持使用管理权限进行安装，但是同样更新和卸载也许要管理权限，我觉得就没必要了而且维护起来会比较麻烦。</p>
+<p>目前就我电脑上的软件而言，没有使用 scoop 管理的主要是：</p>
+<ol>
+<li>系统驱动和厂商管理工具，比如 Nvidia、HP 等管理工具；</li>
+<li>微软的开发工具和环境依赖，比如<code>Microsoft Visual C++ xx Redistributables</code>、<code>Microsoft Windows Desktop Runtime</code>等；</li>
+<li>微软自带的部分商店应用，比如主题、微软 TODO 工具、画图工具、3D 查看器等；</li>
+<li>和系统关联系比较大，或者不方便迁移出来的，比如 Adobe 系列、Office 软件、iTunes、输入法等；</li>
+<li>平台类软件，需要使用其更新管理，比如 steam、Epic 等，后续需要研究下；</li>
+<li>专业软件，或者内部使用的软件；</li>
+<li>部分还没来得及迁移的软件，比如 TortoseSVN、QQ、微云等；</li>
+</ol>
+<h3 id="查找软件">查找软件</h3>
+<p>可以使用命令<code>scoop search</code>进行搜索，不过建议是在<a href="https://scoop.sh" target="_blank" rel="noopener noreffer ">官网</a>进行搜索，需要注意的是选项<code>Official bucket only</code>选项是否开启，一般情况下是建议安装官方包，以及可信赖的第三方。而我个人而言，第三方目前会控制在自己的 bucket 范围。</p>
+<p></p>
+<p>在官方查找不到的时候，可以扩展到第三方，找到之后可以修改后何如自己的 bucket 中。第三方的 bucket 其实质量并一定能保证，最后看下描述文件内容，以及是否从官网下载。还有部分维护破解软件的第三方 bucket，建议就不要使用了。还有就是关注下 bucket 的 star 数量，毕竟 star 多点还是稍微靠谱点。这个<a href="https://rasa.github.io/scoop-directory/by-stars" target="_blank" rel="noopener noreffer ">网站</a>提供按 star 数量排名的 bucket 列表，也可以参考下，蛮多是中国人维护的 bucket。</p>
+<p></p>
+<h2 id="维护自己的-bucket">维护自己的 bucket</h2>
+<ol>
+<li>创建一个自己的 bucket
+<ul>
+<li>在 GitHub 上直接通过<a href="https://github.com/ScoopInstaller/BucketTemplate" target="_blank" rel="noopener noreffer ">Bucket 模板</a>新建一个仓库；</li>
+<li>按照提示说明，修改仓库的设置，开启读写权限；</li>
+<li>修改几个文件的占位符，指定下仓库名信息；</li>
+</ul>
+</li>
+<li>维护自己软件的描述信息，
+<ul>
+<li>自己写应用描述信息，或者直接复用第三方，或者在其基础上修改；</li>
+</ul>
+</li>
+<li>增加自己的 bucket：<code>scoop bucket add BUCKET_NAME YOUR_BUCKET_GIT_ADDRESS</code></li>
+<li>安装自己的软件：<code>scoop install BUCKET_NAME/APP_NAME</code></li>
+</ol>
+<h2 id="应用描述信息">应用描述信息</h2>
+<p>这块算是 scoop 中最复杂的内容了，官方文档提供了基础的介绍，更有用的话应该需要多参考已有的描述。我们来看几个例子</p>
+<h3 id="cos-browser">Cos-Browser</h3>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;2.11.13&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;A visualization interface tool provided by Tencent Cloud COS, view, transfer, and manage COS resources easily&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;homepage&#34;</span><span class="p">:</span> <span class="s2">&#34;https://github.com/tencentyun/cosbrowser&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;license&#34;</span><span class="p">:</span> <span class="s2">&#34;Freeware&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://cos5.cloud.tencent.com/cosbrowser/cosbrowser-setup-2.11.13.exe#/dl.7z&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hash&#34;</span><span class="p">:</span> <span class="s2">&#34;sha512:0063411445cc4a2af098b71780525ec2e190f396934d1b910fbd62aea897ce99a0b2099a848d15df871e7f774aa7334be6acd2c4c4de2e9d0ae8cce05830940f&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;architecture&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;64bit&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Expand-7zipArchive \&#34;$dir\\`$PLUGINSDIR\\app-64.7z\&#34; \&#34;$dir\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;32bit&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Expand-7zipArchive \&#34;$dir\\`$PLUGINSDIR\\app-32.7z\&#34; \&#34;$dir\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;post_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Remove-Item \&#34;$dir\\`$*\&#34; -Force -Recurse&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;shortcuts&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="s2">&#34;cosbrowser.exe&#34;</span><span class="p">,</span> <span class="s2">&#34;COSBrowser&#34;</span><span class="p">,</span> <span class="s2">&#34;--user-data-dir=\&#34;$dir\\UserData\&#34;&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;persist&#34;</span><span class="p">:</span> <span class="s2">&#34;UserData&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;checkver&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://cos5.cloud.tencent.com/cosbrowser/latest.yml&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;regex&#34;</span><span class="p">:</span> <span class="s2">&#34;version: ([\\d.]+)&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;autoupdate&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://cos5.cloud.tencent.com/cosbrowser/cosbrowser-setup-$version.exe#/dl.7z&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;hash&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;$baseurl/latest.yml&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;regex&#34;</span><span class="p">:</span> <span class="s2">&#34;sha512: $base64&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>看下整体流程：</p>
+<ol>
+<li>下载指定 URL，下载后进行 Hash 校验；</li>
+<li>URL 后面有<code>#/dl.7z</code>，在校验成功后会直接使用 7zip 进行解压缩；</li>
+<li>调用<code>pre_install</code>脚本内容，这里使用了<code>Expand-7zipArchive</code>解压缩；</li>
+<li>调用<code>install</code>脚本内容，这个应用是空的；</li>
+<li>创建快捷方式，这里关注下有指定参数<code>--user-data-dir</code>，这样就不会使用系统的<code>AppData</code>目录了。猜测这个参数是 electron 开发的软件都会有的，其它框架开发的就不支持了。</li>
+<li>调用<code>post_install</code>脚本内容，这里主要就是删除一些无用的文件；</li>
+<li><code>persist</code>指定了需要持久化的目录，scoop 会帮忙创建一个链接，并且卸载的时候不会删除；</li>
+<li>checkver 是用来检测是否有新版本，autoupdate 是用来在有新版本的时候进行下载并且更新描述文件。这两块的细节内容会比较复杂点，可以参考<a href="https://github.com/ScoopInstaller/Scoop/wiki/App-Manifest-Autoupdate" target="_blank" rel="noopener noreffer ">官方文档</a>。</li>
+</ol>
+<h3 id="evernote">Evernote</h3>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;10.71.2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;[Evernote] Use it for note taking, project planning and organize everything&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;homepage&#34;</span><span class="p">:</span> <span class="s2">&#34;https://evernote.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;license&#34;</span><span class="p">:</span> <span class="s2">&#34;Freeware&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://win.desktop.evernote.com/builds/Evernote-latest.exe#/dl.zip&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hash&#34;</span><span class="p">:</span> <span class="s2">&#34;7e3b3565651b6ddeaa9dfb86502951917d996b09ebd32f2ce11509325d3bcce1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;architecture&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;64bit&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Expand-7zipArchive \&#34;$dir\\`$PLUGINSDIR\\app-64.7z\&#34; \&#34;$dir\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;32bit&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Expand-7zipArchive \&#34;$dir\\`$PLUGINSDIR\\app-32.7z\&#34; \&#34;$dir\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;post_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Remove-Item \&#34;$dir\\`$*\&#34; -Force -Recurse&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;shortcuts&#34;</span><span class="p">:</span> <span class="p">[[</span><span class="s2">&#34;Evernote.exe&#34;</span><span class="p">,</span> <span class="s2">&#34;Evernote&#34;</span><span class="p">]],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;checkver&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://evernote.com/release-notes&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;regex&#34;</span><span class="p">:</span> <span class="s2">&#34;Version.*?([\\d.]+)&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;autoupdate&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://win.desktop.evernote.com/builds/Evernote-latest.exe#/dl.zip&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>基本上和 Cos-Browser 的信息是类似的，但是 autoupdate 这里没有指定 Hash 获取方式，其实是官方没有提供，这种情况下的话就只能等文件下载完成之后再进行 hash 计算了，理论上来说是存在文件下载异常描述信息有问题的，这种的话就只能等发现之后手动修复了。</p>
+<h3 id="qq-音乐">QQ 音乐</h3>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;##&#34;</span><span class="p">:</span> <span class="s2">&#34;QQ音乐&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;20.05.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;[QQ音乐] 千万正版音乐海量无损曲库新歌热歌天天畅听的高品质音乐平台&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;homepage&#34;</span><span class="p">:</span> <span class="s2">&#34;https://y.qq.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;license&#34;</span><span class="p">:</span> <span class="s2">&#34;Freeware&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://dldir1.qq.com/music/clntupate/QQMusic_YQQWinPCDL.exe#/dl.7z&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hash&#34;</span><span class="p">:</span> <span class="s2">&#34;4c35742f11a011e8aff31987966e29b014fcdabfd6f50240125c8252f86188b2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;post_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Copy-Item \&#34;$dir\\QQMusic.tpc\&#34; \&#34;$dir\\instok\&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;checkver&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://y.qq.com/download/download.html&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;regex&#34;</span><span class="p">:</span> <span class="s2">&#34;Windows PC.*\\:([\\d.]+)&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;shortcuts&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="s2">&#34;QQMusic.exe&#34;</span><span class="p">,</span> <span class="s2">&#34;QQ音乐&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="s2">&#34;QQMusic.exe&#34;</span><span class="p">,</span> <span class="s2">&#34;QQ Music&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;autoupdate&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://dldir1.qq.com/music/clntupate/QQMusic_YQQWinPCDL.exe#/dl.7z&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里我们创建了两个快捷方式，分别是 QQ 音乐和<code>QQ Music</code>，这样不管输入的是哪个都能启动了。同样 QQ 音乐也没提供 hash 获取方式，只能下载后本地计算。</p>
+<h3 id="补充说明">补充说明</h3>
+<p>腾讯会议比较奇怪，不能直接在<code>current</code>目录启动，而必须在版本目录启动，所以就不能用自带的快捷方式，而需要手动创建了。</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Rename-Item \&#34;$dir\\`$_*_\&#34; \&#34;$dir\\$version\&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Remove-Item \&#34;$dir\\`$*\&#34;,\&#34;$dir\\wemeetapp_new.exe\&#34; -Recurse -Force&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;startmenu_shortcut -target $(Get-Item \&#34;$dir\\wemeetapp.exe\&#34;) -shortcutName \&#34;Tencent Meeting\&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;startmenu_shortcut -target $(Get-Item \&#34;$dir\\wemeetapp.exe\&#34;) -shortcutName \&#34;腾讯会议\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;pre_uninstall&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;if (Get-Process -Name \&#34;wemeetapp\&#34; -Erroraction SilentlyContinue) {Stop-Process -Name \&#34;wemeetapp\&#34;}&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;if (Test-Path \&#34;$(shortcut_folder)\\Tencent Meeting.lnk\&#34;){Remove-Item \&#34;$(shortcut_folder)\\Tencent Meeting.lnk\&#34; -Force}&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;if (Test-Path \&#34;$(shortcut_folder)\\腾讯会议.lnk\&#34;){Remove-Item \&#34;$(shortcut_folder)\\腾讯会议.lnk\&#34; -Force}&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>有些软件是不能直接解压缩的，而是通过 Inno 方式进行安装，这种的话 scoop 也有自带提供支持，可以参考其它软件，等我遇到的时候再补充。</p>
+<h2 id="问题记录">问题记录</h2>
+<h3 id="github-访问-401-问题">GitHub 访问 401 问题</h3>
+<p>遇上 GitHub API 访问受限导致的 401 问题，可以设置环境变量<code>SCOOP_GH_TOKEN</code>，使用自己的 Access Token 即可。创建 Access Token 的时候不需要指定任何特别的权限，使用默认权限即可。</p>
+<h3 id="应用打开网址无法拉起-chrome-浏览器">应用打开网址无法拉起 Chrome 浏览器</h3>
+<p>尝试过多种方法但是仍然有不低的概率遇上，最后只能放弃使用 scoop 来维护 Chrome，换成 chrome 默认安装之后问题就不再出现了。</p>
+<h3 id="everything-开机启动无效">everything 开机启动无效</h3>
+<p>这里主要在使用 uTools 调用 everything 搜索的时候，每次开机启动需要重新进行索引，按照 uTools 的说法，如果使用的是安装版并且开机启动的前提下，是不会触发使用内置的绿色版 everything 而导致重新索引的问题的。最后也放弃使用 scoop 维护 everything，而使用官方的安装版本进行安装。不过这个问题也可能通过修改 everything 的配置项能解决。</p>
+<h3 id="hash-校验不一致导致无法安装">hash 校验不一致导致无法安装</h3>
+<p>有一种可能是更换了安装包但是没有更换版本号，也有可能是计算 hash 的时候遇到了一些bug。在执行 <code>scoop install</code> 的时候只要增加 <code>-s</code> 参数即可跳过 hash 校验。</p>
+]]></description></item><item><title>Windows 下使用 Bandizip 替换 7zip</title><link>https://plutotree.me/2023/03/bandizip-as-zip-app-on-windows/</link><pubDate>Thu, 02 Mar 2023 12:20:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2023/03/bandizip-as-zip-app-on-windows/</guid><description><![CDATA[<p>Windows 下一直在使用 7zip 作为唯一的压缩解压缩工具，不过解压缩的手有个一直困扰的问题：如果直接解压缩到当前目录，可能会出现一堆散乱的文件；如果解压缩到同名的目录，可能会导致多一层无用目录。原因就是因为有些压缩文件里面有根目录，而有些又没有。实际上一般会选择第二种方案，毕竟多一层目录结构总好于散乱的文件还要花时间清理。其实要解决这个问题很简单，提供一个所谓的“智能解压缩”就够了，实现起来可能也没几行代码，不知道 7zip 为啥一直没有支持。</p>
+<p>今天看到一篇吐槽 bandzip 国内代理不退款的<a href="https://www.v2ex.com/t/866229?p=2" target="_blank" rel="noopener noreffer ">帖子</a>，想着换个能支持“智能解压缩“的工具，参考了下<a href="https://www.v2ex.com/t/862733" target="_blank" rel="noopener noreffer ">windows 上最好的压缩软件是哪个</a>，推荐最多的依次是 7zip (18 票)、WinRar（16 票）、Bandizip（16 票）、360 压缩（8 票）。对 WinRar 历史上一直没有好感，果断还是选择 Bandzip 了。</p>
+<p>直接列举下 Bandzip 的优点：</p>
+<ol>
+<li>
+<p>最重要的一点支持智能压缩，并且可以选择右键一级菜单、二级菜单或者双击直接执行；智能压缩后还支持直接打开压缩后的目录，删除压缩文件</p>
+<p></p>
+</li>
+<li>
+<p>支持右键直接预览文件，这点也很实用，不过我还是把它折叠到了二级菜单里面。</p>
+<p></p>
+</li>
+<li>
+<p>提供了完善的选项设置，比如压缩文件名可以支持自定义，删除压缩文件可以选择是否放回收站，右键是否展示图标 icon，<strong>支持配置备份和导入</strong>等等；</p>
+</li>
+<li>
+<p>还有个很重要的点，Bandizip 不属于开源软件，部分功能需要付费才能使用。不过好在不是坑爹的订阅制，一次性付费 30 美元或 199 人民币就可以解锁专业版功能，包括广告去除、包内图片预览、压缩包修复等，还有密码器管理、恶意文件扫描等。后面两项功能其实算是和压缩工具不那么搭边，也可以认为作者比较善良，附赠了一些能力吧哈哈，只是我目前还没需求购买专业版，用一段时间再看看吧。</p>
+<p></p>
+</li>
+</ol>
+<p>顺便研究了付费的这几个功能点</p>
+<ol>
+<li>
+<p>密码管理器：密码记录在注册表，如果设置了主密码那么存放的就是加密后的串，如果忘记了主密码重置的时候只能清空所有密码信息。这项功能其实和所谓的密码管理器差距还挺大的，注册表毕竟也不是那么可靠，官网也说明了不要完全依赖密码管理器。</p>
+</li>
+<li>
+<p>压缩包内恶意软件扫描：开始我以为它自己做了一套安全扫描工具，还在想代价会不会太大了。看了文档才知道，windows 提供了反恶意软件扫描接口 (AMSI) 的通用接口标准，可以将杀毒软件的能力继承在其他产品中。不仅仅是自带的<code>Windows Defender</code>支持<code>AMSI</code>，还有<code>Kapersky</code>、<code>MCAfee</code>等等，不过看到描述的腾讯电脑管家不支持<code>AMSI</code>，还是有点感叹，国内的产品太没有开放意识了。</p>
+</li>
+</ol>
+<p></p>
+<ol>
+<li>密码修复：其实就是提供了一个暴力破解的方式，官网也很友好的给出了预估时间</li>
+</ol>
+<p></p>
+<ol>
+<li>
+<p>压缩包内图片预览：这个对于有需求的人来说还是挺实用性的，我个人好像没啥需求；</p>
+</li>
+<li>
+<p>压缩包修复：没有太明确的说明，我猜测有可能只是基于文件标准格式的简单处理，毕竟也不会保证修复的成功率；</p>
+</li>
+</ol>
+]]></description></item></channel></rss>

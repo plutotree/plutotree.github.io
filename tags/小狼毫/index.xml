@@ -1,0 +1,63 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>小狼毫 - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/%E5%B0%8F%E7%8B%BC%E6%AF%AB/</link><description>小狼毫 - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Tue, 07 Feb 2023 17:30:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/%E5%B0%8F%E7%8B%BC%E6%AF%AB/" rel="self" type="application/rss+xml"/><item><title>小狼毫100%模仿微软输入法的皮肤</title><link>https://plutotree.me/2023/02/simulate-microsoft-input-method-skin-in-rime/</link><pubDate>Tue, 07 Feb 2023 17:30:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2023/02/simulate-microsoft-input-method-skin-in-rime/</guid><description><![CDATA[<p>对于输入法来说，皮肤可以说是非常重要，我们设置一款感觉舒适的，对于打字体验来说能提升不少。毕竟大家不是设计师，我们可以自己盗取成熟的输入法的皮肤效果就好了。这里我们参考的是微软拼音输入法，毕竟作为 windows 系统自带的，微软的设计师水准还是值得信赖的。</p>
+<h2 id="效果对比">效果对比</h2>
+<p>先看下效果，这个是 Windows 系统自带的微软拼音输入法</p>
+<p></p>
+<p>这个是小狼毫模拟的效果，应该做到了 99%的相似度吧。</p>
+<p></p>
+<h2 id="皮肤颜色设置">皮肤颜色设置</h2>
+<p><a href="https://github.com/rime/home/wiki/CustomizationGuide#%E4%B8%80%E4%BE%8B%E5%AE%9A%E8%A3%BD%E5%B0%8F%E7%8B%BC%E6%AF%AB%E9%85%8D%E8%89%B2%E6%96%B9%E6%A1%88" target="_blank" rel="noopener noreffer ">官网</a>给了比较清晰的颜色样式配置说明，另外也提供了一个方便的<a href="https://bennyyip.github.io/Rime-See-Me/" target="_blank" rel="noopener noreffer ">在线工具</a>用来生成配置。我们用取色工具获取微软拼音输入法的相关颜色填充即可（可以用系统自带的画图工具）。</p>
+<p></p>
+<p></p>
+<p>在配置文件<code>weasel.custom.yaml</code>里面将相关内容填写进入即可。</p>
+<h2 id="样式设置">样式设置</h2>
+<p>这块可能稍微复杂一些，这里不做具体介绍了。结合皮肤设置的内容，在<code>weasel.custom.yaml</code>的内容现在是这样：</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">patch</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">preset_color_schemes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">microsoft_sim</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">仿微软输入法</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">author</span><span class="p">:</span><span class="w"> </span><span class="l">plutotree</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">back_color</span><span class="p">:</span><span class="w"> </span><span class="l">0xF4F4F4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">border_color</span><span class="p">:</span><span class="w"> </span><span class="l">0xDCDCDC</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">text_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x000000</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_text_color</span><span class="p">:</span><span class="w"> </span><span class="l">0xF4F4F4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_back_color</span><span class="p">:</span><span class="w"> </span><span class="l">0xFFD8A6</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_candidate_text_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x000000</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_candidate_back_color</span><span class="p">:</span><span class="w"> </span><span class="l">0xFFD8A6</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">candidate_text_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x000000</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">comment_text_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x888888</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">style</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">color_scheme</span><span class="p">:</span><span class="w"> </span><span class="l">microsoft_sim</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">label_format</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;%s&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">font_face</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;微软雅黑&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">font_point</span><span class="p">:</span><span class="w"> </span><span class="m">14</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">horizontal</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">inline_preedit</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">layout</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">min_width</span><span class="p">:</span><span class="w"> </span><span class="m">160</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">min_height</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">border_width</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">border_height</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">margin_x</span><span class="p">:</span><span class="w"> </span><span class="m">12</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">margin_y</span><span class="p">:</span><span class="w"> </span><span class="m">12</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">spacing</span><span class="p">:</span><span class="w"> </span><span class="m">10</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">candidate_spacing</span><span class="p">:</span><span class="w"> </span><span class="m">24</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilite_spacing</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilite_padding</span><span class="p">:</span><span class="w"> </span><span class="m">12</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">round_corner</span><span class="p">:</span><span class="w"> </span><span class="m">0</span></span></span></code></pre></div></div>
+<p>此外，候选词的个数设置是在文件<code>default.custom.yaml</code>，如果有需要修改成和微软拼音输入法一样的 7 个，可以这样填写。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">patch</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">menu</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">page_size</span><span class="p">:</span><span class="w"> </span><span class="m">7</span></span></span></code></pre></div></div>
+<p>需要注意的一点是<code>patch</code>字段内容要和原来的合并，不能新增一个<code>patch</code>字段。</p>
+]]></description></item></channel></rss>

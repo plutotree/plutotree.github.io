@@ -1,0 +1,248 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Mcp - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/mcp/</link><description>Mcp - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Fri, 18 Apr 2025 12:00:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/mcp/" rel="self" type="application/rss+xml"/><item><title>MCP 实践例子</title><link>https://plutotree.me/2025/04/practical-examples-of-mcp-applications/</link><pubDate>Fri, 18 Apr 2025 12:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2025/04/practical-examples-of-mcp-applications/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/18/29ueFR.jpg" referrerpolicy="no-referrer">
+            </div><p>大型模型虽然功能强大，但并非无所不能。自从OpenAI推出工具调用功能后，大型模型的能力边界得到了极大的提升，但这并不是一种通用的解决方案。MCP的出现让我们看到了一种统一和扩展大型模型能力的可能性，特别是在OpenAI宣布全面支持MCP后，这一技术获得了市场的普遍认可。本文致力于通过分享一系列实际案例，让你更深入地理解MCP能够做什么。</p>
+<h2 id="获取各旅游城市近期天气情况">获取各旅游城市近期天气情况</h2>
+<h3 id="低效的传统方案">低效的传统方案</h3>
+<p>传统方案不仅耗时费力（通常需要 1 小时以上），还存在较高的人为操作错误风险：</p>
+<ol>
+<li>​ 收集城市列表：通过百度搜索手动整理全国旅游城市名录</li>
+<li>​ 采集天气数据 ​：逐个访问天气网站，复制粘贴各城市气象数据</li>
+<li>整理数据结果：将零散数据手工整理为结构化表格或 PPT</li>
+</ol>
+<p>虽然开发人员可通过编写爬虫或调用 API 优化第 2 步，但面对一次性需求时，代码开发调试的时间成本往往又难以覆盖收益。</p>
+<h3 id="ai-工具的初步尝试">AI 工具的初步尝试</h3>
+<p>使用 kimi、豆包、元宝等 AI 大模型时，尝试直接提问【<a href="https://yuanbao.tencent.com/bot/app/share/chat/ntQkP3iMLbBN" target="_blank" rel="noopener noreffer ">整理全国各大旅游城市近期天气情况，以表格形式返回</a>)】看似可行。但是由于缺乏实时的天气数据，结果也就缺乏意义了。</p>
+<h3 id="mcp-标准化解决方案">MCP 标准化解决方案</h3>
+<p>如果大模型能帮助我们调用 API，那问题就方便解决了，可以 API 接口形式五花八门，有什么办法能统一 API 接口标准呢。MCP（模型控制协议）通过统一接口标准，完美解决了 API 多样性和任务复杂性的矛盾。</p>
+<p>下面我们看下集成了天气查询功能的 MCP 后，大模型的回答变化：</p>
+<p>提问 ​：
+整理全国主要旅游城市最近的天气情况，以表格形式返回，一个城市一行数据</p>
+<p>​ 响应结果 ​（数据已精简）：</p>
+<table>
+  <thead>
+      <tr>
+          <th>城市</th>
+          <th>日期</th>
+          <th>白天天气</th>
+          <th>夜间天气</th>
+          <th>白天温度</th>
+          <th>夜间温度</th>
+          <th>白天风向</th>
+          <th>夜间风向</th>
+          <th>白天风力</th>
+          <th>夜间风力</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>北京市</td>
+          <td>2025-04-18</td>
+          <td>中雨</td>
+          <td>小雨</td>
+          <td>19℃</td>
+          <td>8℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>北京市</td>
+          <td>2025-04-19</td>
+          <td>多云</td>
+          <td>晴</td>
+          <td>21℃</td>
+          <td>11℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>上海市</td>
+          <td>2025-04-18</td>
+          <td>阴</td>
+          <td>阴</td>
+          <td>31℃</td>
+          <td>18℃</td>
+          <td>东南</td>
+          <td>东南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>上海市</td>
+          <td>2025-04-19</td>
+          <td>小雨</td>
+          <td>小雨</td>
+          <td>28℃</td>
+          <td>17℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>广州市</td>
+          <td>2025-04-18</td>
+          <td>阵雨</td>
+          <td>阵雨</td>
+          <td>28℃</td>
+          <td>22℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>广州市</td>
+          <td>2025-04-19</td>
+          <td>阵雨</td>
+          <td>多云</td>
+          <td>28℃</td>
+          <td>23℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>深圳市</td>
+          <td>2025-04-18</td>
+          <td>阴</td>
+          <td>阴</td>
+          <td>30℃</td>
+          <td>24℃</td>
+          <td>东南</td>
+          <td>东南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>深圳市</td>
+          <td>2025-04-19</td>
+          <td>阴</td>
+          <td>阴</td>
+          <td>30℃</td>
+          <td>24℃</td>
+          <td>西南</td>
+          <td>西南</td>
+          <td>4 级</td>
+          <td>4 级</td>
+      </tr>
+  </tbody>
+</table>
+<p>查看执行的过程，我们能看到大模型自动发起了多次工具调用，用于查询天气信息。</p>
+<p></p>
+<p>通过 Cherry-Studio 可直观查看高德地图 MCP 服务的完整能力，天气查询仅是众多标准化接口之一，更主要的是提供路径规划和导航的能力。</p>
+<p></p>
+<h2 id="api-聚合平台的-mcp-转型实践">API 聚合平台的 MCP 转型实践</h2>
+<p>看完前面的的例子，有了 MCP 就能自动调用各类 API，而其能力自然也取决于 API 本身。这时候原来的一些 API 聚合平台是不是就能大显身手了。 下面以<a href="https://www.alapi.cn/" target="_blank" rel="noopener noreffer ">ALApi</a>为例来展示下整体流程。</p>
+<p>常用的 MCP 服务是用 node.js 和 python 服务为主，而事实上语言不会有限制， 我们只要遵循一定标准规范就好，这个 ALApi 的<a href="https://github.com/ALAPI-SDK/mcp-alapi-cn" target="_blank" rel="noopener noreffer ">MCP 服务</a>是用 go 实现的。</p>
+<ol>
+<li>
+<p>账号及权限申请</p>
+<p>注册 <a href="https://www.alapi.cn/" target="_blank" rel="noopener noreffer ">ALApi</a> 账号，申请 <a href="https://www.alapi.cn/dashboard/data/token" target="_blank" rel="noopener noreffer ">token</a>，申请需要的<a href="https://www.alapi.cn/explore" target="_blank" rel="noopener noreffer ">接口</a>。</p>
+<p></p>
+</li>
+<li>
+<p>服务部署</p>
+<p>编译 MCP 服务，编译成功后会生成<code>mcp-alapi-cn.exe</code></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git clone <span class="s2">&#34;https://github.com/ALAPI-SDK/mcp-alapi-cn.git&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> mcp-alapi-cn
+</span></span><span class="line"><span class="cl">git build</span></span></code></pre></div></div>
+</li>
+<li>
+<p>系统集成</p>
+<p>在 Cherry-Studio 中配置 MCP 服务，名称任选，命令填写前面编译来的<code>mlp-alapi-cn.exe</code>全路径，环境变量配置申请的 token 即可。</p>
+<p></p>
+<p>如果在 Cline、Claude 等其他客户端中配置的话，可以粘贴下述 json（需要和其他的 mcp 配置合并下）</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;mcpServers&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;ALAPI&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;ALAPI&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;stdio&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;isActive&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;D:\\xxx\\mcp-alapi-cn.exe&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;args&#34;</span><span class="p">:</span> <span class="p">[],</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;env&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;ALAPI_TOKEN&#34;</span><span class="p">:</span> <span class="s2">&#34;YOUR_API_TOKEN&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>启用 MCP</p>
+<p>配置完成后，Cherry-Studio 中访问的大模型的时候勾选相应的 MCP 服务就可以了</p>
+<p></p>
+</li>
+</ol>
+<h3 id="应用场景展示">应用场景展示</h3>
+<ol>
+<li>
+<p>查询油价：执行了一次工具 (api/oil) 查询</p>
+<p></p>
+</li>
+<li>
+<p>查询汇率：执行了四次工具 (api/exchange) 查询</p>
+<p></p>
+</li>
+<li>
+<p>查询黄金等贵金属价格：</p>
+<p></p>
+</li>
+</ol>
+<p>通过这种方式，ALApi 上的所有 API 接口，都可以转换成 MCP 服务为大模型所用了。</p>
+<p></p>
+<h3 id="背后逻辑">背后逻辑</h3>
+<p>整个流程是如何实现的呢？我们看下代码，可以发现先通过接口 <code>/api/user_apis</code> 获取所有有访问权限的 API 列表（名字、描述、参数列表等），然后将这些 API 依次进行注册。核心注册工具的代码如下：</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-golang">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Server</span><span class="p">)</span> <span class="nf">registerOpenAPITools</span><span class="p">(</span><span class="nx">doc</span> <span class="o">*</span><span class="nx">openapi3</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">toolCount</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">item</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">Paths</span><span class="p">.</span><span class="nf">Map</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">item</span><span class="p">.</span><span class="nx">Post</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">tool</span> <span class="o">:=</span> <span class="nx">mcp</span><span class="p">.</span><span class="nf">NewTool</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">mcp</span><span class="p">.</span><span class="nf">WithDescription</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">Post</span><span class="p">.</span><span class="nx">Summary</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">schema</span> <span class="o">:=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">Post</span><span class="p">.</span><span class="nx">RequestBody</span><span class="p">.</span><span class="nx">Value</span><span class="p">.</span><span class="nx">Content</span><span class="p">[</span><span class="s">&#34;application/json&#34;</span><span class="p">].</span><span class="nx">Schema</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="nx">requiredParams</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">bool</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">required</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">schema</span><span class="p">.</span><span class="nx">Value</span><span class="p">.</span><span class="nx">Required</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">requiredParams</span><span class="p">[</span><span class="nx">required</span><span class="p">]</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="nx">paramName</span><span class="p">,</span> <span class="nx">ref</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">schema</span><span class="p">.</span><span class="nx">Value</span><span class="p">.</span><span class="nx">Properties</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">description</span> <span class="o">:=</span> <span class="nx">ref</span><span class="p">.</span><span class="nx">Value</span><span class="p">.</span><span class="nx">Description</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="nx">requiredParams</span><span class="p">[</span><span class="nx">paramName</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">mcp</span><span class="p">.</span><span class="nf">WithString</span><span class="p">(</span><span class="nx">paramName</span><span class="p">,</span> <span class="nx">mcp</span><span class="p">.</span><span class="nf">Description</span><span class="p">(</span><span class="nx">description</span><span class="p">),</span> <span class="nx">mcp</span><span class="p">.</span><span class="nf">Required</span><span class="p">())(</span><span class="o">&amp;</span><span class="nx">tool</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">mcp</span><span class="p">.</span><span class="nf">WithString</span><span class="p">(</span><span class="nx">paramName</span><span class="p">,</span> <span class="nx">mcp</span><span class="p">.</span><span class="nf">Description</span><span class="p">(</span><span class="nx">description</span><span class="p">))(</span><span class="o">&amp;</span><span class="nx">tool</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="nx">s</span><span class="p">.</span><span class="nx">mcpServer</span><span class="p">.</span><span class="nf">AddTool</span><span class="p">(</span><span class="nx">tool</span><span class="p">,</span> <span class="nx">s</span><span class="p">.</span><span class="nf">wrapHandler</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">handler</span><span class="p">.</span><span class="nx">Handle</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">toolCount</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">toolCount</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;no tools were registered from the OpenAPI spec&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<h2 id="总结">总结</h2>
+<p>MCP 最大的作用是实现了标准化的API接口 ​，建立了统一的交互标准，而更重要的是这一规范得到市场的普遍认可。</p>]]></description></item></channel></rss>
