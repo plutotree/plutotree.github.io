@@ -6,7 +6,7 @@ categories: [My Life]
 featuredImage: https://pic-1251468582.file.myqcloud.com/pic/2025/04/09/j8rOLc.jpg
 description: 本文记录了我为减肥数据可视化所做的技术探索。基于Echarts开发了动态图表，采用无极平台实现云端表格编辑和API调用，最后结合GitHub自动化部署，搭建出可在线更新的数据看板。
 slug: lose-weight-data-visualization
-aliases: [/2024-06-16/lose_weight_data_visualization copy.html]
+aliases: [/2024-06-16/lose_weight_data_visualization-copy.html]
 ---
 
 <!--more-->
