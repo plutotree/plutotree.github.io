@@ -1,0 +1,1106 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>所有文章 - PlutoTree's Blog</title><link>https://plutotree.me/posts/</link><description>所有文章 | PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Mon, 21 Apr 2025 21:00:00 +0800</lastBuildDate><atom:link href="https://plutotree.me/posts/" rel="self" type="application/rss+xml"/><item><title>HTTP Basic Authentication (HTTP 基本认证)</title><link>https://plutotree.me/2025/04/http-basic-authentication/</link><pubDate>Mon, 21 Apr 2025 21:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2025/04/http-basic-authentication/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/21/kWEQqa.png" referrerpolicy="no-referrer">
+            </div><h2 id="什么是-http-基本认证">什么是 HTTP 基本认证</h2>
+<p>对于部署的一些纯前端系统，本身并没有内置用户校验。但是我们又不希望其他用户能无限制使用，所以希望能有简单的用户校验流程。这就需要用到 HTTP Basic Authentication (HTTP 基本认证) 。</p>
+<p>HTTP 基本认证是一种非常简单的认证机制，广泛用于保护 Web 应用的资源。它通过 HTTP Header 传递用户名和密码，并通过 Base64 编码对其进行简单的编码（注意：不是加密）。实际应用中需要配合 HTTPS 使用，以防止明文凭据在网络中被拦截。</p>
+<h2 id="http-基本认证的交互流程">HTTP 基本认证的交互流程</h2>
+<div class="mermaid" id="id-1"></div>
+<ol>
+<li>客户端请求资源：客户端向服务器发起请求，但未包含认证信息。</li>
+<li>服务器返回 401 响应：服务器返回 401 Unauthorized 状态码，同时通过 WWW-Authenticate 头提示客户端需要提供凭证。</li>
+<li>客户端提示输入凭证：客户端向用户请求输入用户名和密码。</li>
+<li>客户端发送认证信息：客户端将用户名和密码通过 Base64 编码后，添加到 HTTP Header 的 Authorization</li>
+<li>服务器验证凭证：服务器解码并验证用户名和密码的正确性。</li>
+<li>服务器返回响应：
+<ul>
+<li>如果验证成功，返回 200 OK 和资源。</li>
+<li>如果验证失败，返回 401 Unauthorized 并要求重新认证。</li>
+</ul>
+</li>
+</ol>
+<p>下面我们用 curl 命令的交互来看下整个流程能更加清晰，可以使用参数<code>-u</code> 来指定用户名和密码，而实际处理中会对用户名和密码计算 MD5，并填充到 Authorization 的 Header 中。</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl --verbose <span class="s2">&#34;https://some.examples.com&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">&gt; GET / HTTP/1.1
+</span></span><span class="line"><span class="cl">&gt; Accept: */*
+</span></span><span class="line"><span class="cl">&gt;
+</span></span><span class="line"><span class="cl">&lt; HTTP/1.1 <span class="m">401</span> Unauthorized
+</span></span><span class="line"><span class="cl">&lt; WWW-Authenticate: Basic <span class="nv">realm</span><span class="o">=</span><span class="s2">&#34;Need Authorization&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">curl -u user:pwd --verbose <span class="s2">&#34;https://some.examples.com&#34;</span>
+</span></span><span class="line"><span class="cl">&gt; GET / HTTP/1.1
+</span></span><span class="line"><span class="cl">&gt; Authorization: Basic Base64ByUserAndPwd
+</span></span><span class="line"><span class="cl">&gt; Accept: */*
+</span></span><span class="line"><span class="cl">&gt;
+</span></span><span class="line"><span class="cl">&lt; HTTP/1.1 <span class="m">200</span> OK</span></span></code></pre></div></div>
+<p>我们再来看下浏览器中访问效果，对于返回需要校验的网站，浏览器会弹出一个弹框，要求输入用户名和密码：</p>
+<p></p>
+<h2 id="如何在-nginx-中配置-http-基本认证">如何在 Nginx 中配置 HTTP 基本认证</h2>
+<h3 id="创建用户凭据文件">创建用户凭据文件</h3>
+<ol>
+<li>
+<p>安装 <code>htpasswd</code> 工具：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">apt-get install apache2-utils</span></span></code></pre></div></div>
+</li>
+<li>
+<p>创建新用户，执行命令后输入密码</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> /etc/nginx/conf.d/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">htpasswd -c ./auth.htpasswd username</span></span></code></pre></div></div>
+</li>
+<li>
+<p>设置文件权限，设置文件所有者和nginx的执行用户一致</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">chmod <span class="m">600</span> auth.htpasswd
+</span></span><span class="line"><span class="cl">chown xx:xx auth.htpasswd</span></span></code></pre></div></div>
+</li>
+<li>
+<p>可以本地校验下</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">htpasswd -v ./auth.htpasswd username</span></span></code></pre></div></div>
+</li>
+</ol>
+<h3 id="配置nginx">配置nginx</h3>
+<p>配置较为简单，只要增加<code>auth_basic</code>和<code>auth_basic_user_file</code>就好了</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-conf">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code class="language-conf" data-lang="conf">location / {
+    auth_basic &#34;Need Authorization&#34;;  # 认证提示内容，显示取决于客户端实现
+    auth_basic_user_file /etc/nginx/conf.d/auth.htpasswd
+
+    # 其他的配置
+}</code></pre></div>
+<p>配置完成后，重新加载下nginx的配置</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">systemctl reload nginx</span></span></code></pre></div></div>
+<h3 id="测试访问">测试访问</h3>
+<p>可以在浏览器中输入网址，访问验证下是否有弹出一个认证窗口，提示用户输入用户名和密码。验证成功后，服务器将正常返回资源，否则会要求重新输入用户名和密码。如果浏览器关闭重新打开后，会要求重新输入。</p>
+<h2 id="如何无感登录">如何无感登录</h2>
+<p>增加了这一步骤的确是更安全了，但是每次打开页面需要输入一遍用户名和密码，这又带来了很大的不便。我们可以通过浏览器自带的密码保存，在下次要求认证的时候，直接按登录按钮就好了。</p>
+<p>有没有可能更进一步，连登录按钮也不用按，在可信任的电脑上默认帮我登录呢。<a href="https://bitwarden.com/help/basic-auth-autofill/" target="_blank" rel="noopener noreffer ">BitWarden</a> 还真提供了这样的功能，能隐藏式自动填充用户名和密码的功能，这样对使用者就完全无感了。理论上还有种方式可以通过浏览器的插件来直接设置Header。</p>
+<h2 id="总结">总结</h2>
+<p>HTTP 基本认证算是一种最简单有效的认证方式，如果需要更复杂的认证机制，可以考虑其他方式，如 OAuth、JWT 或基于 Session 的认证。</p>]]></description></item><item><title>MCP 实践例子</title><link>https://plutotree.me/2025/04/practical-examples-of-mcp-applications/</link><pubDate>Fri, 18 Apr 2025 12:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2025/04/practical-examples-of-mcp-applications/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/18/29ueFR.jpg" referrerpolicy="no-referrer">
+            </div><p>大型模型虽然功能强大，但并非无所不能。自从OpenAI推出工具调用功能后，大型模型的能力边界得到了极大的提升，但这并不是一种通用的解决方案。MCP的出现让我们看到了一种统一和扩展大型模型能力的可能性，特别是在OpenAI宣布全面支持MCP后，这一技术获得了市场的普遍认可。本文致力于通过分享一系列实际案例，让你更深入地理解MCP能够做什么。</p>
+<h2 id="获取各旅游城市近期天气情况">获取各旅游城市近期天气情况</h2>
+<h3 id="低效的传统方案">低效的传统方案</h3>
+<p>传统方案不仅耗时费力（通常需要 1 小时以上），还存在较高的人为操作错误风险：</p>
+<ol>
+<li>​ 收集城市列表：通过百度搜索手动整理全国旅游城市名录</li>
+<li>​ 采集天气数据 ​：逐个访问天气网站，复制粘贴各城市气象数据</li>
+<li>整理数据结果：将零散数据手工整理为结构化表格或 PPT</li>
+</ol>
+<p>虽然开发人员可通过编写爬虫或调用 API 优化第 2 步，但面对一次性需求时，代码开发调试的时间成本往往又难以覆盖收益。</p>
+<h3 id="ai-工具的初步尝试">AI 工具的初步尝试</h3>
+<p>使用 kimi、豆包、元宝等 AI 大模型时，尝试直接提问【<a href="https://yuanbao.tencent.com/bot/app/share/chat/ntQkP3iMLbBN" target="_blank" rel="noopener noreffer ">整理全国各大旅游城市近期天气情况，以表格形式返回</a>)】看似可行。但是由于缺乏实时的天气数据，结果也就缺乏意义了。</p>
+<h3 id="mcp-标准化解决方案">MCP 标准化解决方案</h3>
+<p>如果大模型能帮助我们调用 API，那问题就方便解决了，可以 API 接口形式五花八门，有什么办法能统一 API 接口标准呢。MCP（模型控制协议）通过统一接口标准，完美解决了 API 多样性和任务复杂性的矛盾。</p>
+<p>下面我们看下集成了天气查询功能的 MCP 后，大模型的回答变化：</p>
+<p>提问 ​：
+整理全国主要旅游城市最近的天气情况，以表格形式返回，一个城市一行数据</p>
+<p>​ 响应结果 ​（数据已精简）：</p>
+<table>
+  <thead>
+      <tr>
+          <th>城市</th>
+          <th>日期</th>
+          <th>白天天气</th>
+          <th>夜间天气</th>
+          <th>白天温度</th>
+          <th>夜间温度</th>
+          <th>白天风向</th>
+          <th>夜间风向</th>
+          <th>白天风力</th>
+          <th>夜间风力</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>北京市</td>
+          <td>2025-04-18</td>
+          <td>中雨</td>
+          <td>小雨</td>
+          <td>19℃</td>
+          <td>8℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>北京市</td>
+          <td>2025-04-19</td>
+          <td>多云</td>
+          <td>晴</td>
+          <td>21℃</td>
+          <td>11℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>上海市</td>
+          <td>2025-04-18</td>
+          <td>阴</td>
+          <td>阴</td>
+          <td>31℃</td>
+          <td>18℃</td>
+          <td>东南</td>
+          <td>东南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>上海市</td>
+          <td>2025-04-19</td>
+          <td>小雨</td>
+          <td>小雨</td>
+          <td>28℃</td>
+          <td>17℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>广州市</td>
+          <td>2025-04-18</td>
+          <td>阵雨</td>
+          <td>阵雨</td>
+          <td>28℃</td>
+          <td>22℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>广州市</td>
+          <td>2025-04-19</td>
+          <td>阵雨</td>
+          <td>多云</td>
+          <td>28℃</td>
+          <td>23℃</td>
+          <td>南</td>
+          <td>南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>深圳市</td>
+          <td>2025-04-18</td>
+          <td>阴</td>
+          <td>阴</td>
+          <td>30℃</td>
+          <td>24℃</td>
+          <td>东南</td>
+          <td>东南</td>
+          <td>1-3 级</td>
+          <td>1-3 级</td>
+      </tr>
+      <tr>
+          <td>深圳市</td>
+          <td>2025-04-19</td>
+          <td>阴</td>
+          <td>阴</td>
+          <td>30℃</td>
+          <td>24℃</td>
+          <td>西南</td>
+          <td>西南</td>
+          <td>4 级</td>
+          <td>4 级</td>
+      </tr>
+  </tbody>
+</table>
+<p>查看执行的过程，我们能看到大模型自动发起了多次工具调用，用于查询天气信息。</p>
+<p></p>
+<p>通过 Cherry-Studio 可直观查看高德地图 MCP 服务的完整能力，天气查询仅是众多标准化接口之一，更主要的是提供路径规划和导航的能力。</p>
+<p></p>
+<h2 id="api-聚合平台的-mcp-转型实践">API 聚合平台的 MCP 转型实践</h2>
+<p>看完前面的的例子，有了 MCP 就能自动调用各类 API，而其能力自然也取决于 API 本身。这时候原来的一些 API 聚合平台是不是就能大显身手了。 下面以<a href="https://www.alapi.cn/" target="_blank" rel="noopener noreffer ">ALApi</a>为例来展示下整体流程。</p>
+<p>常用的 MCP 服务是用 node.js 和 python 服务为主，而事实上语言不会有限制， 我们只要遵循一定标准规范就好，这个 ALApi 的<a href="https://github.com/ALAPI-SDK/mcp-alapi-cn" target="_blank" rel="noopener noreffer ">MCP 服务</a>是用 go 实现的。</p>
+<ol>
+<li>
+<p>账号及权限申请</p>
+<p>注册 <a href="https://www.alapi.cn/" target="_blank" rel="noopener noreffer ">ALApi</a> 账号，申请 <a href="https://www.alapi.cn/dashboard/data/token" target="_blank" rel="noopener noreffer ">token</a>，申请需要的<a href="https://www.alapi.cn/explore" target="_blank" rel="noopener noreffer ">接口</a>。</p>
+<p></p>
+</li>
+<li>
+<p>服务部署</p>
+<p>编译 MCP 服务，编译成功后会生成<code>mcp-alapi-cn.exe</code></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git clone <span class="s2">&#34;https://github.com/ALAPI-SDK/mcp-alapi-cn.git&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> mcp-alapi-cn
+</span></span><span class="line"><span class="cl">git build</span></span></code></pre></div></div>
+</li>
+<li>
+<p>系统集成</p>
+<p>在 Cherry-Studio 中配置 MCP 服务，名称任选，命令填写前面编译来的<code>mlp-alapi-cn.exe</code>全路径，环境变量配置申请的 token 即可。</p>
+<p></p>
+<p>如果在 Cline、Claude 等其他客户端中配置的话，可以粘贴下述 json（需要和其他的 mcp 配置合并下）</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;mcpServers&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;ALAPI&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;ALAPI&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;stdio&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;isActive&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;D:\\xxx\\mcp-alapi-cn.exe&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;args&#34;</span><span class="p">:</span> <span class="p">[],</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;env&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;ALAPI_TOKEN&#34;</span><span class="p">:</span> <span class="s2">&#34;YOUR_API_TOKEN&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>启用 MCP</p>
+<p>配置完成后，Cherry-Studio 中访问的大模型的时候勾选相应的 MCP 服务就可以了</p>
+<p></p>
+</li>
+</ol>
+<h3 id="应用场景展示">应用场景展示</h3>
+<ol>
+<li>
+<p>查询油价：执行了一次工具 (api/oil) 查询</p>
+<p></p>
+</li>
+<li>
+<p>查询汇率：执行了四次工具 (api/exchange) 查询</p>
+<p></p>
+</li>
+<li>
+<p>查询黄金等贵金属价格：</p>
+<p></p>
+</li>
+</ol>
+<p>通过这种方式，ALApi 上的所有 API 接口，都可以转换成 MCP 服务为大模型所用了。</p>
+<p></p>
+<h3 id="背后逻辑">背后逻辑</h3>
+<p>整个流程是如何实现的呢？我们看下代码，可以发现先通过接口 <code>/api/user_apis</code> 获取所有有访问权限的 API 列表（名字、描述、参数列表等），然后将这些 API 依次进行注册。核心注册工具的代码如下：</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-golang">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Server</span><span class="p">)</span> <span class="nf">registerOpenAPITools</span><span class="p">(</span><span class="nx">doc</span> <span class="o">*</span><span class="nx">openapi3</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">toolCount</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">item</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">Paths</span><span class="p">.</span><span class="nf">Map</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">item</span><span class="p">.</span><span class="nx">Post</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">tool</span> <span class="o">:=</span> <span class="nx">mcp</span><span class="p">.</span><span class="nf">NewTool</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">mcp</span><span class="p">.</span><span class="nf">WithDescription</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">Post</span><span class="p">.</span><span class="nx">Summary</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">schema</span> <span class="o">:=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">Post</span><span class="p">.</span><span class="nx">RequestBody</span><span class="p">.</span><span class="nx">Value</span><span class="p">.</span><span class="nx">Content</span><span class="p">[</span><span class="s">&#34;application/json&#34;</span><span class="p">].</span><span class="nx">Schema</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="nx">requiredParams</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">bool</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">required</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">schema</span><span class="p">.</span><span class="nx">Value</span><span class="p">.</span><span class="nx">Required</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">requiredParams</span><span class="p">[</span><span class="nx">required</span><span class="p">]</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="nx">paramName</span><span class="p">,</span> <span class="nx">ref</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">schema</span><span class="p">.</span><span class="nx">Value</span><span class="p">.</span><span class="nx">Properties</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">description</span> <span class="o">:=</span> <span class="nx">ref</span><span class="p">.</span><span class="nx">Value</span><span class="p">.</span><span class="nx">Description</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="nx">requiredParams</span><span class="p">[</span><span class="nx">paramName</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">mcp</span><span class="p">.</span><span class="nf">WithString</span><span class="p">(</span><span class="nx">paramName</span><span class="p">,</span> <span class="nx">mcp</span><span class="p">.</span><span class="nf">Description</span><span class="p">(</span><span class="nx">description</span><span class="p">),</span> <span class="nx">mcp</span><span class="p">.</span><span class="nf">Required</span><span class="p">())(</span><span class="o">&amp;</span><span class="nx">tool</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">mcp</span><span class="p">.</span><span class="nf">WithString</span><span class="p">(</span><span class="nx">paramName</span><span class="p">,</span> <span class="nx">mcp</span><span class="p">.</span><span class="nf">Description</span><span class="p">(</span><span class="nx">description</span><span class="p">))(</span><span class="o">&amp;</span><span class="nx">tool</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="nx">s</span><span class="p">.</span><span class="nx">mcpServer</span><span class="p">.</span><span class="nf">AddTool</span><span class="p">(</span><span class="nx">tool</span><span class="p">,</span> <span class="nx">s</span><span class="p">.</span><span class="nf">wrapHandler</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">handler</span><span class="p">.</span><span class="nx">Handle</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">toolCount</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">toolCount</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;no tools were registered from the OpenAPI spec&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<h2 id="总结">总结</h2>
+<p>MCP 最大的作用是实现了标准化的API接口 ​，建立了统一的交互标准，而更重要的是这一规范得到市场的普遍认可。</p>]]></description></item><item><title>博客从 Jekyll 迁移到 Hugo：Valine评论系统相关问题</title><link>https://plutotree.me/2025/04/migrate-from-jekyll-to-hugo/</link><pubDate>Thu, 10 Apr 2025 01:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2025/04/migrate-from-jekyll-to-hugo/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/10/VZLUG8.jpg" referrerpolicy="no-referrer">
+            </div><p>最近将博客从 Jekyll 迁移到 Hugo 了，虽然 Valine 评论系统在 Hugo 中可以直接通过配置文件 <code>hugo.toml</code> 进行设置，但在实际使用中发现了一些坑，以下是整理的解决方案。</p>
+<h2 id="1-配置-requiredfields-无效问题">1. 配置 <code>requiredFields</code> 无效问题</h2>
+<p>在 Valine 的官方文档中提到，可以通过 <code>requiredFields</code> 配置字段来设置评论时的必填项，比如昵称、邮箱等。然而，在 Hugo 中直接配置后发现该功能无效。</p>
+<h3 id="问题原因">问题原因</h3>
+<p>Hugo 主题下文件 <code>layouts/partials/comment.html</code> 文件中只针对部分字段进行了处理，而没有对 <code>requiredFields</code> 进行正确处理。</p>
+<h3 id="解决方法">解决方法</h3>
+<p>将 <code>comment.html</code> 文件复制到项目中相同目录下，然后增加以下代码：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-html">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">{{- with $valine.requiredFields -}} {{- $commentConfig = dict &#34;requiredFields&#34; .
+</span></span><span class="line"><span class="cl">| dict &#34;valine&#34; | merge $commentConfig -}} {{- end -}}</span></span></code></pre></div></div>
+<h2 id="2-gravatar-头像显示问题">2. Gravatar 头像显示问题</h2>
+<p>在配置头像时发现，随机头像无法正常显示，例如以下头像地址。但是将域名替换为 <a href="https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?d=wavatar&amp;v=1.5.2" target="_blank" rel="noopener noreffer ">www.gravatar.com</a> 则可以正常显示。<br>
+<a href="https://gravatar.loli.net/avatar/d41d8cd98f00b204e9800998ecf8427e?d=wavatar&amp;v=1.5.2" target="_blank" rel="noopener noreffer ">https://gravatar.loli.net/avatar/d41d8cd98f00b204e9800998ecf8427e?d=wavatar&v=1.5.2</a></p>
+<h3 id="问题原因-1">问题原因</h3>
+<p>Gravatar 的中转服务，gravatar.loli.net 存在处理上的问题，导致随机头像无法显示。</p>
+<h3 id="解决方法-1">解决方法</h3>
+<p>由于 Gravatar 的官网在国内访问存在较多问题，更换了另一个 Gravatar 的中转服务： cn.gravatar.com。在配置文件中增加 avatar_cdn 之后，发现这个配置不生效。需要增加类似的处理逻辑，修改 <code>comment.html</code> 文件：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-html">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">{{- with $valine.avatar_cdn -}} {{- $commentConfig = dict &#34;avatar_cdn&#34; . | dict
+</span></span><span class="line"><span class="cl">&#34;valine&#34; | merge $commentConfig -}} {{- end -}}</span></span></code></pre></div></div>
+<p>修改后，Gravatar 头像和随机头像的显示恢复正常，但邮箱为空时随机头像无法随机。</p>
+<h2 id="邮箱为空时头像并不会随机">邮箱为空时头像并不会随机</h2>
+<h3 id="问题原因-2">问题原因</h3>
+<p>获取随机头像的 MD5 是根据邮箱地址进行生成，而邮箱地址为空时其生成的 MD5 是固定的，这也导致获取的也都是固定头像。</p>
+<h3 id="解决方法-2">解决方法</h3>
+<p>将 <code>valine.min.js</code> 中的 <code>t.get(&quot;mail&quot;)</code> 修改为 <code>t.get(&quot;mail&quot;) || t.get(&quot;nick&quot;)</code>，即邮箱为空时使用昵称计算随机头像。修改后需要将文件发布到 CDN 才能使用，具体步骤不在此赘述。</p>
+<h2 id="qq-头像和昵称获取问题">QQ 头像和昵称获取问题</h2>
+<p>在 Valine 中，昵称字段输入 QQ 时，预期是可以获取 QQ 头像和昵称的，但是实际测试的时候却无法正确获取。在 Chrome 的调试窗口，可以看到访问第三方的 API 地址的时候会报错：</p>
+<p><a href="https://api.qjqq.cn/api/qqinfo?qq=12345" target="_blank" rel="noopener noreffer ">https://api.qjqq.cn/api/qqinfo?qq=12345</a></p>
+<h3 id="问题原因-3">问题原因</h3>
+<p>就在写该文章的几天前直接在浏览器中访问这个地址还是正常的，不过会因为跨域问题而导致在 Valine 中无法正常使用。今天访问这个地址，发现这个服务已经无法访问了，页面会跳转到一个 API 服务平台<a href="https://api.nsmao.net/" target="_blank" rel="noopener noreffer ">奶思猫</a>。</p>
+<h3 id="解决方法-3">解决方法</h3>
+<p>在网站上搜索后，发现有免费的<a href="https://api.nsmao.net/api/qq/query" target="_blank" rel="noopener noreffer ">QQ 信息服务接口</a>。这个 API 的回包结构和 Valine 中使用的 api.qjqq.cn 是不一致的。由于原来的接口已经下线，正确的回包结构目前也不清楚。好在现在有强大的 AI，直接把压缩的 JS 代码丢给 AI，它就能分析出原来处理 QQ 头像和昵称的逻辑。</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">var</span> <span class="nx">n</span> <span class="o">=</span> <span class="nx">i</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">QQCacheKey</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">n</span> <span class="o">&amp;&amp;</span> <span class="nx">n</span><span class="p">.</span><span class="nx">qq</span> <span class="o">==</span> <span class="nx">e</span>
+</span></span><span class="line"><span class="cl">    <span class="o">?</span> <span class="nx">t</span> <span class="o">&amp;&amp;</span> <span class="nx">t</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">:</span> <span class="nx">i</span><span class="p">.</span><span class="k">default</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">url</span><span class="o">:</span> <span class="s2">&#34;https://api.nsmao.net/api/qq/query?key=xx&amp;qq=&#34;</span> <span class="o">+</span> <span class="nx">e</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">method</span><span class="o">:</span> <span class="s2">&#34;get&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">})</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">})</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">(</span><span class="mi">200</span> <span class="o">==</span> <span class="nx">n</span><span class="p">.</span><span class="nx">code</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">nick</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="nx">a</span> <span class="o">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">avatar</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="nx">u</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">nick</span><span class="o">:</span> <span class="nx">r</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">qq</span><span class="o">:</span> <span class="nx">e</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">pic</span><span class="o">:</span> <span class="nx">a</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="p">};</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">i</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">QQCacheKey</span><span class="p">,</span> <span class="nx">u</span><span class="p">),</span> <span class="nx">t</span> <span class="o">&amp;&amp;</span> <span class="nx">t</span><span class="p">(</span><span class="nx">u</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span></span></span></code></pre></div></div>
+<p>我们有两种方案分别是在客户端直接修改和在服务端进行中转：</p>
+<p>方案 1：修改 Valine 中请求的 url 以及回包解析逻辑。方案修改起来很容易，最大的问题是会暴露了密钥。</p>
+<ul>
+<li>修改请求 URL：<code>api.njqq.cn/api/qqinfo?qq=xxx</code> 修改成 <code>https://api.nsmao.net/api/qq/query?key=xx&amp;qq=</code></li>
+<li>修改昵称和头像的获取：<code>{var r=n.name,a=n.imgurl</code> 修改成 <code>{var r=n.data.nick,a=n.data.avatar</code>。</li>
+</ul>
+<p>方案 2：后台提供中转服务</p>
+<p>通过自己的服务器封装中转接口，避免密钥暴露，接口可以丢给 AI 实现，但需要额外的服务维护成本。</p>
+<p>下面是用 golang 实现的获取QQ资料的 HTTP 服务，功能就是将奶思猫提供的 QQ 资料的API接口转换成适配Valine的格式。需要设置下密钥和访问端口。</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-golang">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="s">&#34;encoding/json&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s">&#34;io/ioutil&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s">&#34;log&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// APIResponse represents the response from the QQ API</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">APIResponse</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Code</span>     <span class="kt">int</span>    <span class="s">`json:&#34;code&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Msg</span>      <span class="kt">string</span> <span class="s">`json:&#34;msg&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Data</span>     <span class="nx">QQData</span> <span class="s">`json:&#34;data&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">ExecTime</span> <span class="kt">float64</span> <span class="s">`json:&#34;exec_time&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">IP</span>       <span class="kt">string</span>  <span class="s">`json:&#34;ip&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// QQData represents the data field in the API response</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">QQData</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Nick</span>      <span class="kt">string</span> <span class="s">`json:&#34;nick&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Qid</span>       <span class="kt">string</span> <span class="s">`json:&#34;qid&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">RegTime</span>   <span class="kt">string</span> <span class="s">`json:&#34;regTime&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Level</span>     <span class="kt">int</span>    <span class="s">`json:&#34;level&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Avatar</span>    <span class="kt">string</span> <span class="s">`json:&#34;avatar&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Email</span>     <span class="kt">string</span> <span class="s">`json:&#34;email&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">IsVip</span>     <span class="kt">bool</span>   <span class="s">`json:&#34;is_vip&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">IsYearsVip</span> <span class="kt">bool</span>  <span class="s">`json:&#34;is_years_vip&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">VipLevel</span>  <span class="kt">int</span>    <span class="s">`json:&#34;vip_level&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// ClientResponse represents the response we&#39;ll send to the client</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ClientResponse</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Code</span>   <span class="kt">int</span>    <span class="s">`json:&#34;code&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Name</span>   <span class="kt">string</span> <span class="s">`json:&#34;name&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">ImgURL</span> <span class="kt">string</span> <span class="s">`json:&#34;imgurl&#34;`</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Email</span>  <span class="kt">string</span> <span class="s">`json:&#34;email&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Get the API key from environment variable or use default</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">apiKey</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;QQ_API_KEY&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">apiKey</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">apiKey</span> <span class="p">=</span> <span class="s">&#34;MY_KEY&#34;</span> <span class="c1">// Default key for development</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/qq_api/qqinfo&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// Get QQ number from query parameter</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">qqNumber</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nf">Query</span><span class="p">().</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;qq&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="nx">qqNumber</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">http</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&#34;Missing qq parameter&#34;</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nx">StatusBadRequest</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="c1">// Construct the API URL</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">apiURL</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;https://api.nsmao.net/api/qq/query?key=%s&amp;qq=%s&#34;</span><span class="p">,</span> <span class="nx">apiKey</span><span class="p">,</span> <span class="nx">qqNumber</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="c1">// Make the request to the QQ API</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="nx">apiURL</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">log</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Error making request to QQ API: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">http</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&#34;Failed to fetch QQ information&#34;</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nx">StatusInternalServerError</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="k">defer</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="c1">// Read the response body</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">body</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ioutil</span><span class="p">.</span><span class="nf">ReadAll</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">log</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Error reading response body: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">http</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&#34;Failed to read QQ information&#34;</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nx">StatusInternalServerError</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="c1">// Parse the API response</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">var</span> <span class="nx">apiResp</span> <span class="nx">APIResponse</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">body</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">apiResp</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">log</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Error parsing API response: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">http</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&#34;Failed to parse QQ information&#34;</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nx">StatusInternalServerError</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="c1">// Prepare the client response</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">clientResp</span> <span class="o">:=</span> <span class="nx">ClientResponse</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">Code</span><span class="p">:</span>   <span class="mi">200</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">Name</span><span class="p">:</span>   <span class="s">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">ImgURL</span><span class="p">:</span> <span class="s">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">Email</span><span class="p">:</span>  <span class="s">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="c1">// Only populate the fields if the API request was successful</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="nx">apiResp</span><span class="p">.</span><span class="nx">Code</span> <span class="o">==</span> <span class="mi">200</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">clientResp</span><span class="p">.</span><span class="nx">Name</span> <span class="p">=</span> <span class="nx">apiResp</span><span class="p">.</span><span class="nx">Data</span><span class="p">.</span><span class="nx">Nick</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">clientResp</span><span class="p">.</span><span class="nx">ImgURL</span> <span class="p">=</span> <span class="nx">apiResp</span><span class="p">.</span><span class="nx">Data</span><span class="p">.</span><span class="nx">Avatar</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">clientResp</span><span class="p">.</span><span class="nx">Email</span> <span class="p">=</span> <span class="nx">apiResp</span><span class="p">.</span><span class="nx">Data</span><span class="p">.</span><span class="nx">Email</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="c1">// If the API request failed, pass along the error code</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">clientResp</span><span class="p">.</span><span class="nx">Code</span> <span class="p">=</span> <span class="nx">apiResp</span><span class="p">.</span><span class="nx">Code</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">log</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;API returned error: %s&#34;</span><span class="p">,</span> <span class="nx">apiResp</span><span class="p">.</span><span class="nx">Msg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="c1">// Set content type header</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">w</span><span class="p">.</span><span class="nf">Header</span><span class="p">().</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;Content-Type&#34;</span><span class="p">,</span> <span class="s">&#34;application/json&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="c1">// Encode and send the response</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">NewEncoder</span><span class="p">(</span><span class="nx">w</span><span class="p">).</span><span class="nf">Encode</span><span class="p">(</span><span class="nx">clientResp</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">log</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Error encoding client response: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">http</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&#34;Failed to encode response&#34;</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nx">StatusInternalServerError</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// Start the HTTP server</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">port</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;PORT&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">port</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">port</span> <span class="p">=</span> <span class="s">&#34;52101&#34;</span> <span class="c1">// Default port</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nx">log</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Starting server on port %s&#34;</span><span class="p">,</span> <span class="nx">port</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:&#34;</span><span class="o">+</span><span class="nx">port</span><span class="p">,</span> <span class="kc">nil</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">log</span><span class="p">.</span><span class="nf">Fatalf</span><span class="p">(</span><span class="s">&#34;Failed to start server: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>另外还需要在 nginx 配置中进行 proxy_pass 的转发配置，这里不再赘述i。</p>
+<h2 id="评论数据迁移">评论数据迁移</h2>
+<p>如果 URL 没有改变，评论数据是无需处理的。如果 URL 发生了变化，并且你想保留之前的评论数据，那就需要手动进行迁移。 Valine 的所有数据是存储在 LeanCloud 中，可以很方便地通过脚本进行修改。</p>
+<p>不过因为我的评论量少得可怜，我就直接手动修改了。</p>
+<h2 id="总结">总结</h2>
+<p>Valine 评论系统现在已经基于处理停止维护的状态了，而且新的版本源友也没有完全开源的服务，存在较大的局限性。未来如果有时间的话，升级 Waline 似乎是一个比较好的选择。Waline 不仅功能更完善，还提供了更好的国内访问体验和开源支持。另外最大的差异其实是 Waline 是需要后台服务，这一点可以说是优点，也可以说是限制。</p>
+]]></description></item><item><title>继续折腾Rime：iOS版仓输入法及多端数据同步流程</title><link>https://plutotree.me/2024/07/introduction-to-hamster-and-multi-device-data-synchronization/</link><pubDate>Tue, 02 Jul 2024 00:31:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/07/introduction-to-hamster-and-multi-device-data-synchronization/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/08/5fef0a.jpg" referrerpolicy="no-referrer">
+            </div><h2 id="初见仓输入法">初见“仓输入法”</h2>
+<p>在 windows 和 mac 使用了 Rime 输入法已经有一段时间了，但是手机上的<a href="https://apps.apple.com/cn/app/id1142623977" target="_blank" rel="noopener noreffer ">iRime</a>并不完善，更新也不频繁。iOS 系统关闭了网络权限，在输入法隐私上这点是有保障的。直到最近接触到<a href="https://apps.apple.com/cn/app/id6446617683" target="_blank" rel="noopener noreffer ">仓输入法</a>，发现功能已经做得很完善了。它不仅内置了雾凇拼音等优秀输入方案，还提供了数据同步和词表更新的完善解决方案。这促使我下定决心，完成全平台输入法 RIME 统一化的最后一环。</p>
+<h2 id="上手仓输入法">上手“仓输入法”</h2>
+<p>对于不想深入研究配置细节的用户，仓输入法的新手友好度相当高。我选择保留 26 键布局，以无缝迁移电脑端配置，避免重新适应 9 键布局。习惯了从 Nokia 时代的 T9 输入法，我能够实现高速单手盲打，但现在是时候转变了。仓输入法的上下左右划动设定，极大地扩展了单键输入内容的可能性，使得快捷输入变得异常方便。。我们可以很方便在一个 26 键字母键盘上加上数字，及大量的标点符号。快捷输入（手机号、邮箱地址、车牌号等等）真的很方便，相比起电脑上之前的 v 模式，这个下划真的就是那么一下就搞定了。此外，我们还可以增加很多系统命令，复制、粘贴、剪切等，以及输入法的方案切换等等。</p>
+<p></p>
+<p>键盘配置方面，官方文档尚需完善。注意区分字符（symbols）和符号（characters），只有符号才支持 Rime 处理。此外，确保勾选了“经过 Rime 处理”选项。</p>
+<p></p>
+<p>除了键盘配置之外，其他的配置和 PC 端是完全一致的，基本上可以直接复用 PC 端配置。将 PC 端配置打包发到手机后，导入到仓输入法基本就能生效了。</p>
+<h2 id="想念五笔输入">想念“五笔输入”</h2>
+<p>看群里还蛮多人钟情于五笔 86 的人，想起自己也算是最早一代使用五笔的人，直到后面拼音输入法联想功能的完善，尤其在引入在线提示词之后，常用语的打字速度上五笔已经处于劣势了，我才逐步切换到了搜狗拼音输入法。</p>
+<p>这么想起来有 8 年没有使用过五笔输入了，这似乎是有点遗憾。 我开始折腾起五笔输入法了，先拿五笔做了反差来用吧。首先想要找一份简体的五笔单字码表，有人推荐了<a href="https://github.com/aardio/wubi-lex" target="_blank" rel="noopener noreffer ">WubiLex</a>，还是相当好用的，自带大量的五笔词库。开始选择了微软五笔的单字，后面发现很多字都不支持，比如羴之类的。既然要作为反查词库，那么词库必须完整啊。后面用了 WubiLex 自带的五笔单字库，字库看起来还是比较完整的。现在五笔可以作为不认识字的反查，也可以想念的时候切换打打字。原以为五笔打字是刻在骨子里面的，不过竟然有点忘记最后一笔的规则了，看来时间还真是会让人忘却。</p>
+<h2 id="再聊聊双拼输入">再聊聊“双拼输入”</h2>
+<p>在研究五笔输入法的时候，同时也看看其他的形码输入法，目前比较多人推崇的是小鹤音形，不过现在对新的形码输入并没有啥兴趣了。不过在过程中看到有人在说，“双拼输入法是投入性价比最高的输入法了，花上几个小时就能熟悉，花上几天就能赶上原来的拼音输入速度了，而且是一辈子受益的”。理论上，双拼能显著降低击键次数和输入错误率。我是否应该花时间学习双拼输入呢？。推荐下这篇文章<a href="https://sspai.com/post/42667" target="_blank" rel="noopener noreffer ">让双拼不再是只属于少数人的输入方式</a>。</p>
+<p>双拼方案众多，主要区别在于是否使用<code>;</code>键。搜狗和微软双拼用了<code>;</code>做<code>ing</code>的输入，而自然码和小鹤并没有去用<code>;</code>。我更喜欢后者，小鹤算是在自然码上做了一些改进，尽管这个改进有很多作者自己的因素在里面。花了十几分钟去做打字练习，发现完全没有记住，不过我下载了一张键位图放在桌面了，以后还是会试一试的。顺便推荐一个这个<a href="https://api.ihint.me/shuang/" target="_blank" rel="noopener noreffer ">双拼在线练习</a>的网站，提供了各种不同的双拼方案的在线练习，另外还有提供小程序。</p>
+<p><figure><a href="https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/65c521.png" title="image-20240702224244991" >
+        
+    </a><figcaption class="image-caption">双拼在线练习</figcaption>
+    </figure></p>
+<p>另我还发现了<a href="https://macroxue.github.io/shuangpin/eval.html" target="_blank" rel="noopener noreffer ">双拼方案评测</a>工具，它根据击键手指、位置和过程预估打字时间，评估分数，并提供优化方案。理论上，我们可以根据数据设计出最高效的双拼输入法。 <figure><a href="https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/5f4c51.png" title="image-20240702225206097" >
+        
+    </a><figcaption class="image-caption">双拼方案评测工具</figcaption>
+    </figure></p>
+<p>在对不同双拼方案进行比较后，发现主流方案之间的差异不大，从 114.9 到 123.6，差异在 10%不到，简单看数据，相比全拼输入法大概能有 20%-30%的速度提升吧。但是“飞猫”和“乱序”从分数上看却是遥遥领先，这是为啥呢？</p>
+<table>
+  <thead>
+      <tr>
+          <th>双拼方案</th>
+          <th>分数</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>拼音加加</td>
+          <td>123.6</td>
+      </tr>
+      <tr>
+          <td>国标双拼</td>
+          <td>119.9</td>
+      </tr>
+      <tr>
+          <td>小鹤双拼</td>
+          <td>118.8</td>
+      </tr>
+      <tr>
+          <td>微软</td>
+          <td>117.9</td>
+      </tr>
+      <tr>
+          <td>自然码</td>
+          <td>116.6</td>
+      </tr>
+      <tr>
+          <td>紫光</td>
+          <td>126.5</td>
+      </tr>
+      <tr>
+          <td>智能 ABC</td>
+          <td>114.9</td>
+      </tr>
+      <tr>
+          <td>大牛</td>
+          <td>131</td>
+      </tr>
+      <tr>
+          <td>飞猫</td>
+          <td>174.5</td>
+      </tr>
+      <tr>
+          <td>全拼</td>
+          <td>93.3</td>
+      </tr>
+      <tr>
+          <td>乱序优化</td>
+          <td>182.2</td>
+      </tr>
+  </tbody>
+</table>
+<p>我们先来看下“飞猫”和“乱序优化”的键位图。有没有发现和其他双拼输入法很明显的差异，他们的声母是乱序的，你不仅需要记住韵母，还得重新去记声母。通过这一点，能比其他双拼输入法的输入速度再继续提升 30%。而“飞猫”还有一个特点在于部分拼音是支持多个键的，就是所谓的“飞键”，比如<code>sh</code>既可以通过<code>N</code>也可以通过<code>A</code>进行输入，你哪个手指方便就用哪个手指去打印，有点像是按<code>Shift</code>键的感觉，你左手打字母那就右手按右边的<code>Shift</code>，反之亦然。不过我估计挺多人没有遵守这个基础打字规范，我个人大部分情况还是遵循了这一点的。</p>
+<p><figure><a href="https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/72561e.png" title="image-20240702230905969" >
+        
+    </a><figcaption class="image-caption">飞猫键位图</figcaption>
+    </figure></p>
+<p><figure><a href="https://pic-1251468582.file.myqcloud.com/pic/2024/07/02/cd486b.png" title="image-20240702230921266" >
+        
+    </a><figcaption class="image-caption">乱序优化键位图</figcaption>
+    </figure></p>
+<p>网上关于“飞猫”的资料相当少，<a href="https://tieba.baidu.com/p/4676554242?pn=1" target="_blank" rel="noopener noreffer ">这一篇</a>算是作者在 2016 年发的原文，的确是通过程序计算出来的按键，可是后面就没啥新内容了。GitHub 上也没有其他资料，只有<a href="https://github.com/zebats/flying-cat-rime?tab=readme-ov-file" target="_blank" rel="noopener noreffer ">这一篇</a>写到在 Rime 中的飞猫配置。下面这些是作者文章中的截图。</p>
+<p></p>
+<p></p>
+<p></p>
+<h2 id="多端数据同步方案">多端数据同步方案</h2>
+<p>我们需要同步的数据，可以分为几类：</p>
+<ol>
+<li>配置类 yaml 文件；</li>
+<li>词库类 yaml 文件；</li>
+<li>用户输入词库，以 userdb 格式保存；</li>
+</ol>
+<p>我们先看前两类数据的同步方案，这里的数据源头是维护在 Git 仓库的。</p>
+<div class="mermaid" id="id-1"></div><p>在看用户词库的同步方案，这里的数据源头的话就是各个输入设备的本地数据，执行同步操作后会将自己设备的数据写入微云同步盘的指定目录，同时读取其他设备的用户词库进行合并处理。</p>
+<div class="mermaid" id="id-2"></div><p>这里相关的脚本操作在 Mac 和 Windows 上是在 uTools 的快捷命令插件中进行维护，开启了定时执行，手机端是通过 iPhone 的快捷指令进行定时执行。而源头的词库是通过 Github Workflow 进行定时更新的，这样整体流程都不需要人工干预了。</p>]]></description></item><item><title>从 Cronicle 到 n8n 实践自动化工作流</title><link>https://plutotree.me/2024/06/from-cronicle-to-n8n-as-workflow-solution/</link><pubDate>Sun, 16 Jun 2024 01:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/06/from-cronicle-to-n8n-as-workflow-solution/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/09/Zqor7I.jpg" referrerpolicy="no-referrer">
+            </div><p>最近又开始折腾起我的服务器了，重点关注数据更新流程中的一些不满意之处：</p>
+<ol>
+<li>Git仓库同步更新：广州和香港的服务器通过crontab任务每分钟执行git pull操作；</li>
+<li>博客同步更新：服务器上的crontab任务执行git fetch，对比差异后触发构建流程；</li>
+<li>Cronicle部署：广州服务器未部署cronicle，导致定时脚本依赖crontab，无法在页面查看执行状态</li>
+</ol>
+<h3 id="部署cronicle">部署cronicle</h3>
+<p>为了简化广州服务器上的定时任务管理，我部署了 <a href="https://cronicle.net/" target="_blank" rel="noopener noreffer ">Cronicle</a>。尽管步骤较多，但得益于之前的经验，十几分钟内便完成了：</p>
+<ol>
+<li>申请并配置域名，设置 CNAME 转发；</li>
+<li>配置 Nginx，申请 HTTPS 证书；</li>
+<li>安装Cronicle（未使用Docker，直接通过curl命令）；</li>
+<li>修改配置文件，参照香港服务器；</li>
+<li>启动Cronicle；</li>
+<li>在页面配置任务，如进程监控脚本等；</li>
+</ol>
+<p>部署过程中发现，Cronicle支持API远程访问，这正是我一直期望的功能。考虑到直接在机器上部署agent来转发命令存在安全隐患，且定制化配置页面需要额外维护，cronicle的API很好的满足了我。</p>
+<h3 id="部署n8n">部署n8n</h3>
+<p>有了Cronicle的API，我们具备了通过GitHub push webhook触发同步更新的基础。接下来，需要找到一个合适的服务接收webhook请求，并优雅地调用我们的API接口。这时，我想起了持续集成（CI）的概念。曾尝试使用集简云等服务，但它们通常按执行次数收费且价格不菲。经过一番搜索，我发现<a href="https://n8n.io/" target="_blank" rel="noopener noreffer ">n8n</a>受到了许多人的推荐。其插件生态完善，能方便地集成主流服务。</p>
+<p>部署n8n相对简单：</p>
+<ol>
+<li>申请域名，配置CNAME转发；</li>
+<li>配置Nginx，申请HTTPS证书；</li>
+<li>使用Docker部署n8n；</li>
+</ol>
+<h3 id="借助n8n实现git仓库的同步更新">借助n8n实现git仓库的同步更新</h3>
+<p>配置流水线花费了一些时间，没找到直接参考的例子，只能一步步琢探索。</p>
+<p>第一步：引入<code>GitHub Trigger</code>节点，配置了token之后，只看到一个<code>Test step</code>的按钮。点击之后，n8n能自动配置GitHub的Webhook的配置项。n8n区分了测试和正式的webhook地址，注意的是对于正式地址仍然需要手动在GitHub页面配置的。</p>
+<p>第二步：引入<code>HTTP request</code>节点，调用cronicle的API。</p>
+<p>简单测试了下发现流程就可以跑通了，但是这里的流水线没有对API执行的结果做回包解析。所以第三不便是需要引入<code>Code</code>节点，判断下下错误码，对于非0的情况直接抛异常了。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">code</span><span class="o">=</span><span class="nx">$input</span><span class="p">.</span><span class="nx">item</span><span class="p">.</span><span class="nx">json</span><span class="p">.</span><span class="nx">code</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nx">code</span> <span class="o">!==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="sb">`HTTP request failed with code {data[0].code}`</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">return</span> <span class="nx">$input</span><span class="p">.</span><span class="nx">item</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>整体流水线的配置，只包含三类节点</p>
+<p></p>
+<h3 id="实现博客的同步更新">实现博客的同步更新</h3>
+<p>有了git仓库同步的经验，要解决博客的同步更新其实就比较简单了。不过这里顺便提下n8n的消息通知并不优雅，没有地方统一配置成功和失败的消息发送。目前来看需要针对每一条流水线进行配置。</p>
+<p></p>
+<p>后续会将更多任务挪到n8n上面来，这只是一个起步。</p>]]></description></item><item><title>减肥数据可视化</title><link>https://plutotree.me/2024/06/lose-weight-data-visualization/</link><pubDate>Sun, 16 Jun 2024 00:31:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/06/lose-weight-data-visualization/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/09/j8rOLc.jpg" referrerpolicy="no-referrer">
+            </div><p>最近，我踏上了减肥的征程，并在过去一个月里取得了小小成果。不过这里重要不是减肥，而是我需要一种方式来直观展示我的减肥进展，其实最主要的也就是体重数据的折线图。但市面上的多数健康追踪应用似乎都未能满足我的需要，它们提供的图表功能缺乏对时间选择的灵活性——大多数应用仅支持以自然日、周或月为单位的折线图展示，其实我需要的也就是我从减肥开始到现在一个区间段的数据变化而已。</p>
+<p>我决定自己动手制作图表。在众多图表库中，Echarts 以其美观和功能强大脱颖而出，经过一番尝试，我发现它几乎可以满足我所有的需求。</p>
+<p>我曾幻想能够直接在网页上读取我的 iPhone 健康数据，但苹果的 HealthKit 似乎并未对网页端开放，这让我不得不另辟蹊径。我选择了从手机导出所有健康数据，然后在电脑上进行处理，再将其导出为便于网页使用的格式。</p>
+<p>最初，我将数据以 HTML 的形式维护在 git 仓库中，每当有更新时，GitHub 的 workflow 会自动触发并部署更新。这种方法基本上能满足我的需求了。</p>
+<p>只是想到数据放在 HTML 中不是一个太好的解决方案，我就尝试将数据从 HTML 中独立出来，转而使用 JSON 格式存储。这样一来，每当需要更新数据时，我只需修改 JSON 文件，而无需触碰 HTML 代码，这并未将我的工作简化，但是听起来更合理不是？</p>
+<p>我很快意识到，即使是 JSON，也仍然需要通过 git 提交，这并不是我所追求的优雅解决方案。我希望能够在网页上直接编辑数据，于是开始探索不同的方案。最终，我发现了一个完美的解决方案——<a href="https://wujicode.cn" target="_blank" rel="noopener noreffer ">无极</a>。它不仅提供了一个可视化的表格数据编辑界面，还有数据拉取的 API 接口，而且是完全免费的。尽管我对其可能存在的使用限制尚不明确，但它已经很好地满足了我的需求。</p>
+<p>在部署过程中，我遇到了一个棘手的问题：无极提供的 API 接口存在跨域访问的问题。为了解决这个问题，我不得不设置了一个 nginx 服务器作为中转，虽然这增加了一些复杂性，但最终确保了数据的顺利传输和展示。</p>
+<p>这纯粹是一趟折腾之旅，不过好在不管是 GitHub 的流水线更新流程，还是 Nginx 服务器也都是现成的，所以工作量倒是不大。最后还是展现下我的趋势图吧，网址就先不贴了。</p>
+<p></p>]]></description></item><item><title>鼠须管 Squirrel 选项词横排配置调整</title><link>https://plutotree.me/2024/06/squirrel-skin-horizonetal-conf/</link><pubDate>Thu, 13 Jun 2024 00:30:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/06/squirrel-skin-horizonetal-conf/</guid><description><![CDATA[<p>最近鼠须管squirrel升级之后选项变成纵向排列了，本地没有改过配置，那应该就是新版本对<code>style/horizontal</code>参数不再兼容了，看了下 <code>Release notes</code> 果然如此，这里备注下这两个选项配置不同情况下的效果。一般只需要设置 <code>candidate_list_layout: linear</code> 即可。</p>
+<ul>
+<li>candidate_list_layout: linear</li>
+<li>text_orientation: vertical</li>
+</ul>
+<p></p>
+<ul>
+<li>candidate_list_layout: linear</li>
+<li>text_orientation: horizontal</li>
+</ul>
+<p></p>
+<ul>
+<li>candidate_list_layout: stacked</li>
+<li>text_orientation: horizontal</li>
+</ul>
+<p></p>
+<ul>
+<li>candidate_list_layout: stacked</li>
+<li>text_orientation: vertical</li>
+</ul>
+<p></p>
+]]></description></item><item><title>我的 RIME 词库说明</title><link>https://plutotree.me/2024/01/my-rime-dict/</link><pubDate>Tue, 23 Jan 2024 18:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/01/my-rime-dict/</guid><description><![CDATA[<div class="featured-image">
+                <img src="https://pic-1251468582.file.myqcloud.com/pic/2025/04/11/BfbxR8.jpg" referrerpolicy="no-referrer">
+            </div><p>最开始用的基础词库来源于<a href="https://github.com/ssnhd/rime" target="_blank" rel="noopener noreffer ">ssnhd/rime</a>，这是它的词表介绍</p>
+<p></p>
+<p>主要用了这几份词库：</p>
+<ul>
+<li><code>luna_pinyin.dict.yaml</code>：默认字库，有部分的词语，总计7万；</li>
+<li><code>luna_pinyin.sogou.dict.yaml</code>：来源于搜狗词库，总计105万；</li>
+<li><code>easy_en.dict.yaml</code>：英文词库，总计11万；</li>
+</ul>
+<p>此外还用了几份自己维护的词库：</p>
+<ul>
+<li>股票名称列表，使用<a href="https://tushare.pro/" target="_blank" rel="noopener noreffer ">Tushare</a> API拉取A股的股票名称列表生成词库，总计5千；</li>
+<li>我的搜狗自定义词库，从搜狗导出后经过手动删除，总计3千；</li>
+<li>我手动维护的词库，总计1百；</li>
+</ul>
+<p>但是这份词库存在几个问题：</p>
+<ol>
+<li>缺乏词库持续的更新维护；</li>
+<li>这份百万级的搜狗词库质量不高，并不是搜狗自带的词库；</li>
+<li>本身基于繁体，尽管这符合RIME的做法；</li>
+</ol>
+<p>最近发现两份还不错的简体词库，分别是<a href="https://github.com/fkxxyz/rime-cloverpinyin" target="_blank" rel="noopener noreffer ">四叶草拼音</a>和<a href="https://github.com/iDvel/rime-ice" target="_blank" rel="noopener noreffer ">雾凇拼音</a>。其中雾凇拼音有6K的star数量，并且更新还是比较及时的，提供的功能也比较完善，下面是一个功能介绍：</p>
+<p></p>
+<p>作者也明确说明了他会长期维护几份词库：</p>
+<ul>
+<li><code>8105</code> 字表。</li>
+<li><code>base</code> 基础词库。</li>
+<li><code>ext</code> 扩展词库，小词库。</li>
+<li><code>tencent</code> 扩展词库，大词库。</li>
+<li>Emoji</li>
+</ul>
+<p>雾凇拼音用了大量的<code>lua</code>脚本来实现功能，这里先不整体引用，打算只引用词库。但是在部署的时候却发现小狼毫会一直处于加载中，尝试后发现是在加载Tencent大词库的时候才出问题。搜索<a href="https://github.com/rime/weasel/issues/953" target="_blank" rel="noopener noreffer ">Github</a>发现可以关掉配置<code>use_preset_vocabulary</code>就可以解决问题。</p>
+<p>目前使用的外部词库保留了来源于雾凇拼音的四份中文词库</p>
+<ul>
+<li><code>cn_dicts/8105</code>     # 字表</li>
+<li><code>cn_dicts/base</code>     # 基础词库</li>
+<li><code>cn_dicts/ext</code>      # 扩展词库</li>
+<li><code>cn_dicts/tencent</code>  # 腾讯词向量</li>
+</ul>]]></description></item><item><title>修改 Typora 的字体</title><link>https://plutotree.me/2024/01/modify-typora-font/</link><pubDate>Mon, 22 Jan 2024 18:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/01/modify-typora-font/</guid><description><![CDATA[<p>从typora早起的beta版就开始在用，现在应该越来越多人认可其作为最佳Markdown编辑器。不过默认情况下，在windows展示的字体使用的是宋体，看起来其实不太美观，我们可以换成其它更好看得字体。微软雅黑我最不满意的是中文标点符号太丑，甚至不太容易分辨，我还是比较喜欢思源黑体。</p>
+<p></p>
+<p>在Typora的设置页中打开主题文件夹，然后新建一个 <code>xx.user.css</code> 文件（<code>xx</code>为你的主题名称），比如使用的主题为github，则新建一个 <code>github.user.css</code> 文件，里面的内容填写如下：</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-css">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-css" data-lang="css"><span class="line"><span class="cl"><span class="nt">body</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">font-family</span><span class="p">:</span> <span class="s2">&#34;Source Han Sans SC&#34;</span><span class="p">,</span> <span class="s2">&#34;Microsoft Yahei&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nt">header</span><span class="o">,</span> <span class="p">.</span><span class="nc">context-menu</span><span class="o">,</span> <span class="p">.</span><span class="nc">megamenu-content</span><span class="o">,</span> <span class="nt">footer</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">font-family</span><span class="p">:</span> <span class="s2">&#34;Source Han Sans SC&#34;</span><span class="p">,</span> <span class="s2">&#34;Microsoft Yahei&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">.</span><span class="nc">md-fences</span><span class="o">,</span> <span class="nt">tt</span><span class="o">,</span> <span class="nt">code</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">font-family</span><span class="p">:</span> <span class="n">Consolas</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里其实就是修改了字体为思源黑体、微软雅黑，以及代码字体为 <code>Consolas</code>。关于思源字体的介绍，可以参考之前发表的<a href="/2020-12-04/source-hans-font-intro.html" rel="">文章</a>。重新打开Typora，或者切换其它主题再切换回来就可以生效了。最近新装了Windows11， 把常用软件都切换成了深色界面了，Typora也换成了官方的Night主题。</p>
+<p>顺便补充一点，字体的英文名可以通过 <code>Exif</code> 查看工具（比如 <code>exif-tool</code> 命令行工具或者在线工具也行）获取真实的 <code>font-family</code>，在windows的字体设置中展示的是中文font-family，实测并不可用。</p>
+]]></description></item><item><title>Windows 包管理器 Scoop的使用经验</title><link>https://plutotree.me/2024/01/use-scoop-as-windows-package-manager-experience/</link><pubDate>Wed, 17 Jan 2024 18:00:00 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2024/01/use-scoop-as-windows-package-manager-experience/</guid><description><![CDATA[<p>如果有在 Mac 下用过<code>HomeBrew</code>的都知道，软件安装起来是多么方便。Windows 一直缺少这么方便的包管理工具。<code>Chocolatey</code>只能算是便捷的安装工具，和包管理工具差距还挺大的。<code>WinGet</code>可以算是一个包管理工具，只是目前支持的应用还比较少。以前有听说过<a href="https://scoop.sh" target="_blank" rel="noopener noreffer "><code>Scoop</code></a>，印象中说法是支持的软件数量较少。不过最近试了下，发现其支持的软件数量已经相当广泛。各类常见开发工具自然不必说了，主流的软件其中包括部分国内软件都能在官方的 bucket 中找到。官方不支持的软件，我们也能通过第三方的 bucket 进行安装。目前我有 59 个软件是通过 scoop 进行安装了。</p>
+<p></p>
+<h2 id="scoop-操作示例">Scoop 操作示例</h2>
+<ol>
+<li>
+<p>安装 scoop</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Set-ExecutionPolicy</span> <span class="n">-ExecutionPolicy</span> <span class="n">RemoteSigned</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">get</span><span class="p">.</span><span class="py">scoop</span><span class="p">.</span><span class="py">sh</span> <span class="p">|</span> <span class="nb">Invoke-Expression</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装<code>main</code>的软件</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">go</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">nodejs</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装<code>extra</code>的软件 （也是官方维护，要求比<code>main</code>宽松）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="n">extras</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">extras</span><span class="p">/</span><span class="n">apifox</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装第三方软件（这是我自己的 bucket 哈）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="n">plutotree</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">plutotree</span><span class="p">/</span><span class="nb">scoop-bucket</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">plutotree</span><span class="p">/</span><span class="n">qqmusic</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装字体</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="nb">nerd-font</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="nb">hack-nf</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>更新所有软件</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">update</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">update</span> <span class="p">*</span></span></span></code></pre></div></div>
+</li>
+</ol>
+<p>安装流程和 Mac 下的 Homebrew 相似，scoop 用 json 来维护软件信息，做法也是和老版本的 homebrew 一样。不过 scoop 有点优势在于，绝大部分软件都能支持自动更新，官方也提供了 Github Action 组件，定时检测发现有新版本的时候会自动更新描述文件。</p>
+<h2 id="scoop-使用说明">Scoop 使用说明</h2>
+<ol>
+<li>
+<p>使用自定义目录进行安装</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">[</span><span class="no">environment</span><span class="p">]::</span><span class="n">setEnvironmentVariable</span><span class="p">(</span><span class="s1">&#39;SCOOP&#39;</span><span class="p">,</span> <span class="s1">&#39;E:\Scoop&#39;</span><span class="p">,</span> <span class="s1">&#39;User&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$env:SCOOP</span><span class="p">=</span><span class="s1">&#39;E:\Scoop&#39;</span> <span class="c"># 如果不用这句话的话可以重开窗口也行</span>
+</span></span><span class="line"><span class="cl"><span class="nb">iex </span><span class="p">(</span><span class="nb">new-object</span> <span class="n">net</span><span class="p">.</span><span class="n">webclient</span><span class="p">).</span><span class="py">downloadstring</span><span class="p">(</span><span class="s1">&#39;https://get.scoop.sh&#39;</span><span class="p">)</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>增加常用的 bucket，可以参考官方介绍的<a href="https://github.com/ScoopInstaller/Scoop?tab=readme-ov-file#known-application-buckets" target="_blank" rel="noopener noreffer ">bucket 列表</a>（质量比较高），我目前只加了 extra 和 nerd-fonts</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="n">extra</span>
+</span></span><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="nb">nerd-fonts</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>安装官方推荐的加速下载工具 aria2</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-powershell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">scoop</span> <span class="n">install</span> <span class="n">aria2</span></span></span></code></pre></div></div>
+</li>
+<li>
+<p>从控制面版卸载不需要的程序，然后通过 scoop 进行安装和管理。</p>
+</li>
+</ol>
+<ul>
+<li>查找：<code>scoop search xx</code></li>
+<li>安装： <code>scoop install xx</code></li>
+<li>卸载：<code>scoop uninstall xx</code></li>
+<li>升级: <code>scoop update; scoop update xx</code></li>
+<li>查看缓存（下载的安装包）：<code>scoop cache</code></li>
+<li>删除缓存：<code>scoop cache rm xx</code> （*表示所有软件）</li>
+<li>查看已安装软件：<code>scoop list</code></li>
+<li>删除软件的旧版本：<code>scoop cleanup xx</code> （*表示所有软件）</li>
+<li>删除软件的旧版本同时清理缓存：<code>scoop cleanup -k xx</code>（*表示所有软件）</li>
+</ul>
+<h3 id="哪些软件不适合">哪些软件不适合</h3>
+<p>绿色软件是更适合的，而和系统关联性太强的软件是不适合的，尤其是需要管理员权限进行安装的。尽管 scoop 也支持使用管理权限进行安装，但是同样更新和卸载也许要管理权限，我觉得就没必要了而且维护起来会比较麻烦。</p>
+<p>目前就我电脑上的软件而言，没有使用 scoop 管理的主要是：</p>
+<ol>
+<li>系统驱动和厂商管理工具，比如 Nvidia、HP 等管理工具；</li>
+<li>微软的开发工具和环境依赖，比如<code>Microsoft Visual C++ xx Redistributables</code>、<code>Microsoft Windows Desktop Runtime</code>等；</li>
+<li>微软自带的部分商店应用，比如主题、微软 TODO 工具、画图工具、3D 查看器等；</li>
+<li>和系统关联系比较大，或者不方便迁移出来的，比如 Adobe 系列、Office 软件、iTunes、输入法等；</li>
+<li>平台类软件，需要使用其更新管理，比如 steam、Epic 等，后续需要研究下；</li>
+<li>专业软件，或者内部使用的软件；</li>
+<li>部分还没来得及迁移的软件，比如 TortoseSVN、QQ、微云等；</li>
+</ol>
+<h3 id="查找软件">查找软件</h3>
+<p>可以使用命令<code>scoop search</code>进行搜索，不过建议是在<a href="https://scoop.sh" target="_blank" rel="noopener noreffer ">官网</a>进行搜索，需要注意的是选项<code>Official bucket only</code>选项是否开启，一般情况下是建议安装官方包，以及可信赖的第三方。而我个人而言，第三方目前会控制在自己的 bucket 范围。</p>
+<p></p>
+<p>在官方查找不到的时候，可以扩展到第三方，找到之后可以修改后何如自己的 bucket 中。第三方的 bucket 其实质量并一定能保证，最后看下描述文件内容，以及是否从官网下载。还有部分维护破解软件的第三方 bucket，建议就不要使用了。还有就是关注下 bucket 的 star 数量，毕竟 star 多点还是稍微靠谱点。这个<a href="https://rasa.github.io/scoop-directory/by-stars" target="_blank" rel="noopener noreffer ">网站</a>提供按 star 数量排名的 bucket 列表，也可以参考下，蛮多是中国人维护的 bucket。</p>
+<p></p>
+<h2 id="维护自己的-bucket">维护自己的 bucket</h2>
+<ol>
+<li>创建一个自己的 bucket
+<ul>
+<li>在 GitHub 上直接通过<a href="https://github.com/ScoopInstaller/BucketTemplate" target="_blank" rel="noopener noreffer ">Bucket 模板</a>新建一个仓库；</li>
+<li>按照提示说明，修改仓库的设置，开启读写权限；</li>
+<li>修改几个文件的占位符，指定下仓库名信息；</li>
+</ul>
+</li>
+<li>维护自己软件的描述信息，
+<ul>
+<li>自己写应用描述信息，或者直接复用第三方，或者在其基础上修改；</li>
+</ul>
+</li>
+<li>增加自己的 bucket：<code>scoop bucket add BUCKET_NAME YOUR_BUCKET_GIT_ADDRESS</code></li>
+<li>安装自己的软件：<code>scoop install BUCKET_NAME/APP_NAME</code></li>
+</ol>
+<h2 id="应用描述信息">应用描述信息</h2>
+<p>这块算是 scoop 中最复杂的内容了，官方文档提供了基础的介绍，更有用的话应该需要多参考已有的描述。我们来看几个例子</p>
+<h3 id="cos-browser">Cos-Browser</h3>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;2.11.13&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;A visualization interface tool provided by Tencent Cloud COS, view, transfer, and manage COS resources easily&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;homepage&#34;</span><span class="p">:</span> <span class="s2">&#34;https://github.com/tencentyun/cosbrowser&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;license&#34;</span><span class="p">:</span> <span class="s2">&#34;Freeware&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://cos5.cloud.tencent.com/cosbrowser/cosbrowser-setup-2.11.13.exe#/dl.7z&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hash&#34;</span><span class="p">:</span> <span class="s2">&#34;sha512:0063411445cc4a2af098b71780525ec2e190f396934d1b910fbd62aea897ce99a0b2099a848d15df871e7f774aa7334be6acd2c4c4de2e9d0ae8cce05830940f&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;architecture&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;64bit&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Expand-7zipArchive \&#34;$dir\\`$PLUGINSDIR\\app-64.7z\&#34; \&#34;$dir\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;32bit&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Expand-7zipArchive \&#34;$dir\\`$PLUGINSDIR\\app-32.7z\&#34; \&#34;$dir\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;post_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Remove-Item \&#34;$dir\\`$*\&#34; -Force -Recurse&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;shortcuts&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="s2">&#34;cosbrowser.exe&#34;</span><span class="p">,</span> <span class="s2">&#34;COSBrowser&#34;</span><span class="p">,</span> <span class="s2">&#34;--user-data-dir=\&#34;$dir\\UserData\&#34;&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;persist&#34;</span><span class="p">:</span> <span class="s2">&#34;UserData&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;checkver&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://cos5.cloud.tencent.com/cosbrowser/latest.yml&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;regex&#34;</span><span class="p">:</span> <span class="s2">&#34;version: ([\\d.]+)&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;autoupdate&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://cos5.cloud.tencent.com/cosbrowser/cosbrowser-setup-$version.exe#/dl.7z&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;hash&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;$baseurl/latest.yml&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;regex&#34;</span><span class="p">:</span> <span class="s2">&#34;sha512: $base64&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>看下整体流程：</p>
+<ol>
+<li>下载指定 URL，下载后进行 Hash 校验；</li>
+<li>URL 后面有<code>#/dl.7z</code>，在校验成功后会直接使用 7zip 进行解压缩；</li>
+<li>调用<code>pre_install</code>脚本内容，这里使用了<code>Expand-7zipArchive</code>解压缩；</li>
+<li>调用<code>install</code>脚本内容，这个应用是空的；</li>
+<li>创建快捷方式，这里关注下有指定参数<code>--user-data-dir</code>，这样就不会使用系统的<code>AppData</code>目录了。猜测这个参数是 electron 开发的软件都会有的，其它框架开发的就不支持了。</li>
+<li>调用<code>post_install</code>脚本内容，这里主要就是删除一些无用的文件；</li>
+<li><code>persist</code>指定了需要持久化的目录，scoop 会帮忙创建一个链接，并且卸载的时候不会删除；</li>
+<li>checkver 是用来检测是否有新版本，autoupdate 是用来在有新版本的时候进行下载并且更新描述文件。这两块的细节内容会比较复杂点，可以参考<a href="https://github.com/ScoopInstaller/Scoop/wiki/App-Manifest-Autoupdate" target="_blank" rel="noopener noreffer ">官方文档</a>。</li>
+</ol>
+<h3 id="evernote">Evernote</h3>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;10.71.2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;[Evernote] Use it for note taking, project planning and organize everything&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;homepage&#34;</span><span class="p">:</span> <span class="s2">&#34;https://evernote.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;license&#34;</span><span class="p">:</span> <span class="s2">&#34;Freeware&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://win.desktop.evernote.com/builds/Evernote-latest.exe#/dl.zip&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hash&#34;</span><span class="p">:</span> <span class="s2">&#34;7e3b3565651b6ddeaa9dfb86502951917d996b09ebd32f2ce11509325d3bcce1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;architecture&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;64bit&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Expand-7zipArchive \&#34;$dir\\`$PLUGINSDIR\\app-64.7z\&#34; \&#34;$dir\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;32bit&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Expand-7zipArchive \&#34;$dir\\`$PLUGINSDIR\\app-32.7z\&#34; \&#34;$dir\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;post_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Remove-Item \&#34;$dir\\`$*\&#34; -Force -Recurse&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;shortcuts&#34;</span><span class="p">:</span> <span class="p">[[</span><span class="s2">&#34;Evernote.exe&#34;</span><span class="p">,</span> <span class="s2">&#34;Evernote&#34;</span><span class="p">]],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;checkver&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://evernote.com/release-notes&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;regex&#34;</span><span class="p">:</span> <span class="s2">&#34;Version.*?([\\d.]+)&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;autoupdate&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://win.desktop.evernote.com/builds/Evernote-latest.exe#/dl.zip&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>基本上和 Cos-Browser 的信息是类似的，但是 autoupdate 这里没有指定 Hash 获取方式，其实是官方没有提供，这种情况下的话就只能等文件下载完成之后再进行 hash 计算了，理论上来说是存在文件下载异常描述信息有问题的，这种的话就只能等发现之后手动修复了。</p>
+<h3 id="qq-音乐">QQ 音乐</h3>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;##&#34;</span><span class="p">:</span> <span class="s2">&#34;QQ音乐&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;20.05.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;[QQ音乐] 千万正版音乐海量无损曲库新歌热歌天天畅听的高品质音乐平台&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;homepage&#34;</span><span class="p">:</span> <span class="s2">&#34;https://y.qq.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;license&#34;</span><span class="p">:</span> <span class="s2">&#34;Freeware&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://dldir1.qq.com/music/clntupate/QQMusic_YQQWinPCDL.exe#/dl.7z&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hash&#34;</span><span class="p">:</span> <span class="s2">&#34;4c35742f11a011e8aff31987966e29b014fcdabfd6f50240125c8252f86188b2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;post_install&#34;</span><span class="p">:</span> <span class="s2">&#34;Copy-Item \&#34;$dir\\QQMusic.tpc\&#34; \&#34;$dir\\instok\&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;checkver&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://y.qq.com/download/download.html&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;regex&#34;</span><span class="p">:</span> <span class="s2">&#34;Windows PC.*\\:([\\d.]+)&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;shortcuts&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="s2">&#34;QQMusic.exe&#34;</span><span class="p">,</span> <span class="s2">&#34;QQ音乐&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="s2">&#34;QQMusic.exe&#34;</span><span class="p">,</span> <span class="s2">&#34;QQ Music&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;autoupdate&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://dldir1.qq.com/music/clntupate/QQMusic_YQQWinPCDL.exe#/dl.7z&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里我们创建了两个快捷方式，分别是 QQ 音乐和<code>QQ Music</code>，这样不管输入的是哪个都能启动了。同样 QQ 音乐也没提供 hash 获取方式，只能下载后本地计算。</p>
+<h3 id="补充说明">补充说明</h3>
+<p>腾讯会议比较奇怪，不能直接在<code>current</code>目录启动，而必须在版本目录启动，所以就不能用自带的快捷方式，而需要手动创建了。</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;pre_install&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Rename-Item \&#34;$dir\\`$_*_\&#34; \&#34;$dir\\$version\&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Remove-Item \&#34;$dir\\`$*\&#34;,\&#34;$dir\\wemeetapp_new.exe\&#34; -Recurse -Force&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;startmenu_shortcut -target $(Get-Item \&#34;$dir\\wemeetapp.exe\&#34;) -shortcutName \&#34;Tencent Meeting\&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;startmenu_shortcut -target $(Get-Item \&#34;$dir\\wemeetapp.exe\&#34;) -shortcutName \&#34;腾讯会议\&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;pre_uninstall&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;if (Get-Process -Name \&#34;wemeetapp\&#34; -Erroraction SilentlyContinue) {Stop-Process -Name \&#34;wemeetapp\&#34;}&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;if (Test-Path \&#34;$(shortcut_folder)\\Tencent Meeting.lnk\&#34;){Remove-Item \&#34;$(shortcut_folder)\\Tencent Meeting.lnk\&#34; -Force}&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;if (Test-Path \&#34;$(shortcut_folder)\\腾讯会议.lnk\&#34;){Remove-Item \&#34;$(shortcut_folder)\\腾讯会议.lnk\&#34; -Force}&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>有些软件是不能直接解压缩的，而是通过 Inno 方式进行安装，这种的话 scoop 也有自带提供支持，可以参考其它软件，等我遇到的时候再补充。</p>
+<h2 id="问题记录">问题记录</h2>
+<h3 id="github-访问-401-问题">GitHub 访问 401 问题</h3>
+<p>遇上 GitHub API 访问受限导致的 401 问题，可以设置环境变量<code>SCOOP_GH_TOKEN</code>，使用自己的 Access Token 即可。创建 Access Token 的时候不需要指定任何特别的权限，使用默认权限即可。</p>
+<h3 id="应用打开网址无法拉起-chrome-浏览器">应用打开网址无法拉起 Chrome 浏览器</h3>
+<p>尝试过多种方法但是仍然有不低的概率遇上，最后只能放弃使用 scoop 来维护 Chrome，换成 chrome 默认安装之后问题就不再出现了。</p>
+<h3 id="everything-开机启动无效">everything 开机启动无效</h3>
+<p>这里主要在使用 uTools 调用 everything 搜索的时候，每次开机启动需要重新进行索引，按照 uTools 的说法，如果使用的是安装版并且开机启动的前提下，是不会触发使用内置的绿色版 everything 而导致重新索引的问题的。最后也放弃使用 scoop 维护 everything，而使用官方的安装版本进行安装。不过这个问题也可能通过修改 everything 的配置项能解决。</p>
+<h3 id="hash-校验不一致导致无法安装">hash 校验不一致导致无法安装</h3>
+<p>有一种可能是更换了安装包但是没有更换版本号，也有可能是计算 hash 的时候遇到了一些bug。在执行 <code>scoop install</code> 的时候只要增加 <code>-s</code> 参数即可跳过 hash 校验。</p>
+]]></description></item></channel></rss>

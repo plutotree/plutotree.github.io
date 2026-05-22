@@ -1,0 +1,161 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Picgo - 标签 - PlutoTree's Blog</title><link>https://plutotree.me/tags/picgo/</link><description>Picgo - 标签 - PlutoTree's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>plutotreetree@gmail.com (布鲁树)</managingEditor><webMaster>plutotreetree@gmail.com (布鲁树)</webMaster><lastBuildDate>Tue, 02 Nov 2021 19:58:28 +0800</lastBuildDate><atom:link href="https://plutotree.me/tags/picgo/" rel="self" type="application/rss+xml"/><item><title>markdown图床实践：Typora+PicGo-core+腾讯云cos</title><link>https://plutotree.me/2021/11/using-picgo-as-image-uploader-bed/</link><pubDate>Tue, 02 Nov 2021 19:58:28 +0800</pubDate><author>布鲁树</author><guid>https://plutotree.me/2021/11/using-picgo-as-image-uploader-bed/</guid><description><![CDATA[<h2 id="前言">前言</h2>
+<p>Markdown 已然成为事实上的技术文档编写标准，作为 markdown 编辑器，typora 也收到越来越多人的推荐和喜爱。在 markdown 中我们经常需要插入图片，而 markdown 只是普通文本文件，因此图片只能作为外部链接而存在。这里的链接可以使用本地的相对路径，也可以使用网络 url。当使用网络 url 的时候，我们需要一个地方去维护和存储图片，这就是我们所谓的“图床”。</p>
+<p>而我之前一直没有考虑使用图床，图片都是和 markdown 文件一起在 git 里面维护，主要的考虑点有：</p>
+<ol>
+<li>markdown 文件以及图片是作为一个整体，可以理解成是一个项目，那么项目内容本身就是密不可分的；</li>
+<li>图片的访问权限可以跟随 markdown 文件，需要时可以有统一的访问鉴权策略；</li>
+<li>方便管理一篇文章的所有图片，对于无用的图片可以直接删除；</li>
+</ol>
+<p>在使用过程中遇到了越来越多的不便之处：</p>
+<ol>
+<li>github 网站在国内访问速度较慢，文字影响不大，大量的图片下载耗时很影响体验；</li>
+<li>不方便直接分享给他人 markdown 文件，需要导出 pdf 或者打包进行分享；</li>
+<li>在 github 仓库中，大量的图片也影响了 git 仓库的导出速度；</li>
+<li>本地存储图片时，图片存储路径在不同场景有差异，不方便统一管理；</li>
+<li>不能方便地进行图片的动态缩放；</li>
+</ol>
+<p>权衡之后决定还是决定拥抱“图床”。typora 自带支持 iPic、uPic、PicGo 等图片上传工具，我选择国人开发的 PicGo。另外因为一直在用腾讯云服务器，自然选择了腾讯云 cos 作为图床的云存储。</p>
+<h2 id="腾讯云">腾讯云</h2>
+<h3 id="对象存储">对象存储</h3>
+<ol>
+<li>
+<p>在<a href="https://console.cloud.tencent.com/cos5/bucket" target="_blank" rel="noopener noreffer ">对象存储控制台</a>创建一个存储桶，选择所属地域，填写桶名称，访问权限选择“公有读私有写”</p>
+<p></p>
+</li>
+<li>
+<p>点击桶名称进入管理页面，在左侧“域名与传输管理”中打开默认 CDN 加速域名，这里需要理解下 CDN 和源站的概念</p>
+<p></p>
+</li>
+<li>
+<p>回到文件列表页，可以在页面进行上传测试，点击“详情”可以查看文件的具体信息，这里对象有两个访问地址，一个是源站域名，一个是加速域名，我们一般都会选择加速域名。</p>
+<p></p>
+</li>
+</ol>
+<h3 id="数据万象">数据万象</h3>
+<p>使用图床还有一点很重要的作用是能实现动态的图片处理，简单的比如缩放、裁剪，复杂的比如高斯模糊、水印等等，这里需要用到腾讯的<a href="https://console.cloud.tencent.com/ci" target="_blank" rel="noopener noreffer ">数据万象</a>。在数据万象的存储通管理中，选择绑定存储桶即可。</p>
+<p></p>
+<p>点击存储通名称进入管理页面，发现这里也有个域名管理，通过这个域名访问才会支持图片的在线处理功能，这个域名本身也是支持 cdn 加速的，我们会统一采用这个域名来提供用户访问。</p>
+<p></p>
+<h3 id="访问授权">访问授权</h3>
+<p>在<a href="https://console.cloud.tencent.com/cam/user/userType" target="_blank" rel="noopener noreffer ">腾讯云控制台的访问管理</a>中新建用户，可以直接使用&quot;快速创建&quot;。这里访问方式修改为“编程访问”，用户权限清空，可接受消息类型清空，用户名称可以用比较清晰明了的，比如<code>picgo-upload</code>。创建成功之后能看到子账号的账号 ID，还有 SecretId 和 SecretKey，把这些信息记录下来，我们后续需要用到。</p>
+<p></p>
+<p>回到<a href="https://console.cloud.tencent.com/cos5/bucket" target="_blank" rel="noopener noreffer ">对象存储控制台</a>，选择“授权管理”，勾选存储桶后修改“用户权限”，增加子账号的权限，权限内容可以勾选数据读取和数据写入。</p>
+<p></p>
+<p>到此，腾讯云上的工作做完了。其实有一点没有谈的是费用问题，这个的话还是有必要了解的，只是这篇文章略过了。</p>
+<h2 id="picgo">Picgo</h2>
+<p><a href="https://github.com/Molunerfinn/PicGo" target="_blank" rel="noopener noreffer ">PicGo</a>是一款开源跨平台的图片上传工具，能方便地上传至各种图床和云存储服务器上。可以使用带图片 GUI 的应用，也可以直接使用其核心部分基于命令行的<a href="https://picgo.github.io/PicGo-Core-Doc/" target="_blank" rel="noopener noreffer ">PicGo-Core</a>。我推荐直接使用 PicGo-Core，再加上<a href="https://github.com/PicGo/Awesome-PicGo" target="_blank" rel="noopener noreffer ">插件能力</a>足够满足我们的需求了。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 如果没有npm的话需要先安装</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># brew install npm</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 安装picgo</span>
+</span></span><span class="line"><span class="cl">npm install picgo -g
+</span></span><span class="line"><span class="cl"><span class="c1"># 安装picgo插件</span>
+</span></span><span class="line"><span class="cl">picgo install autocopy
+</span></span><span class="line"><span class="cl">picgo install rename-file</span></span></code></pre></div></div>
+<p>安装完 picgo 和插件之后需要进行相关配置，同样有两种方式，一种是<a href="https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html#%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90" target="_blank" rel="noopener noreffer ">基于命令行的交互输入</a>，而另一种是推荐的直接修改配置文件。配置文件在 Windows 下路径为 <code>%HOMEPATH%\.picgo\config.json</code>，Mac 下路径为<code>~/.picgo/config.json</code>。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;picBed&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;current&#34;</span><span class="p">:</span> <span class="s2">&#34;tcyun&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;tcyun&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;secretId&#34;</span><span class="p">:</span> <span class="s2">&#34;子账号的SecretId&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;secretKey&#34;</span><span class="p">:</span> <span class="s2">&#34;子账号的SecretKey&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;bucket&#34;</span><span class="p">:</span> <span class="s2">&#34;Bucket名称&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;appId&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;area&#34;</span><span class="p">:</span> <span class="s2">&#34;COS区域，类似ap-shanghai&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;customUrl&#34;</span><span class="p">:</span> <span class="s2">&#34;数据万象url&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;v5&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;uploader&#34;</span><span class="p">:</span> <span class="s2">&#34;tcyun&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;transformer&#34;</span><span class="p">:</span> <span class="s2">&#34;path&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;picgoPlugins&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;picgo-plugin-rename-file&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;picgo-plugin-autocopy&#34;</span><span class="p">:</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;picgo-plugin-rename-file&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;format&#34;</span><span class="p">:</span> <span class="s2">&#34;pic/{y}/{m}/{d}/{rand:6}&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>根据上面的注释进行字段的编辑，重命名插件的具体参数可以参考<a href="https://github.com/liuwave/picgo-plugin-rename-file" target="_blank" rel="noopener noreffer ">这里</a>。配置完成之后可以通过执行<code>picgo upload xxx.png</code>来验证图片上传及插件配置是否生效。这里 xxx.png 可以支持本地也可以支持网络的 url。如果上传成功之后能看到完整的 url，同时也会将 url 写入剪切板，可以直接在浏览器中进行访问验证。</p>
+<p></p>
+<p>比如这个地址<a href="https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/80da56.png%ef%bc%8c" target="_blank" rel="noopener noreffer ">https://pic-1251468582.file.myqcloud.com/pic/2021/11/03/80da56.png，</a>，可以查看其链接规则是符合 rename-file 插件的配置的。</p>
+<h2 id="typora">Typora</h2>
+<p>打开偏好设置，按需要勾选之后点击“验证图片上传选项”确认上传是否正常。</p>
+<p></p>
+<p>这里要注意下 mac 系统的<code>PicGo-Core</code>选项并不可用，需要选择<code>Custom Commeand</code>，手动输入命令。另外命令还需要输入完整地址（我尝试了三遍才知道）。我配置的命令内容如下：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">/opt/homebrew/bin/node /opt/homebrew/bin/picgo upload</span></span></code></pre></div></div>
+<p></p>
+<p>好了，到这里就可以在文章中很方便的插入图片了。使用过程中，可以发现本地图片转化为网络图片是需要一些时间，在上传成功之后才会替换掉本地 url。如果在中途不小心修改或者删除了相关内容，会导致后续替换 url 失败。好在我们是用了 autocopy 的插件，正确地址已经写入剪切板了，只要 ctrl+v 就可以了啦。</p>
+<h2 id="将历史文章中的本地图片批量上传">将历史文章中的本地图片批量上传</h2>
+<p>不想旧文章使用本地图片，而新文章才使用网络图片，这些批量化的工作当然得交给程序。用 node 或许是比较理想的方式，可以直接以 API 形式调用 picgo。但这是在我用 python 写到最后才想起的点。不多说，直接给代码，直接保存运行就好了：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">re</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">pyperclip</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">Upload</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># 使用picgo上传，需要安装插件autocopy</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pyperclip</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ret</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;picgo upload ./</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;图片[</span><span class="si">{}</span><span class="s1">]上传失败&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">img</span>
+</span></span><span class="line"><span class="cl">    <span class="n">new_img</span> <span class="o">=</span> <span class="n">pyperclip</span><span class="o">.</span><span class="n">paste</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="ow">not</span> <span class="n">new_img</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;图片[</span><span class="si">{}</span><span class="s1">]似乎上传失败&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">img</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;图片[</span><span class="si">{}</span><span class="s1">]上传成功 -&gt;[</span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">new_img</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">new_img</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">Process</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">content</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;process file:</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">inf</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">inf</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">        <span class="n">result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="s1">&#39;!\[([^]]*)\]\(([^)]*)\)&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">update</span> <span class="o">=</span> <span class="kc">False</span>
+</span></span><span class="line"><span class="cl">        <span class="n">new_line</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">last_pos</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">img</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http://&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">img</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">)):</span>
+</span></span><span class="line"><span class="cl">                <span class="n">update</span> <span class="o">=</span> <span class="kc">True</span>
+</span></span><span class="line"><span class="cl">                <span class="n">new_line</span> <span class="o">+=</span> <span class="n">line</span><span class="p">[</span><span class="n">last_pos</span> <span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl">                <span class="n">last_pos</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">end</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">new_line</span> <span class="o">+=</span> <span class="n">Upload</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">new_line</span> <span class="o">+=</span> <span class="n">line</span><span class="p">[</span><span class="n">last_pos</span><span class="p">:]</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">update</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">content</span> <span class="o">+=</span> <span class="n">new_line</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">content</span> <span class="o">+=</span> <span class="n">line</span>
+</span></span><span class="line"><span class="cl">    <span class="n">inf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">outf</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">outf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">outf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="s1">&#39;./_posts/&#39;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&#34;.md&#34;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&#34;.markdown&#34;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Process</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></span></span></code></pre></div></div>
+]]></description></item></channel></rss>
